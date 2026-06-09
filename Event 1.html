@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pawai Obor & Pesta Rakyat | Karang Taruna Adhigana Prapti</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+    RESET & BASE STYLE (Sesuai Web Utama)
+========================= */
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+body{
+  font-family: 'Poppins', sans-serif;
+  background: #06070b;
+  color: white;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* =========================
+    GLOBAL STYLES
+========================= */
+
+.container{
+  width: min(1100px, 90%);
+  margin: auto;
+}
+
+section{
+  padding: 100px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.section-title{
+  text-align: center;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.section-subtitle{
+  text-align: center;
+  max-width: 650px;
+  margin: auto;
+  color: #b9c0ce;
+  line-height: 1.8;
+  margin-bottom: 60px;
+  font-size: 15px;
+}
+
+/* =========================
+    NAVBAR
+========================= */
+
+.navbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  backdrop-filter: blur(20px);
+  background: rgba(6, 7, 11, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.logo{
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.logo span {
+  color: #69d7e8;
+}
+
+.back-btn{
+  text-decoration: none;
+  color: black;
+  padding: 12px 26px;
+  border-radius: 14px;
+  background: #69d7e8;
+  font-weight: 700;
+  font-size: 14px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.back-btn:hover{
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* =========================
+    HERO SECTION
+========================= */
+
+.hero{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(rgba(6, 7, 11, 0.7), rgba(6, 7, 11, 0.95)), url("images/pawai-obor.jpg");
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hero-content{
+  text-align: center;
+  padding-top: 60px;
+}
+
+.event-badge{
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(105, 215, 232, 0.12);
+  color: #69d7e8;
+  border: 1px solid rgba(105, 215, 232, 0.2);
+  margin-bottom: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.hero h1{
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.hero p{
+  max-width: 700px;
+  margin: 25px auto 45px auto;
+  color: #b9c0ce;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.hero-info{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.info-card{
+  padding: 30px 25px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: left;
+  transition: border-color 0.3s ease;
+}
+
+.info-card:hover {
+  border-color: rgba(105, 215, 232, 0.2);
+}
+
+.info-card h4{
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #69d7e8;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.info-card p{
+  margin: 0;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* =========================
+    COUNTDOWN SECTION
+========================= */
+
+.countdown{
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.count-grid{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.count-box{
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 35px 20px;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.count-box span{
+  display: block;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: #69d7e8;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.count-box small{
+  color: #b9c0ce;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.count-box strong{
+  font-size: 16px;
+  color: #69d7e8;
+  font-weight: 600;
+  display: block;
+}
+
+/* =========================
+    SEKSI SPESIFIK (ABOUT & LAINNYA)
+========================= */
+
+.about {
+  background: #06070b;
+}
+
+.about .section-subtitle {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+
+.highlight {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.timeline {
+  background: #06070b;
+}
+
+.statistic {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.gallery {
+  background: #06070b;
+}
+
+.gallery .info-card {
+  text-align: center;
+  font-weight: 500;
+  color: #b9c0ce;
+  padding: 50px 20px;
+}
+
+.information {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.information .info-card {
+  font-size: 15px;
+  color: #b9c0ce;
+  font-weight: 500;
+}
+
+.faq {
+  background: #06070b;
+}
+
+.faq .container {
+  max-width: 800px;
+}
+
+.faq .info-card h4 {
+  font-size: 16px;
+  color: white;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.faq .info-card p {
+  color: #b9c0ce;
+  font-size: 14px;
+}
+
+/* =========================
+    CLOSING SECTION
+========================= */
+
+.closing {
+  min-height: auto;
+  padding: 120px 0;
+  background: linear-gradient(rgba(6, 7, 11, 0.85), rgba(6, 7, 11, 0.95)), url("images/pawai-obor.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* =========================
+    FOOTER
+========================= */
+
+footer{
+  background: #020306;
+  padding: 60px 0;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+footer h3{
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+footer p{
+  font-size: 14px;
+}
+
+/* =========================
+    RESPONSIVE LAYOUT
+========================= */
+
+@media(max-width:900px){
+  .hero-info{
+    grid-template-columns: 1fr;
+  }
+  .count-grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width:600px){
+  .count-grid{
+    grid-template-columns: 1fr;
+  }
+  section{
+    padding: 70px 0;
+  }
+  .hero h1{
+    font-size: 2.2rem;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-wrapper">
+    <div class="logo">Adhigana <span>Prapti</span></div>
+    <a href="index.html" class="back-btn">Kembali ke Beranda</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="event-badge">EVENT HUT REPUBLIK INDONESIA 2026</span>
+      <h1>Pawai Obor<br>& Pesta Rakyat</h1>
+      <p>Menyalakan semangat kebersamaan, mempererat persaudaraan, dan memeriahkan Hari Kemerdekaan Republik Indonesia bersama seluruh masyarakat Desa.</p>
+      
+      <div class="hero-info">
+        <div class="info-card">
+          <h4>Tanggal</h4>
+          <p>16 Agustus 2026</p>
+        </div>
+        <div class="info-card">
+          <h4>Waktu</h4>
+          <p>18.00 WIB</p>
+        </div>
+        <div class="info-card">
+          <h4>Lokasi</h4>
+          <p>Sirnagalih Tengah</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="countdown">
+  <div class="container">
+    <h2 class="section-title">Menuju Hari Pelaksanaan</h2>
+    <p class="section-subtitle">Hitung mundur menuju malam penuh kebersamaan dan kemeriahan.</p>
+    
+    <div class="count-grid">
+      <div class="count-box">
+        <span id="days">00</span>
+        <small>Hari</small>
+      </div>
+      <div class="count-box">
+        <span id="hours">00</span>
+        <small>Jam</small>
+      </div>
+      <div class="count-box">
+        <span id="minutes">00</span>
+        <small>Menit</small>
+      </div>
+      <div class="count-box">
+        <span id="seconds">00</span>
+        <small>Detik</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="container">
+    <h2 class="section-title">Tentang Acara</h2>
+    <p class="section-subtitle">Pawai Obor dan Pesta Rakyat merupakan kegiatan tahunan yang diselenggarakan Karang Taruna Adhigana Prapti dalam rangka memeriahkan Hari Ulang Tahun Republik Indonesia.</p>
+  </div>
+</section>
+
+<section class="highlight">
+  <div class="container">
+    <h2 class="section-title">Highlight Acara</h2>
+    <div class="hero-info">
+      <div class="info-card">
+        <h4>Pawai Obor</h4>
+        <p>Berjalan bersama mengelilingi desa dengan semangat kemerdekaan.</p>
+      </div>
+      <div class="info-card">
+        <h4>Hiburan Rakyat</h4>
+        <p>Berbagai penampilan menarik untuk seluruh masyarakat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="timeline">
+  <div class="container">
+    <h2 class="section-title">Rundown Acara</h2>
+    <div class="count-grid">
+      <div class="count-box">
+        <strong>18.30 WIB</strong>
+        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Persiapan Pawai Obor & Shalat</p>
+      </div>
+      <div class="count-box">
+        <strong>19.00 WIB</strong>
+        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Pemberangkatan</p>
+      </div>
+      <div class="count-box">
+        <strong>19.20 WIB</strong>
+        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Pawai Obor</p>
+      </div>
+      <div class="count-box">
+        <strong>21.00 WIB</strong>
+        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Selesai</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="statistic">
+  <div class="container">
+    <h2 class="section-title">Dokumentasi Tahun Sebelumnya</h2>
+    <div class="count-grid">
+      <div class="count-box">
+        <span>100+</span>
+        <small>Peserta</small>
+      </div>
+      <div class="count-box">
+        <span>5+</span>
+        <small>RT Berpartisipasi</small>
+      </div>
+      <div class="count-box">
+        <span>50+</span>
+        <small>Panitia</small>
+      </div>
+      <div class="count-box">
+        <span>1</span>
+        <small>Malam Kebersamaan</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="container">
+    <h2 class="section-title">Galeri Kegiatan</h2>
+    <div class="hero-info">
+      <div class="info-card">
+        <img src="/asset/Pawai Obor 2.jpeg" alt="Foto Pawai Obor" style="border-radius:16px; width:100%; height:220px; object-fit:cover;">
+      </div>
+      <div class="info-card">
+        <img src="/asset/Pawai Obor.jpg" alt="Foto Pesta Rakyat" style="border-radius:16px; width:100%; height:220px; object-fit:cover;">
+      </div>
+      <div class="info-card">
+        <img src="/asset/Pawai Obor 3.jpeg" alt="Dokumentasi Warga" style="border-radius:16px; width:100%; height:220px; object-fit:cover;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="information">
+  <div class="container">
+    <h2 class="section-title">Informasi Penting</h2>
+    <div class="hero-info">
+      <div class="info-card">Mengikuti arahan panitia</div>
+      <div class="info-card">Menjaga kebersihan lingkungan</div>
+      <div class="info-card">Menjaga ketertiban acara</div>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="container">
+    <h2 class="section-title">Pertanyaan Umum</h2>
+    <div class="info-card" style="margin-bottom:20px;">
+      <h4>Apakah acara ini gratis?</h4>
+      <p style="margin-top: 5px;">Ya, seluruh masyarakat dapat mengikuti kegiatan tanpa biaya.</p>
+    </div>
+    <div class="info-card" style="margin-bottom:20px;">
+      <h4>Siapa yang boleh mengikuti?</h4>
+      <p style="margin-top: 5px;">Seluruh warga dan tamu yang hadir.</p>
+    </div>
+    <div class="info-card">
+      <h4>Apakah tersedia parkir?</h4>
+      <p style="margin-top: 5px;">Ya, area parkir telah disediakan panitia.</p>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="container">
+    <div class="hero-content" style="padding-top: 0;">
+      <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 20px; font-weight: 700;">Mari Meriahkan Bersama</h2>
+      <p style="max-width: 650px; margin: auto; color: #b9c0ce; margin-bottom: 40px;">Pawai Obor dan Pesta Rakyat bukan sekadar acara tahunan, tetapi juga simbol kebersamaan, persatuan, dan semangat gotong royong masyarakat.</p>
+      <a href="index.html" class="back-btn">Kembali ke Beranda</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <h3>Karang Taruna Adhigana Prapti</h3>
+    <p style="margin-top: 10px; color: #b9c0ce;">Bersama Berkarya Untuk Desa</p>
+    <p style="margin-top: 30px; color: #656d7a; font-size: 13px;">&copy; 2026 Karang Taruna Adhigana Prapti. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+const targetDate = new Date("August 16, 2026 18:30:00").getTime();
+
+setInterval(()=>{
+  const now = new Date().getTime();
+  const distance = targetDate - now;
+
+  const days = Math.floor(distance / (1000*60*60*24));
+  const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+  const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+  const seconds = Math.floor((distance % (1000*60)) / 1000);
+
+  document.getElementById("days").innerHTML = days;
+  document.getElementById("hours").innerHTML = hours;
+  document.getElementById("minutes").innerHTML = minutes;
+  document.getElementById("seconds").innerHTML = seconds;
+},1000);
+</script>
+
+</body>
+</html>

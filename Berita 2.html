@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- GANTI JUDUL HALAMAN SESUAI BERITAMU -->
+  <title>Detail Artikel - WARTA 04</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #06070b;
+      color: white;
+      line-height: 1.9;
+    }
+
+    /* Pembungkus Konten Artikel */
+    .article-container {
+      width: 90%;
+      max-width: 900px;
+      margin: auto;
+      padding: 80px 0;
+    }
+
+    /* Gambar Utama */
+    .hero-img {
+      width: 100%;
+      max-height: 500px;
+      object-fit: cover;
+      border-radius: 28px;
+      margin-bottom: 35px;
+    }
+
+    /* Badge Tanggal atau Kategori */
+    .badge {
+      display: inline-block;
+      padding: 8px 18px;
+      background: rgba(105, 215, 232, .12);
+      color: #69d7e8;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Judul Berita Utama */
+    h1 {
+      font-size: 48px;
+      line-height: 1.2;
+      margin-bottom: 35px;
+      font-weight: 700;
+    }
+
+    /* Area Khusus Isi Artikel */
+    .article-content p {
+      color: #b9c0ce;
+      margin-bottom: 25px;
+      text-align: justify;
+      font-size: 16px;
+    }
+
+    /* Tombol Kembali */
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      background: #69d7e8;
+      color: black;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .back-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Optimasi Layar HP */
+    @media(max-width: 768px){
+      .article-container {
+        padding: 40px 0;
+      }
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="article-container">
+
+    <!-- 1. FOTO UTAMA ARTIKEL -->
+    <!-- Ganti src dengan folder/nama gambarmu -->
+    <img src="/asset/Ml.jpeg" class="hero-img" alt="Foto Berita">
+
+    <!-- 2. TANGGAL / KATEGORI -->
+    <div class="badge">
+      20 Oktober 2025
+    </div>
+
+    <!-- 3. JUDUL BERITA -->
+    <h1>
+      Mengasah Sportivitas Digital Melalui Turnamen Mobile Legends Karang Taruna Adhigana Prapti
+    </h1>
+
+    <hr style="border: 1px solid rgba(255,255,255,0.05); margin-bottom: 35px;">
+
+    <!-- ======================================================== -->
+    <!-- ZONE AMAN: KONTEN ARTIKEL (Isi artikel kamu di bawah ini) -->
+    <!-- ======================================================== -->
+    <div class="article-content">
+
+      <p>
+        Karang Taruna Adhigana Prapti kembali menghadirkan inovasi kegiatan kepemudaan dengan sukses menggelar Turnamen Mobile Legends e-Sports tingkat desa. Kompetisi yang berlangsung di Balai Komunitas Desa ini menjadi magnet luar biasa bagi puluhan tim lokal yang siap beradu strategi di dalam Land of Dawn. Transformasi kegiatan ini membuktikan bahwa organisasi kepemudaan mampu beradaptasi dengan perkembangan zaman, sekaligus mengarahkan minat gaming para remaja ke dalam wadah kompetisi yang positif, terstruktur, dan penuh regulasi resmi.
+      </p>
+
+      <p>
+        Atmosfer pertandingan terasa sangat kompetitif sejak babak kualifikasi pertama dimulai, di mana setiap tim saling adu mekanik dan memamerkan kerja sama formasi yang solid. Riuh penonton dan pendukung yang hadir secara langsung ikut membakar semangat para pemain yang sedang fokus mengamankan objektif di dalam gim. Menariknya, turnamen ini tidak hanya sekadar kompetisi instan, melainkan menjadi ruang diskusi taktik yang sehat di mana para pemuda belajar arti kepemimpinan, komunikasi di bawah tekanan, serta cara menyikapi kekalahan secara ksatria.
+      </p>
+
+      <p>
+        Memasuki babak Grand Final yang krusial, ketegangan memuncak hingga akhirnya lahir satu tim yang berhasil membawa pulang piala bergilir serta dana pembinaan dari panitia. Pihak Karang Taruna Adhigana Prapti berharap, kesuksesan gelaran e-sports ini dapat memicu lahirnya atlet-atlet berbakat dari level akar rumput yang nantinya mampu membawa nama baik daerah di ajang yang lebih tinggi. Melalui turnamen ini, solidaritas dan keakraban antar pemuda lintas wilayah desa terbukti semakin erat di era digital.
+      </p>
+
+    </div>
+    <!-- ======================================================== -->
+    <!-- END ZONE AMAN -->
+    <!-- ======================================================== -->
+
+    <!-- TOBOL KEMBALI KE BERANDA -->
+    <a href="index.html" class="back-btn">
+      ← Kembali ke Beranda
+    </a>
+
+  </div>
+
+</body>
+</html>
