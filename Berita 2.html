@@ -67,21 +67,91 @@
       font-size: 16px;
     }
 
+    /* --- CSS BARU: AREA TOMBOL SHARE --- */
+    .share-section {
+      margin: 40px 0 20px 0;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .share-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #b9c0ce;
+      margin-bottom: 15px;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      border: none;
+    }
+
+    .share-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .btn-wa {
+      background-color: #25D366;
+      color: white;
+    }
+
+    .btn-ig {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: white;
+    }
+
+    /* Notifikasi popup kecil saat menyalin link */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #69d7e8;
+      color: black;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* --- AKHIR CSS BARU --- */
+
     /* Tombol Kembali */
     .back-btn {
       display: inline-block;
       margin-top: 20px;
       padding: 14px 28px;
       border-radius: 14px;
-      background: #69d7e8;
-      color: black;
+      background: rgba(255, 255, 255, 0.05);
+      color: #69d7e8;
       font-weight: 700;
       text-decoration: none;
-      transition: opacity 0.2s ease;
+      transition: background 0.2s ease;
+      border: 1px solid rgba(105, 215, 232, 0.2);
     }
 
     .back-btn:hover {
-      opacity: 0.9;
+      background: rgba(105, 215, 232, 0.1);
     }
 
     /* Optimasi Layar HP */
@@ -100,36 +170,35 @@
   <div class="article-container">
 
     <!-- 1. FOTO UTAMA ARTIKEL -->
-    <!-- Ganti src dengan folder/nama gambarmu -->
-    <img src="/asset/Ml.jpeg" class="hero-img" alt="Foto Berita">
+    <img src="/" class="hero-img" alt="Foto Berita">
 
-    <!-- 2. TANGGAL / KATEGORI -->
+   <!-- 2. TANGGAL / KATEGORI -->
     <div class="badge">
-      20 Oktober 2025
+      13 Juni 2026
     </div>
 
     <!-- 3. JUDUL BERITA -->
     <h1>
-      Mengasah Sportivitas Digital Melalui Turnamen Mobile Legends Karang Taruna Adhigana Prapti
+      Matangkan Persiapan Program Kerja, Karang Taruna Gelar Rapat Mingguan Ke-3
     </h1>
 
     <hr style="border: 1px solid rgba(255,255,255,0.05); margin-bottom: 35px;">
 
     <!-- ======================================================== -->
-    <!-- ZONE AMAN: KONTEN ARTIKEL (Isi artikel kamu di bawah ini) -->
+    <!-- ZONE AMAN: KONTEN ARTIKEL -->
     <!-- ======================================================== -->
     <div class="article-content">
 
       <p>
-        Karang Taruna Adhigana Prapti kembali menghadirkan inovasi kegiatan kepemudaan dengan sukses menggelar Turnamen Mobile Legends e-Sports tingkat desa. Kompetisi yang berlangsung di Balai Komunitas Desa ini menjadi magnet luar biasa bagi puluhan tim lokal yang siap beradu strategi di dalam Land of Dawn. Transformasi kegiatan ini membuktikan bahwa organisasi kepemudaan mampu beradaptasi dengan perkembangan zaman, sekaligus mengarahkan minat gaming para remaja ke dalam wadah kompetisi yang positif, terstruktur, dan penuh regulasi resmi.
+        TASIKMALAYA, 13 Juni 2026 – Pengurus Karang Taruna kembali menggelar rapat rutin minggu ketiga pada Sabtu malam guna mematangkan kesiapan roda organisasi dalam menghadapi program kerja ke depan. Rapat yang berlangsung di Sekretariat ini dihadiri oleh jajaran pengurus harian serta perwakilan dari seluruh divisi dengan fokus utama memperjelas arah pergerakan organisasi. Melalui pertemuan ini, Ketua Karang Taruna menegaskan kembali pembagian job description (jobdesk) secara mendetail untuk setiap divisi, mulai dari Humas, Olahraga, hingga Seni Budaya, dengan tujuan agar seluruh anggota memahami tanggung jawab masing-masing dan menghindari terjadinya tumpang tindih tugas di lapangan.
       </p>
 
       <p>
-        Atmosfer pertandingan terasa sangat kompetitif sejak babak kualifikasi pertama dimulai, di mana setiap tim saling adu mekanik dan memamerkan kerja sama formasi yang solid. Riuh penonton dan pendukung yang hadir secara langsung ikut membakar semangat para pemain yang sedang fokus mengamankan objektif di dalam gim. Menariknya, turnamen ini tidak hanya sekadar kompetisi instan, melainkan menjadi ruang diskusi taktik yang sehat di mana para pemuda belajar arti kepemimpinan, komunikasi di bawah tekanan, serta cara menyikapi kekalahan secara ksatria.
+        Selain pembenahan internal terkait porsi kerja pengurus, agenda rapat juga fokus pada finalisasi draf proposal untuk rangkaian kegiatan besar yang akan datang. Pihak Kesekretariatan bersama Bendahara melaporkan bahwa penyusunan proposal serta rincian anggaran biaya (RAB) telah mencapai tahap 90% dan siap memasuki proses cetak. Manajemen menargetkan proposal ini dapat segera didistribusikan kepada pihak kelurahan, tokoh masyarakat, dan jajaran sponsor potensial pada awal pekan depan guna mengamankan dukungan materiil maupun birokrasi demi kelancaran acara.
       </p>
 
       <p>
-        Memasuki babak Grand Final yang krusial, ketegangan memuncak hingga akhirnya lahir satu tim yang berhasil membawa pulang piala bergilir serta dana pembinaan dari panitia. Pihak Karang Taruna Adhigana Prapti berharap, kesuksesan gelaran e-sports ini dapat memicu lahirnya atlet-atlet berbakat dari level akar rumput yang nantinya mampu membawa nama baik daerah di ajang yang lebih tinggi. Melalui turnamen ini, solidaritas dan keakraban antar pemuda lintas wilayah desa terbukti semakin erat di era digital.
+        Sebagai penutup, rapat minggu ketiga ini juga menyepakati pengadaan rompi (vest) resmi yang akan berfungsi sebagai seragam identitas saat terjun dalam aksi sosial maupun kegiatan lapangan. Untuk merealisasikan hal tersebut, seluruh anggota yang hadir mulai mengumpulkan uang kas wajib secara gotong royong sebagai dana awal produksi pakaian seragam tersebut. Pengumpulan iuran ini ditargetkan rampung akhir minggu ini agar proses desain yang telah disetujui bersama bisa langsung masuk ke tahap konveksi, sehingga seluruh anggota dapat segera tampil solid dengan identitas baru mereka.
       </p>
 
     </div>
@@ -137,12 +206,64 @@
     <!-- END ZONE AMAN -->
     <!-- ======================================================== -->
 
-    <!-- TOBOL KEMBALI KE BERANDA -->
+    <!-- --- TOMBOL SHARE (BARU) --- -->
+    <div class="share-section">
+      <div class="share-title">Bagikan Berita:</div>
+      <div class="share-buttons">
+        <!-- WhatsApp Share -->
+        <a href="#" id="shareWA" target="_blank" class="share-btn btn-wa">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.69-4.98c-.202-.101-1.194-.588-1.378-.653-.182-.066-.315-.099-.445.099-.133.197-.513.653-.63 1.053-.112.4-.224.445-.426.345-.201-.102-.85-.313-1.619-.997-.598-.533-.1-1.302-.1-1.302.183-.183.201-.223.302-.446.1-.202.051-.378-.025-.53-.078-.152-.65-1.564-.892-2.144-.236-.569-.475-.49-.65-.49h-.557c-.19 0-.498.071-.759.351-.26.28-1 .976-1 2.38 0 1.405 1.022 2.76 1.164 2.946.143.186 2.012 3.073 4.869 4.3a13.93 13.93 0 0 0 1.626.513c.686.219 1.309.19 1.801.117.551-.082 1.68-.687 1.914-1.35.234-.663.234-1.232.164-1.35-.07-.116-.257-.183-.459-.283z"/>
+          </svg>
+          WhatsApp
+        </a>
+
+        <!-- Instagram Story Helper (Salin Link) -->
+        <button onclick="copyToClipboard()" class="share-btn btn-ig">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.444-.048-3.298c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+          </svg>
+          Salin Link InstaStory
+        </button>
+      </div>
+    </div>
+    <!-- --- AKHIR AREA TOMBOL SHARE --- -->
+
+    <!-- TOMBOL KEMBALI KE BERANDA -->
     <a href="index.html" class="back-btn">
       ← Kembali ke Beranda
     </a>
 
   </div>
+
+  <!-- Popup Notifikasi Sukses Salin -->
+  <div id="toast" class="toast">Link berhasil disalin! Tinggal tempel di InstaStory</div>
+
+  <!-- Script untuk Logika Berbagi -->
+  <script>
+    // Ambil URL halaman aktif saat ini secara otomatis
+    const currentUrl = window.location.href;
+    const articleTitle = "";
+
+    // Set URL untuk Share WhatsApp
+    const waButton = document.getElementById('shareWA');
+    waButton.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(articleTitle + "\n\n" + currentUrl)}`;
+
+    // Fungsi Salin Link untuk Instagram Story
+    function copyToClipboard() {
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        
+        // Hilangkan popup setelah 3 detik
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 3500);
+      }).catch(err => {
+        console.error('Gagal menyalin tautan: ', err);
+      });
+    }
+  </script>
 
 </body>
 </html>
