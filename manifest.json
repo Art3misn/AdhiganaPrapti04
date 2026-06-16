@@ -1,0 +1,23 @@
+{
+  "name": "Karang Taruna Adhigana Prapti",
+  "short_name": "Adhigana Prapti",
+  "description": "Aplikasi PWA untuk informasi Karang Taruna RW 04 (event, berita, lomba, galeri).",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050608",
+  "theme_color": "#69d7e8",
+  "icons": [
+    {
+      "src": "./asset/Adhigana prapti.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./asset/Adhigana prapti.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+
