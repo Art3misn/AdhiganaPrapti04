@@ -18,6 +18,12 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- PWA META -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#69d7e8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
   <style>
 
 
@@ -918,54 +924,83 @@
 
   <!-- NAVBAR -->
 
-  <nav>
-    <div class="container nav-wrapper">
+<nav>
 
-      <div class="logo">
-        <img src="/asset/Adhigana prapti.png" alt="Logo">
+  <div class="container nav-wrapper">
 
-        <div class="logo-text">
-          <h1>ADHIGANA PRAPTI</h1>
-          <span>Karang Taruna RW 04</span>
-        </div>
+    <div class="logo">
+
+      <img
+        src="/asset/Adhigana prapti.png"
+        alt="Logo"
+      >
+
+      <div class="logo-text">
+        <h1>ADHIGANA PRAPTI</h1>
+        <span>Karang Taruna RW 04</span>
       </div>
-
-      <div class="menu">
-        <a href="#beranda">Beranda</a>
-        <a href="#profil">Profil</a>
-        <a href="#struktur">Struktur Organisasi</a>
-        <a href="#event">Event</a>
-        <a href="#galeri">Galeri</a>
-        <a href="#berita">Berita</a>
-        <a href="#kontak">Kontak</a>
-      </div>
-
-      <!-- HAMBURGER -->
-<div class="hamburger" id="hamburger">
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
-
-      <a href="https://wa.me/628991139730" class="btn" target="_blank" rel="noopener">Gabung Sekarang</a>
-
 
     </div>
-  </nav>
 
-  <!-- MOBILE SIDEBAR -->
+    <div class="menu">
 
-<div class="mobile-sidebar" id="mobileSidebar">
+      <a href="#beranda">Beranda</a>
+      <a href="#profil">Profil</a>
+      <a href="#struktur">Struktur Organisasi</a>
+      <a href="#event">Event</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#berita">Berita</a>
+      <a href="#kontak">Kontak</a>
+
+    </div>
+
+    <!-- HAMBURGER -->
+
+    <div
+      class="hamburger"
+      id="hamburger"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- INSTALL APP -->
+
+    <button
+      type="button"
+      class="btn"
+      id="pwaInstallTop"
+      style="display:none;"
+    >
+      <i class="fa-solid fa-download"></i>
+      Install Aplikasi
+    </button>
+
+  </div>
+
+</nav>
+
+
+<!-- MOBILE SIDEBAR -->
+
+<div
+  class="mobile-sidebar"
+  id="mobileSidebar"
+>
 
   <div class="mobile-header">
 
     <h2>MENU</h2>
 
-    <i class="fa-solid fa-xmark" id="closeSidebar"></i>
+    <i
+      class="fa-solid fa-xmark"
+      id="closeSidebar"
+    ></i>
 
   </div>
 
-      <div class="mobile-links">
+  <div class="mobile-links">
 
     <a href="#beranda">Beranda</a>
     <a href="#profil">Profil</a>
@@ -975,24 +1010,29 @@
     <a href="#berita">Berita</a>
     <a href="#kontak">Kontak</a>
 
+    <!-- INSTALL APP MOBILE -->
 
-
-
-
-
-    <a
-      href="https://wa.me/6287835333349"
-      target="_blank"
+    <button
+      type="button"
       class="mobile-btn"
+      id="pwaInstallMobile"
+      style="display:none;"
     >
-      Gabung Sekarang
-    </a>
+      <i class="fa-solid fa-download"></i>
+      Install Aplikasi
+    </button>
 
   </div>
 
 </div>
 
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- OVERLAY -->
+
+<div
+  class="sidebar-overlay"
+  id="sidebarOverlay"
+></div>
 
   <!-- HERO -->
 
@@ -1363,9 +1403,9 @@ PENGURUS KARANG TARUNA
         </div>
         <div class="event-content">
           <div class="event-date">5 September 2026</div>
-          <h3>SIRAFEST</h3>
+          <h3>Jalan Sehat RW 04</h3>
           <p>Event tahunan penuh kebersamaan, doorprize, dan hiburan masyarakat dalam rangka merayakan kebersamaan warga RW 04.</p>
-          <a href="https://sirafest.netlify.app/" class="btn" target="_blank">Daftar Event</a>
+          <a href="https://link-event-kamu.com" class="btn" target="_blank">Daftar Event</a>
         </div>
       </div>
 
@@ -1444,17 +1484,17 @@ PENGURUS KARANG TARUNA
       <div class="news-card">
 
         <div class="news-image">
-          <img src="/Mini Soccer.jpeg">
+          <img src="/asset/Jalan Santai Persiapan.JPG">
         </div>
 
         <div class="news-content">
 
           <div class="news-date">
-            12 Juni 2026
+            7 September 2025
           </div>
 
           <h3>
-            Membakar Semangat di Lapangan Hijau: Kick-Off Mini Soccer Adhigana Prapti Jadi Pemantik Awal Pergerakan Pemuda
+            Persiapan Jalan Santai RW 04 Berlangsung Meriah
           </h3>
 
           <p>
@@ -1471,21 +1511,21 @@ PENGURUS KARANG TARUNA
       <div class="news-card">
 
         <div class="news-image">
-          <img src="/Rapat minggu ke 3.jpeg">
+          <img src="/asset/Ml.jpeg">
         </div>
 
         <div class="news-content">
 
           <div class="news-date">
-            13 Juni 2026
+            20 Oktober 2025
           </div>
 
           <h3>
-            Matangkan Persiapan Program Kerja, Karang Taruna Gelar Rapat Mingguan Ke-3
+            Turnamen Mobile Legends Sukses Digelar
           </h3>
 
           <p>
-            TASIKMALAYA, 13 Juni 2026 – Pengurus Karang Taruna kembali menggelar rapat rutin minggu ketiga pada Sabtu malam guna mematangkan kesiapan roda organisasi dalam menghadapi program kerja ke depan.
+            Antusias peserta meningkat, dan persaingan berlangsung seru hingga akhir.
           </p>
 
           <a href="Berita 2.html" class="btn-outline">
@@ -1835,7 +1875,95 @@ document.querySelectorAll('.marquee-content').forEach(track => {
     track.innerHTML += track.innerHTML;
 });
 
+  </script>
+
+  <script>
+
+let deferredPrompt;
+
+const btnTop =
+document.getElementById(
+  'pwaInstallTop'
+);
+
+const btnMobile =
+document.getElementById(
+  'pwaInstallMobile'
+);
+
+window.addEventListener(
+'beforeinstallprompt',
+(e)=>{
+
+e.preventDefault();
+
+deferredPrompt=e;
+
+if(btnTop)
+btnTop.style.display=
+'inline-flex';
+
+if(btnMobile)
+btnMobile.style.display=
+'inline-flex';
+
+});
+
+async function installPWA(){
+
+if(!deferredPrompt)
+return;
+
+deferredPrompt.prompt();
+
+await deferredPrompt.userChoice;
+
+deferredPrompt=null;
+
+if(btnTop)
+btnTop.style.display=
+'none';
+
+if(btnMobile)
+btnMobile.style.display=
+'none';
+
+}
+
+btnTop?.addEventListener(
+'click',
+installPWA
+);
+
+btnMobile?.addEventListener(
+'click',
+installPWA
+);
+
+/* SERVICE WORKER */
+
+if(
+'serviceWorker'
+in navigator
+){
+
+window.addEventListener(
+'load',
+()=>{
+
+navigator
+.serviceWorker
+.register(
+'./service-worker.js'
+)
+.catch(()=>{});
+
+});
+
+}
+
 </script>
+
 
 </body>
 </html>
