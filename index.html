@@ -732,286 +732,344 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-  <!-- ============================================================
-  TOMBOL REFRESH HARD (CTRL+SHIFT+R) UNTUK PWA
-  Letakkan di bagian bawah HTML, sebelum </body>
+ <!-- ============================================================
+  SOLUSI CACHE PWA UNTUK HP
+  Memaksa refresh data terbaru
 ============================================================ -->
 <script>
-// ── TOMBOL HARD REFRESH UNTUK PWA ──────────────────────────
+// ── FORCE REFRESH UNTUK PWA DI HP ──────────────────────────
 
 (function() {
-  // Fungsi untuk melakukan hard refresh (seperti CTRL+SHIFT+R)
-  function hardRefresh() {
-    // 1. Hapus semua cache dari Service Worker
-    if ('caches' in window) {
-      caches.keys().then(function(cacheNames) {
-        cacheNames.forEach(function(cacheName) {
-          caches.delete(cacheName);
-        });
-      });
-    }
+  console.log('🔄 PWA Force Refresh System aktif...');
 
-    // 2. Hapus localStorage (opsional - komentar jika tidak mau)
-    // localStorage.clear();
-
-    // 3. Reload dengan bypass cache
-    window.location.reload(true);
-    
-    // 4. Alternatif: gunakan location.replace untuk memaksa refresh
-    // window.location.replace(window.location.href + '?t=' + Date.now());
+  // ============================================================
+  // 1. CEK APAKAH BERJALAN DI PWA
+  // ============================================================
+  function isPWA() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true ||
+           document.referrer.includes('android-app://');
   }
 
-  // ── CARI TEMPAT UNTUK TARUH TOMBOL ──────────────────────
-  function addRefreshButton() {
-    // Cek apakah tombol sudah ada
-    if (document.querySelector('.hard-refresh-btn')) return;
-
-    var targetContainer = document.querySelector('.stats-wrapper');
-    if (!targetContainer) {
-      targetContainer = document.querySelector('.stats');
-      if (!targetContainer) {
-        targetContainer = document.querySelector('.container');
-        if (!targetContainer) return;
+  // ============================================================
+  // 2. HAPUS SEMUA CACHE SERVICE WORKER
+  // ============================================================
+  function clearAllCaches() {
+    return new Promise(function(resolve) {
+      if ('caches' in window) {
+        caches.keys().then(function(cacheNames) {
+          var deletePromises = cacheNames.map(function(cacheName) {
+            return caches.delete(cacheName);
+          });
+          Promise.all(deletePromises).then(function() {
+            console.log('✅ Semua cache dihapus');
+            resolve();
+          });
+        }).catch(function() {
+          resolve();
+        });
+      } else {
+        resolve();
       }
+    });
+  }
+
+  // ============================================================
+  // 3. UNREGISTER SERVICE WORKER
+  // ============================================================
+  function unregisterServiceWorkers() {
+    return new Promise(function(resolve) {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          var unregisterPromises = registrations.map(function(registration) {
+            return registration.unregister();
+          });
+          Promise.all(unregisterPromises).then(function() {
+            console.log('✅ Service Worker di-unregister');
+            resolve();
+          });
+        }).catch(function() {
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  // ============================================================
+  // 4. HARD REFRESH DENGAN CACHE BUSTING
+  // ============================================================
+  function hardRefreshPWA() {
+    // Tampilkan loading
+    showToast('🔄 Membersihkan cache dan merefresh...', 'info');
+
+    // Tambahkan indikator loading di layar
+    var overlay = document.createElement('div');
+    overlay.id = 'pwa-refresh-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    `;
+    overlay.innerHTML = `
+      <div style="text-align:center;">
+        <div style="width:60px;height:60px;border:4px solid rgba(105,215,232,0.2);border-top-color:var(--primary, #69d7e8);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>
+        <h2 style="color:var(--primary, #69d7e8);font-size:24px;margin-bottom:10px;">Memperbarui...</h2>
+        <p style="color:var(--gray, #8899aa);font-size:14px;">Membersihkan cache dan memuat data terbaru</p>
+        <div style="margin-top:20px;width:200px;height:4px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+          <div style="width:30%;height:100%;background:linear-gradient(90deg,var(--primary, #69d7e8),var(--secondary, #f3d36c));border-radius:4px;animation:loadingProgress 2s ease-in-out infinite;"></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Animasi loading
+    var style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes loadingProgress {
+        0% { width: 10%; }
+        50% { width: 70%; }
+        100% { width: 90%; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Jalankan proses refresh
+    setTimeout(function() {
+      clearAllCaches().then(function() {
+        return unregisterServiceWorkers();
+      }).then(function() {
+        // Hapus localStorage (opsional)
+        // localStorage.clear();
+        
+        // Refresh dengan cache busting
+        var url = window.location.href.split('?')[0];
+        var timestamp = Date.now();
+        var newUrl = url + '?v=' + timestamp;
+        
+        // Ganti location dengan force reload
+        setTimeout(function() {
+          window.location.replace(newUrl);
+        }, 500);
+      });
+    }, 500);
+  }
+
+  // ============================================================
+  // 5. TOMBOL "RESET PWA" KHUSUS HP
+  // ============================================================
+  function addPWAResetButton() {
+    // Cek apakah tombol sudah ada
+    if (document.querySelector('.pwa-reset-btn')) return;
+
+    var container = document.querySelector('.stats-wrapper');
+    if (!container) {
+      container = document.querySelector('.stats');
+      if (!container) return;
     }
 
-    var refreshDiv = document.createElement('div');
-    refreshDiv.style.cssText = 'text-align:center;margin-top:16px;grid-column:1/-1;';
+    var resetDiv = document.createElement('div');
+    resetDiv.style.cssText = 'text-align:center;margin-top:16px;grid-column:1/-1;';
 
-    var isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                window.navigator.standalone === true;
+    var isPwaMode = isPWA();
 
-    refreshDiv.innerHTML = `
+    resetDiv.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
-        <button class="hard-refresh-btn" style="
+        <button class="pwa-reset-btn" style="
           display: inline-flex;
           align-items: center;
           gap: 12px;
           padding: 14px 28px;
           border-radius: 16px;
-          background: linear-gradient(135deg, rgba(255,180,60,0.15), rgba(255,180,60,0.05));
-          border: 2px solid rgba(255,180,60,0.3);
-          color: #ffb43c;
+          background: linear-gradient(135deg, rgba(255,80,80,0.15), rgba(255,80,80,0.05));
+          border: 2px solid rgba(255,80,80,0.3);
+          color: #ff6b6b;
           font-family: 'Poppins', sans-serif;
           font-size: 15px;
           font-weight: 700;
           cursor: pointer;
           transition: 0.3s;
-          box-shadow: 0 8px 25px rgba(255,180,60,0.1);
+          box-shadow: 0 8px 25px rgba(255,80,80,0.1);
         ">
-          <i class="fa-solid fa-arrows-rotate"></i>
-          Refresh Total (CTRL+SHIFT+R)
+          <i class="fa-solid fa-trash-can"></i>
+          Reset PWA & Refresh
         </button>
         <span style="color:var(--gray);font-size:12px;">
           <i class="fa-regular fa-circle-info"></i> 
-          ${isPWA ? '📱 Mode PWA - Refresh penuh' : '🌐 Mode Browser - Hard Refresh'}
+          Hapus cache & refresh total
         </span>
+        ${isPwaMode ? '<span style="color:var(--primary);font-size:11px;background:rgba(105,215,232,0.1);padding:4px 12px;border-radius:999px;">📱 Mode PWA</span>' : ''}
       </div>
     `;
 
-    // Cari posisi yang tepat
-    if (targetContainer.tagName === 'DIV' && targetContainer.classList.contains('stats-wrapper')) {
-      targetContainer.appendChild(refreshDiv);
+    if (container.tagName === 'DIV' && container.classList.contains('stats-wrapper')) {
+      container.appendChild(resetDiv);
     } else {
-      // Cari stats-wrapper lagi
       var statsWrapper = document.querySelector('.stats-wrapper');
       if (statsWrapper) {
-        statsWrapper.appendChild(refreshDiv);
+        statsWrapper.appendChild(resetDiv);
       } else {
-        targetContainer.appendChild(refreshDiv);
+        container.appendChild(resetDiv);
       }
     }
 
-    // ── EVENT LISTENER UNTUK TOMBOL ──────────────────────
-    var refreshBtn = document.querySelector('.hard-refresh-btn');
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', function(e) {
+    // Event listener
+    var resetBtn = document.querySelector('.pwa-reset-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
-        var icon = this.querySelector('i');
-        var originalText = this.innerHTML;
-        
-        // Ubah tampilan tombol
-        this.innerHTML = `
-          <i class="fa-solid fa-spinner fa-spin"></i>
-          Merefresh...
-        `;
-        this.disabled = true;
-        this.style.opacity = '0.7';
-        this.style.transform = 'scale(0.98)';
-
-        // Tampilkan notifikasi
-        showToast('🔄 Merefresh halaman...', 'info');
-
-        // Jalankan hard refresh setelah 0.5 detik
-        setTimeout(function() {
-          hardRefresh();
-        }, 500);
-
-        // Fallback: jika hardRefresh gagal, refresh biasa
-        setTimeout(function() {
-          if (!document.hidden) {
-            window.location.reload();
-          }
-        }, 3000);
+        // Konfirmasi
+        if (confirm('⚠️ Reset PWA akan menghapus cache dan merefresh total.\n\nData di localStorage akan tetap tersimpan.\n\nLanjutkan?')) {
+          hardRefreshPWA();
+        }
       });
 
       // Hover effect
-      refreshBtn.addEventListener('mouseenter', function() {
+      resetBtn.addEventListener('mouseenter', function() {
         this.style.transform = 'scale(1.02)';
-        this.style.boxShadow = '0 12px 35px rgba(255,180,60,0.2)';
+        this.style.boxShadow = '0 12px 35px rgba(255,80,80,0.2)';
       });
-      refreshBtn.addEventListener('mouseleave', function() {
+      resetBtn.addEventListener('mouseleave', function() {
         this.style.transform = 'scale(1)';
-        this.style.boxShadow = '0 8px 25px rgba(255,180,60,0.1)';
+        this.style.boxShadow = '0 8px 25px rgba(255,80,80,0.1)';
       });
     }
   }
 
-  // ── FUNGSI TOAST (jika belum ada) ──────────────────────
-  if (typeof showToast === 'undefined') {
-    window.showToast = function(message, type) {
-      var toast = document.createElement('div');
-      toast.className = 'custom-toast';
-      toast.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: rgba(255,180,60,0.15);
-        border: 1px solid rgba(255,180,60,0.3);
-        border-radius: 16px;
-        padding: 16px 24px;
-        color: #ffffff;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        font-weight: 500;
-        backdrop-filter: blur(12px);
-        z-index: 999999;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        max-width: 400px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        animation: slideUp 0.4s ease;
-      `;
-      var icon = document.createElement('i');
-      icon.className = 'fa-solid fa-circle-info';
-      icon.style.cssText = 'color: #ffb43c; font-size: 20px;';
-      toast.appendChild(icon);
-      var text = document.createElement('span');
-      text.textContent = message;
-      toast.appendChild(text);
-      document.body.appendChild(toast);
-      setTimeout(function() {
-        if (toast.parentNode) {
-          toast.style.opacity = '0';
-          toast.style.transition = 'opacity 0.5s';
-          setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
-        }
-      }, 3000);
-    };
+  // ============================================================
+  // 6. DETEKSI VERSION MISMATCH
+  // ============================================================
+  function checkVersion() {
+    var CURRENT_VERSION = '1.0.1'; // Ubah setiap kali ada update
+    var storedVersion = localStorage.getItem('pwa_version');
+    
+    if (!storedVersion || storedVersion !== CURRENT_VERSION) {
+      console.log('🔄 Versi baru terdeteksi! Membersihkan cache...');
+      localStorage.setItem('pwa_version', CURRENT_VERSION);
+      
+      // Hapus cache
+      clearAllCaches();
+      
+      // Reload jika perlu
+      // window.location.reload(true);
+    }
   }
 
-  // ── TAMBAHKAN CSS ANIMASI ──────────────────────────────
+  // ============================================================
+  // 7. INITIALIZE
+  // ============================================================
+  // Tambahkan CSS
   var style = document.createElement('style');
   style.textContent = `
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .fa-spin {
-      animation: spin 0.8s linear infinite;
-    }
-    .hard-refresh-btn {
+    .pwa-reset-btn {
       position: relative;
       overflow: hidden;
     }
-    .hard-refresh-btn::after {
+    .pwa-reset-btn::after {
       content: '';
       position: absolute;
       top: -50%;
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(255,180,60,0.1), transparent 70%);
+      background: radial-gradient(circle, rgba(255,80,80,0.1), transparent 70%);
       opacity: 0;
       transition: opacity 0.5s;
       pointer-events: none;
     }
-    .hard-refresh-btn:hover::after {
+    .pwa-reset-btn:hover::after {
       opacity: 1;
+    }
+    .pwa-reset-btn:active {
+      transform: scale(0.95) !important;
     }
   `;
   document.head.appendChild(style);
 
-  // ── INITIALIZE ──────────────────────────────────────────
-  // Tunggu DOM siap
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(addRefreshButton, 500);
-    });
-  } else {
-    setTimeout(addRefreshButton, 500);
-  }
-
-  console.log('✅ Tombol Hard Refresh (CTRL+SHIFT+R) siap!');
-  console.log('📱 Klik tombol untuk refresh total seperti CTRL+SHIFT+R');
+  // Jalankan
+  setTimeout(function() {
+    addPWAResetButton();
+    checkVersion();
+    
+    console.log('✅ PWA Reset System aktif!');
+    console.log('📱 Klik "Reset PWA & Refresh" untuk refresh total di HP');
+  }, 1000);
 
 })();
 </script>
 
 <!-- ============================================================
-  TAMBAHAN: KEYBOARD SHORTCUT CTRL+SHIFT+R
-  (Fungsi bawaan browser, tapi kita tambahkan notifikasi)
+  TAMBAHAN: AUTO DETECT CACHE STALE
 ============================================================ -->
 <script>
-// ── DETEKSI CTRL+SHIFT+R ──────────────────────────────────
-document.addEventListener('keydown', function(e) {
-  // Deteksi CTRL+SHIFT+R
-  if (e.ctrlKey && e.shiftKey && (e.key === 'r' || e.key === 'R')) {
-    // Tampilkan notifikasi bahwa hard refresh akan terjadi
-    showToast('🔄 Melakukan Hard Refresh (CTRL+SHIFT+R)...', 'info');
-    
-    // Biarkan browser melakukan refresh secara native
-    // Tapi kita tambahkan delay kecil agar toast terlihat
-    setTimeout(function() {
-      // Browser akan melakukan refresh sendiri
-    }, 100);
+// ── AUTO DETECT JIKA DATA STALE ────────────────────────────
+
+(function() {
+  var lastUpdateTime = localStorage.getItem('pwa_last_update');
+  var now = Date.now();
+  
+  // Jika lebih dari 1 jam sejak update terakhir, force refresh
+  if (lastUpdateTime && (now - parseInt(lastUpdateTime) > 3600000)) {
+    console.log('⏰ Data sudah lama, memuat ulang...');
+    // window.location.reload(true);
   }
   
-  // Deteksi F5 (refresh biasa)
-  if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
-    showToast('🔄 Refresh biasa (F5) - data mungkin masih di cache', 'info');
+  // Update timestamp setiap kali load
+  localStorage.setItem('pwa_last_update', String(now));
+  
+  // Cek setiap 5 menit
+  setInterval(function() {
+    var currentTime = Date.now();
+    var lastUpdate = parseInt(localStorage.getItem('pwa_last_update') || '0');
+    if (currentTime - lastUpdate > 300000) { // 5 menit
+      localStorage.setItem('pwa_last_update', String(currentTime));
+      // Cek apakah ada data baru
+      checkDataUpdate();
+    }
+  }, 300000);
+  
+  function checkDataUpdate() {
+    try {
+      var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
+      var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
+      var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
+      
+      // Update stats
+      var elHadir = document.getElementById('landingHadirHariIni');
+      var elMading = document.getElementById('landingJumlahMading');
+      var elSaldo = document.getElementById('landingSaldoKas');
+      
+      if (elHadir) {
+        var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
+        elHadir.textContent = hadirCount;
+      }
+      if (elMading) {
+        elMading.textContent = mading.length;
+      }
+      if (elSaldo) {
+        var saldo = kas.reduce(function(acc, it) {
+          var a = Number(it.nominal) || 0;
+          return it.jenis === 'masuk' ? acc + a : acc - a;
+        }, 0);
+        elSaldo.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
+      }
+    } catch(e) {}
   }
-});
-
-console.log('⌨️ Shortcut CTRL+SHIFT+R juga terdeteksi');
-</script>
-
-<!-- ============================================================
-  TAMBAHAN: SERVICE WORKER FORCE UPDATE
-============================================================ -->
-<script>
-// ── FORCE UPDATE SERVICE WORKER ───────────────────────────
-function forceServiceWorkerUpdate() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      registrations.forEach(function(registration) {
-        // Force update
-        registration.update();
-        console.log('🔄 Service Worker diupdate');
-      });
-    }).catch(function(err) {
-      console.log('Service Worker update error:', err);
-    });
-  }
-}
-
-// Panggil saat tombol refresh diklik
-// (sudah terintegrasi di fungsi hardRefresh)
+})();
 </script>
 </body>
 </html>
