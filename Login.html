@@ -718,18 +718,17 @@ function refreshRingkasan() {
 }
 
 // ============================================================
-// ABSENSI — PERBAIKAN TOTAL
+// ABSENSI
 // ============================================================
 let absensiDraft = { records: {}, hadirCount: 0 };
 
 function initAbsensi() {
   const stored = loadLS(SK.absensi, null);
-  if (stored && stored.records && Object.keys(stored.records).length > 0) {
+  if (stored && stored.records) {
     absensiDraft = stored;
   } else {
     absensiDraft = { records: {}, hadirCount: 0 };
     ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'alfa');
-    absensiDraft.hadirCount = 0;
   }
   absensiDraft.hadirCount = Object.values(absensiDraft.records).filter(v => v === 'hadir').length;
   renderAbsensi('');
@@ -737,173 +736,64 @@ function initAbsensi() {
 
 function renderAbsensi(filter) {
   const container = document.getElementById('absensiDaftar');
-  if (!container) {
-    console.warn('⚠️ Container absensiDaftar tidak ditemukan!');
-    return;
-  }
-  
+  if (!container) return;
   container.innerHTML = '';
 
-  const q = (filter || '').toLowerCase().trim();
-  let list = ALL_ANGGOTA;
-  
-  if (q) {
-    list = ALL_ANGGOTA.filter(a => 
-      a.nama.toLowerCase().includes(q) || 
-      a.jabatan.toLowerCase().includes(q)
-    );
-  }
+  const q = (filter || '').toLowerCase();
+  const list = q ? ALL_ANGGOTA.filter(a => a.nama.toLowerCase().includes(q) || a.jabatan.toLowerCase().includes(q)) : ALL_ANGGOTA;
 
-  if (!list || list.length === 0) {
-    container.innerHTML = `<div style="color:var(--gray);font-size:13px;padding:16px 0;text-align:center;">
-      <i class="fa-solid fa-search" style="display:block;font-size:24px;margin-bottom:8px;opacity:0.3;"></i>
-      Tidak ditemukan.
-    </div>`;
+  if (!list.length) {
+    container.innerHTML = '<div style="color:var(--gray);font-size:13px;padding:12px 0;">Tidak ditemukan.</div>';
     return;
   }
 
-  // Render daftar anggota
   list.forEach(a => {
     const st = absensiDraft.records[a.uid] || 'alfa';
-    
     const row = document.createElement('div');
     row.className = 'abs-row';
-    row.style.cssText = `
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 14px;
-      border: 1px solid var(--border-glass, rgba(255,255,255,0.06));
-      border-radius: 14px;
-      background: rgba(255,255,255,0.02);
-      transition: 0.2s;
+    row.innerHTML = `
+      <div class="abs-name">
+        <strong>${esc(a.nama)}</strong>
+        <small>${esc(a.jabatan)}</small>
+      </div>
+      <div class="abs-btns">
+        <button class="abs-btn ${st==='hadir'?'sel-hadir':''}" data-uid="${a.uid}" data-status="hadir">Hadir</button>
+        <button class="abs-btn ${st==='izin'?'sel-izin':''}"  data-uid="${a.uid}" data-status="izin">Izin</button>
+        <button class="abs-btn ${st==='alfa'?'sel-alfa':''}"  data-uid="${a.uid}" data-status="alfa">Alfa</button>
+      </div>
     `;
-    row.dataset.uid = a.uid;
-    
-    // Nama dan jabatan
-    const nameDiv = document.createElement('div');
-    nameDiv.style.cssText = 'min-width:0;flex:1;';
-    nameDiv.innerHTML = `
-      <strong style="display:block;color:var(--white);font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(a.nama)}</strong>
-      <small style="color:var(--gray);font-size:11px;">${esc(a.jabatan)}</small>
-    `;
-    row.appendChild(nameDiv);
-
-    // Tombol status
-    const btnDiv = document.createElement('div');
-    btnDiv.style.cssText = 'display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;';
-    
-    const statuses = [
-      { value: 'hadir', label: '✅ Hadir', class: 'sel-hadir' },
-      { value: 'izin', label: '⏳ Izin', class: 'sel-izin' },
-      { value: 'alfa', label: '❌ Alfa', class: 'sel-alfa' }
-    ];
-    
-    statuses.forEach(s => {
-      const btn = document.createElement('button');
-      const isActive = st === s.value;
-      btn.className = `abs-btn ${isActive ? s.class : ''}`;
-      btn.style.cssText = `
-        padding: 6px 12px;
-        border: 1px solid var(--border-glass, rgba(255,255,255,0.06));
-        border-radius: 10px;
-        background: ${isActive ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)'};
-        color: ${isActive ? 'var(--primary, #69d7e8)' : 'var(--gray, #8899aa)'};
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: 'Poppins', sans-serif;
-        transition: 0.2s;
-      `;
-      if (isActive && s.value === 'hadir') {
-        btn.style.background = 'rgba(105,215,232,0.15)';
-        btn.style.borderColor = 'rgba(105,215,232,0.3)';
-        btn.style.color = '#69d7e8';
-      } else if (isActive && s.value === 'izin') {
-        btn.style.background = 'rgba(255,180,60,0.15)';
-        btn.style.borderColor = 'rgba(255,180,60,0.3)';
-        btn.style.color = '#ffb43c';
-      } else if (isActive && s.value === 'alfa') {
-        btn.style.background = 'rgba(255,80,80,0.15)';
-        btn.style.borderColor = 'rgba(255,80,80,0.3)';
-        btn.style.color = '#ff6b6b';
-      }
-      btn.textContent = s.label;
-      btn.dataset.uid = a.uid;
-      btn.dataset.status = s.value;
-      
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const uid = this.dataset.uid;
-        const status = this.dataset.status;
-        
-        // Update data
-        absensiDraft.records[uid] = status;
+    row.querySelectorAll('.abs-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        absensiDraft.records[btn.dataset.uid] = btn.dataset.status;
         absensiDraft.hadirCount = Object.values(absensiDraft.records).filter(v => v === 'hadir').length;
-        
-        // Re-render dengan filter yang sama
-        const searchVal = document.getElementById('absSearch')?.value || '';
-        renderAbsensi(searchVal);
+        renderAbsensi(document.getElementById('absSearch')?.value || '');
         refreshRingkasan();
       });
-      
-      // Hover effect
-      btn.addEventListener('mouseenter', function() {
-        if (!this.classList.contains('sel-hadir') && !this.classList.contains('sel-izin') && !this.classList.contains('sel-alfa')) {
-          this.style.background = 'rgba(255,255,255,0.06)';
-          this.style.color = 'var(--white)';
-        }
-      });
-      btn.addEventListener('mouseleave', function() {
-        if (!this.classList.contains('sel-hadir') && !this.classList.contains('sel-izin') && !this.classList.contains('sel-alfa')) {
-          this.style.background = 'rgba(255,255,255,0.02)';
-          this.style.color = 'var(--gray)';
-        }
-      });
-      
-      btnDiv.appendChild(btn);
     });
-    
-    row.appendChild(btnDiv);
     container.appendChild(row);
   });
 }
 
-// ============================================================
-// EVENT LISTENER ABSENSI
-// ============================================================
-document.addEventListener('DOMContentLoaded', function() {
-  // Search input
-  document.getElementById('absSearch')?.addEventListener('input', function(e) {
-    renderAbsensi(e.target.value);
-  });
+document.getElementById('absSearch')?.addEventListener('input', e => renderAbsensi(e.target.value));
 
-  // Tombol Hadir Semua
-  document.getElementById('btnHadirSemua')?.addEventListener('click', function() {
-    ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'hadir');
-    absensiDraft.hadirCount = ALL_ANGGOTA.length;
-    const searchVal = document.getElementById('absSearch')?.value || '';
-    renderAbsensi(searchVal);
-    refreshRingkasan();
-  });
+document.getElementById('btnHadirSemua')?.addEventListener('click', () => {
+  ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'hadir');
+  absensiDraft.hadirCount = ALL_ANGGOTA.length;
+  renderAbsensi(document.getElementById('absSearch')?.value || '');
+  refreshRingkasan();
+});
 
-  // Tombol Reset
-  document.getElementById('btnResetAbsensi')?.addEventListener('click', function() {
-    ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'alfa');
-    absensiDraft.hadirCount = 0;
-    const searchVal = document.getElementById('absSearch')?.value || '';
-    renderAbsensi(searchVal);
-    refreshRingkasan();
-  });
+document.getElementById('btnResetAbsensi')?.addEventListener('click', () => {
+  ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'alfa');
+  absensiDraft.hadirCount = 0;
+  renderAbsensi(document.getElementById('absSearch')?.value || '');
+  refreshRingkasan();
+});
 
-  // Tombol Simpan
-  document.getElementById('btnSimpanAbsensi')?.addEventListener('click', function() {
-    saveLS(SK.absensi, absensiDraft);
-    refreshRingkasan();
-    const hadir = absensiDraft.hadirCount || 0;
-    alert(`✅ Absensi tersimpan!\n\nHadir: ${hadir} dari ${ALL_ANGGOTA.length} anggota.`);
-  });
+document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
+  saveLS(SK.absensi, absensiDraft);
+  refreshRingkasan();
+  alert('✅ Absensi tersimpan! Hadir: ' + absensiDraft.hadirCount + ' dari ' + ALL_ANGGOTA.length + ' anggota.');
 });
 
 // ============================================================
