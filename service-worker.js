@@ -1,119 +1,65 @@
-/* eslint-disable no-restricted-globals */
+// service-worker.js
+const CACHE_NAME = 'adhigana-cache-v1.0.1'; // ← Ubah versi setiap update
 
-const CACHE_NAME = 'adhigana-pwa-v1';
-
-// Cache list sederhana untuk halaman utama + asset penting.
-// Tambahkan file lain bila perlu.
-const CORE_ASSETS = [
-  './',
-  './index.html',
-  './style.css',
-  './script.js',
-  './manifest.json'
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/Login.html',
+  '/portal.html',
+  '/style.css',
+  '/app.js',
+  '/firebase.js',
+  '/manifest.json'
 ];
 
-self.addEventListener('install', (event) => {
+// Install Service Worker
+self.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_ASSETS);
-    })
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
+      .then(function() {
+        return self.skipWaiting(); // Force activate
+      })
   );
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+// Activate Service Worker
+self.addEventListener('activate', function(event) {
   event.waitUntil(
-    caches.keys().then((keys) => {
+    caches.keys().then(function(cacheNames) {
       return Promise.all(
-        keys.map((k) => {
-          if (k !== CACHE_NAME) return caches.delete(k);
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
         })
       );
+    }).then(function() {
+      return self.clients.claim(); // Claim all clients
     })
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-
-  // Only handle GET requests
-  if (req.method !== 'GET') return;
-
+// Fetch dengan network-first untuk data terbaru
+self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(req)
-        .then((res) => {
-          // Cache only same-origin GET requests
-          const url = new URL(req.url);
-          if (url.origin === location.origin) {
-            const resClone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(req, resClone).catch(() => {});
-            }).catch(() => {});
-          }
-          return res;
-        })
-        .catch(() => {
-          // Fallback sederhana: kalau gagal fetch, tampilkan index.html (untuk navigasi)
-          if (req.mode === 'navigate') return caches.match('./index.html');
-          return undefined;
-        });
-    })
+    fetch(event.request)
+      .then(function(response) {
+        // Jika fetch berhasil, update cache
+        var responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then(function(cache) {
+            cache.put(event.request, responseToCache);
+          });
+        return response;
+      })
+      .catch(function() {
+        // Jika offline, ambil dari cache
+        return caches.match(event.request);
+      })
   );
 });
-
-// ============================================================
-// PUSH NOTIFICATION (FCM)
-// ============================================================
-self.addEventListener('push', (event) => {
-  let payload = {};
-  try {
-    if (event.data) payload = event.data.json();
-  } catch (e) {
-    // ignore parsing errors
-  }
-
-  const title = payload.title || 'Pengumuman Mading';
-  const body = payload.body || 'Ada pengumuman baru.';
-  const clickUrl = payload.clickUrl || './Login.html';
-
-  const options = {
-    body,
-    tag: payload.tag || 'mading',
-    data: { url: clickUrl },
-    icon: payload.icon || './asset/Adhigana prapti.png',
-    badge: payload.badge || './asset/Adhigana prapti.png',
-    // catatan: sound untuk service-worker masih tidak konsisten di semua browser.
-    // bunyi akan kita coba lewat client-foreground.
-    // (beberapa browser mengabaikan opsi sound, jadi kita tidak mengandalkannya)
-    vibrate: [100, 50, 100],
-  }; 
-
-
-  event.waitUntil(self.registration.showNotification(title, options));
-
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const url = event.notification?.data?.url || './Login.html';
-
-  event.waitUntil(
-    (async () => {
-      const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      for (const client of allClients) {
-        if ('focus' in client) {
-          await client.focus();
-          client.postMessage({ type: 'NOTIF_CLICKED', url });
-          return;
-        }
-      }
-      await self.clients.openWindow(url);
-    })()
-  );
-});
-
-
