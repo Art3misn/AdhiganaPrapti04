@@ -278,26 +278,27 @@
 <!-- STATS -->
 <div class="stats">
   <div class="container stats-wrapper">
-    <div class="stat-box">
+      <div class="stat-box" data-stat-area="true">
       <i class="fa-solid fa-users"></i>
       <h2 id="landingTotalAnggota">54</h2>
       <p>Total Anggota</p>
     </div>
-    <div class="stat-box">
+    <div class="stat-box" data-stat-area="true">
       <i class="fa-solid fa-calendar-days"></i>
       <h2 id="landingHadirHariIni">0</h2>
       <p>Hadir Hari Ini</p>
     </div>
-    <div class="stat-box">
+    <div class="stat-box" data-stat-area="true">
       <i class="fa-solid fa-coins"></i>
       <h2 id="landingSaldoKas">Rp 0</h2>
       <p>Saldo Kas</p>
     </div>
-    <div class="stat-box">
+    <div class="stat-box" data-stat-area="true">
       <i class="fa-solid fa-newspaper"></i>
       <h2 id="landingJumlahMading">0</h2>
       <p>Jumlah Mading</p>
     </div>
+
   </div>
 </div>
 
@@ -737,21 +738,14 @@ if ('serviceWorker' in navigator) {
   Letakkan di bagian bawah HTML, sebelum </body>
 ============================================================ -->
 <script>
-// ── REALTIME REFRESH (tanpa perlu reload halaman) ─────────────
+// ── RESET TOTAL PWA + AUTO-REFRESH (fixed spec) ────────────
 (function() {
-  // Simpan data sebelumnya untuk deteksi perubahan
-  let prevData = {
-    hadir: 0,
-    mading: 0,
-    saldo: 0,
-    totalAnggota: 54
-  };
+  var VERSION = '1.0.1';
 
-  // Fungsi untuk menampilkan notifikasi (toast)
+  // ================= Toast (pojok kanan bawah) =================
   function showToast(message, type) {
-    // Hapus toast lama jika ada
-    var oldToast = document.querySelector('.custom-toast');
-    if (oldToast) oldToast.remove();
+    var existing = document.querySelector('.custom-toast');
+    if (existing) existing.remove();
 
     var toast = document.createElement('div');
     toast.className = 'custom-toast';
@@ -774,8 +768,7 @@ if ('serviceWorker' in navigator) {
       display: flex;
       align-items: center;
       gap: 12px;
-      animation: slideUp 0.4s ease;
-      transition: opacity 0.5s;
+      animation: slideUp 0.35s ease;
     `;
 
     var icon = document.createElement('i');
@@ -787,324 +780,287 @@ if ('serviceWorker' in navigator) {
     text.textContent = message;
     toast.appendChild(text);
 
-    // Close button
     var closeBtn = document.createElement('span');
     closeBtn.innerHTML = '&times;';
-    closeBtn.style.cssText = `
-      margin-left: auto;
-      cursor: pointer;
-      font-size: 20px;
-      color: rgba(255,255,255,0.4);
-      padding: 0 4px;
-    `;
-    closeBtn.onclick = function() { toast.remove(); };
+    closeBtn.style.cssText = `margin-left:auto;cursor:pointer;font-size:20px;color:rgba(255,255,255,0.4);padding:0 4px;`;
+    closeBtn.onclick = function(){ toast.remove(); };
     toast.appendChild(closeBtn);
 
     document.body.appendChild(toast);
 
-    // Auto remove setelah 5 detik
-    setTimeout(function() {
+    setTimeout(function(){
       if (toast.parentNode) {
         toast.style.opacity = '0';
-        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
+        setTimeout(function(){ if(toast.parentNode) toast.remove(); }, 500);
       }
     }, 5000);
   }
 
-  // Tambahkan CSS untuk animasi toast
-  var style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .custom-toast {
-      animation: slideUp 0.4s ease;
-    }
+  // CSS toast animation
+  var toastStyle = document.createElement('style');
+  toastStyle.textContent = `
+    @keyframes slideUp { from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:translateY(0);} }
   `;
-  document.head.appendChild(style);
+  document.head.appendChild(toastStyle);
 
-  // Fungsi untuk update stats
-  function updateStats() {
-    try {
-      var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
-      var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
-      var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
+  // ================= Overlay loading + progress bar ==============
+  function ensureOverlay() {
+    var id = 'pwaResetOverlay';
+    var el = document.getElementById(id);
+    if (el) return el;
 
-      var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
-      var saldo = kas.reduce(function(acc, it) {
-        var a = Number(it.nominal) || 0;
-        return it.jenis === 'masuk' ? acc + a : acc - a;
-      }, 0);
+    el = document.createElement('div');
+    el.id = id;
+    el.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(10px);
+      z-index: 9999999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    `;
 
-      // Update elemen stats
-      var elHadir = document.getElementById('landingHadirHariIni');
-      var elMading = document.getElementById('landingJumlahMading');
-      var elSaldo = document.getElementById('landingSaldoKas');
-      var elTotal = document.getElementById('landingTotalAnggota');
+    el.innerHTML = `
+      <div style="width: min(520px, 92vw); background: rgba(13,16,23,0.95); border:1px solid rgba(255,255,255,0.08); border-radius: 22px; padding: 22px 20px; box-shadow: 0 30px 100px rgba(0,0,0,0.6);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <div style="width:44px;height:44px;border-radius:16px;display:flex;align-items:center;justify-content:center;background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+            <i class="fa-solid fa-rotate-right" style="color: var(--primary, #69d7e8); font-size:22px;"></i>
+          </div>
+          <div>
+            <div style="font-weight:800; font-size:16px;">Reset Total PWA</div>
+            <div style="color: var(--gray, #b9c0ce); font-size: 13px; margin-top:2px;">Menghapus cache & memperbarui aplikasi...</div>
+          </div>
+        </div>
 
-      var totalAnggota = 54;
+        <div style="background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; height: 14px;">
+          <div id="pwaResetProgressBar" style="width:0%; height:100%; background: linear-gradient(90deg, var(--primary, #69d7e8), #45c1d4); transition: width .2s ease;"></div>
+        </div>
+        <div id="pwaResetProgressText" style="margin-top:10px;color: var(--gray, #b9c0ce); font-size: 12px;">0%</div>
+      </div>
+    `;
 
-      // Deteksi perubahan untuk notifikasi
-      var changes = [];
+    document.body.appendChild(el);
+    return el;
+  }
 
-      if (elHadir) {
-        var newHadir = hadirCount;
-        var oldHadir = prevData.hadir;
-        if (newHadir !== oldHadir) {
-          changes.push('Kehadiran: ' + oldHadir + ' → ' + newHadir + ' hadir');
-        }
-        elHadir.textContent = newHadir;
-        prevData.hadir = newHadir;
+  function showOverlay() {
+    var ov = ensureOverlay();
+    ov.style.display = 'flex';
+  }
+
+  function setProgress(p, txt) {
+    var bar = document.getElementById('pwaResetProgressBar');
+    var t = document.getElementById('pwaResetProgressText');
+    if (bar) bar.style.width = Math.max(0, Math.min(100, p)) + '%';
+    if (t) t.textContent = txt || (p + '%');
+  }
+
+  function hideOverlay() {
+    var ov = document.getElementById('pwaResetOverlay');
+    if (ov) ov.style.display = 'none';
+  }
+
+  // ================= RESET TOTAL PWA ============================
+  function resetTotalPWA() {
+    showOverlay();
+
+    var steps = [
+      { pct: 10, txt: 'Menghapus Cache Service Worker...' },
+      { pct: 35, txt: 'Unregister Service Worker...' },
+      { pct: 60, txt: 'Menghapus localStorage (kecuali data penting)...' },
+      { pct: 80, txt: 'Force reload dengan cache busting...' }
+    ];
+
+    // 1) caches.delete all
+    setProgress(steps[0].pct, steps[0].txt);
+    return caches.keys()
+      .then(function(keys){
+        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+      })
+      // 2) unregister all SW
+      .then(function(){
+        setProgress(steps[1].pct, steps[1].txt);
+        if (!('serviceWorker' in navigator)) return;
+        return navigator.serviceWorker.getRegistrations()
+          .then(function(regs){
+            return Promise.all(regs.map(function(r){ return r.unregister(); }));
+          });
+      })
+      // 3) clear localStorage except
+      .then(function(){
+        setProgress(steps[2].pct, steps[2].txt);
+        var keep = {
+          ap_absensi_v2: true,
+          ap_mading_v2: true,
+          ap_kas_v2: true
+        };
+        var keepData = {};
+        try {
+          Object.keys(localStorage).forEach(function(k){
+            if (keep[k]) keepData[k] = localStorage.getItem(k);
+          });
+          localStorage.clear();
+          Object.keys(keepData).forEach(function(k){
+            localStorage.setItem(k, keepData[k]);
+          });
+        } catch(e) {}
+      })
+      // 4) reload busting
+      .then(function(){
+        setProgress(steps[3].pct, steps[3].txt);
+        var ts = Date.now();
+        // reload dengan cache busting
+        location.href = '/index.html?v=' + encodeURIComponent(VERSION) + '&ts=' + ts;
+      })
+      .catch(function(){
+        hideOverlay();
+        showToast('Reset PWA gagal. Coba lagi.', 'error');
+      });
+  }
+
+  // Tombol reset (merah menyala) - tampil saat app sudah ready / di-handle
+  function ensureResetButton() {
+    if (document.getElementById('resetTotalPWAButton')) return;
+
+    // taruh di bawah stats (landing) tanpa ubah struktur: cukup insert setelah container stats-wrapper
+    var parent = document.querySelector('.stats-wrapper');
+    if (!parent) return;
+
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'grid-column:1/-1;text-align:center;margin-top:16px;';
+
+    wrap.innerHTML = `
+      <button id="resetTotalPWAButton" type="button" style="background: #ff2b2b; color:#fff; font-weight:800; border:none; padding:14px 22px; border-radius:16px; cursor:pointer; box-shadow: 0 12px 30px rgba(255,43,43,.25); display:inline-flex; align-items:center; justify-content:center; gap:10px;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Reset Total PWA
+      </button>
+      <div id="resetTotalPWAHint" style="margin-top:8px;color:var(--gray);font-size:12px;">Menghapus cache offline untuk memperbarui data.</div>
+    `;
+
+    parent.appendChild(wrap);
+
+    document.getElementById('resetTotalPWAButton').addEventListener('click', function(){
+      // konfirmasi 2x
+      if (!confirm('PERINGATAN: Reset Total PWA akan menghapus cache offline dan local cache (kecuali data penting). Lanjutkan?')) return;
+      if (!confirm('Konfirmasi ulang: Anda yakin ingin reset?')) return;
+      resetTotalPWA();
+    });
+  }
+
+  // ================= AUTO-REFRESH tiap 5 detik ===================
+  var prev = { hadir: null, mading: null, saldo: null };
+
+  function getStateFromLocal() {
+    var absState = {};
+    try { absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{}}'); } catch(e) {}
+    var mading = [];
+    try { mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]'); } catch(e) {}
+    var kas = [];
+    try { kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]'); } catch(e) {}
+
+    var hadirCount = Object.values(absState.records || {}).filter(function(v){ return v === 'hadir'; }).length;
+    var saldo = kas.reduce(function(acc,it){
+      var a = Number(it && it.nominal) || 0;
+      return (it && it.jenis === 'masuk') ? acc + a : acc - a;
+    }, 0);
+
+    return { hadir: hadirCount, mading: (mading || []).length, saldo: saldo };
+  }
+
+  function updateLandingStatsIfNeeded(now) {
+    var elHadir = document.getElementById('landingHadirHariIni');
+    var elMading = document.getElementById('landingJumlahMading');
+    var elSaldo = document.getElementById('landingSaldoKas');
+    var elTotal = document.getElementById('landingTotalAnggota');
+
+    var changes = [];
+
+    if (elHadir && now.hadir !== prev.hadir) {
+      changes.push('Kehadiran: ' + (prev.hadir ?? now.hadir) + ' → ' + now.hadir);
+      elHadir.textContent = now.hadir;
+      prev.hadir = now.hadir;
+    }
+
+    if (elMading && now.mading !== prev.mading) {
+      changes.push('Mading: ' + (prev.mading ?? now.mading) + ' → ' + now.mading);
+      elMading.textContent = now.mading;
+      prev.mading = now.mading;
+    }
+
+    if (elSaldo && now.saldo !== prev.saldo) {
+      var diff = now.saldo - (prev.saldo ?? now.saldo);
+      if (diff !== 0) {
+        var jenis = diff > 0 ? 'masuk' : 'keluar';
+        changes.push('Kas ' + jenis + ': Rp ' + Math.abs(diff).toLocaleString('id-ID'));
       }
+      elSaldo.textContent = 'Rp ' + now.saldo.toLocaleString('id-ID');
+      prev.saldo = now.saldo;
+    }
 
-      if (elMading) {
-        var newMading = mading.length;
-        var oldMading = prevData.mading;
-        if (newMading !== oldMading) {
-          if (newMading > oldMading) {
-            var judulTerbaru = mading[0]?.judul || 'Pengumuman baru';
-            changes.push('📢 ' + judulTerbaru);
-          }
-        }
-        elMading.textContent = newMading;
-        prevData.mading = newMading;
-      }
+    if (elTotal) {
+      elTotal.textContent = elTotal.textContent || '54';
+    }
 
-      if (elSaldo) {
-        var newSaldo = saldo;
-        var oldSaldo = prevData.saldo;
-        if (newSaldo !== oldSaldo) {
-          var selisih = newSaldo - oldSaldo;
-          var jenis = selisih > 0 ? 'masuk' : 'keluar';
-          changes.push('💰 Kas ' + jenis + ': Rp ' + Math.abs(selisih).toLocaleString('id-ID'));
-        }
-        var formattedSaldo = 'Rp ' + newSaldo.toLocaleString('id-ID');
-        elSaldo.textContent = formattedSaldo;
-        prevData.saldo = newSaldo;
-      }
-
-      if (elTotal) {
-        elTotal.textContent = totalAnggota;
-        prevData.totalAnggota = totalAnggota;
-      }
-
-      // Tampilkan notifikasi jika ada perubahan
-      if (changes.length > 0) {
-        var message = changes.join(' • ');
-        showToast('🔄 Update: ' + message, 'success');
-      }
-
-    } catch (e) {
-      console.log('Update stats error:', e);
+    if (changes.length > 0) {
+      // toast di pojok kanan bawah
+      showToast('🔄 Ada update: ' + changes[0], 'success');
     }
   }
 
-  // Update pertama kali
-  setTimeout(updateStats, 500);
+  function tick() {
+    var now = getStateFromLocal();
+    updateLandingStatsIfNeeded(now);
+  }
 
-  // Update setiap 3 detik (realtime)
-  setInterval(updateStats, 3000);
+  // init
+  ensureResetButton();
+  tick();
+  setInterval(tick, 5000);
 
-  // Juga update saat ada perubahan storage dari tab lain
-  window.addEventListener('storage', function(e) {
+  // storage event
+  window.addEventListener('storage', function(e){
     if (e.key === 'ap_absensi_v2' || e.key === 'ap_mading_v2' || e.key === 'ap_kas_v2') {
-      updateStats();
+      tick();
     }
   });
 
-  console.log('✅ Realtime refresh aktif! Data akan update otomatis setiap 3 detik.');
+  // ================= GESTURE 3x TAP pada area stats ============
+  var statArea = document.querySelector('.stats');
+  if (statArea) {
+    var taps = [];
+    statArea.addEventListener('touchend', function(ev){
+      var t = Date.now();
+      taps = taps.filter(function(x){ return t - x < 800; });
+      taps.push(t);
 
-})();
-</script>
-
-<!-- ============================================================
-  TAMBAHAN: TOMBOL REFRESH MANUAL (opsional)
-  Bisa diletakkan di dekat stats untuk refresh manual
-============================================================ -->
-<style>
-  .refresh-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 12px;
-    background: rgba(105,215,232,0.1);
-    border: 1px solid rgba(105,215,232,0.2);
-    color: var(--primary, #69d7e8);
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-top: 10px;
-  }
-  .refresh-btn:hover {
-    background: rgba(105,215,232,0.2);
-    transform: scale(1.02);
-  }
-  .refresh-btn i {
-    font-size: 14px;
-  }
-  .refresh-btn.spinning i {
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* Badge notifikasi di stats */
-  .stat-box {
-    position: relative;
-  }
-  .stat-update-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: var(--primary, #69d7e8);
-    color: #000;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 999px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .stat-update-badge.show {
-    opacity: 1;
-  }
-</style>
-
-<!-- Tambahan: Tombol Refresh Manual di Stats -->
-<script>
-// Tambahkan tombol refresh di bawah stats
-(function() {
-  var statsWrapper = document.querySelector('.stats-wrapper');
-  if (statsWrapper) {
-    var refreshDiv = document.createElement('div');
-    refreshDiv.style.cssText = 'text-align:center;margin-top:16px;grid-column:1/-1;';
-    refreshDiv.innerHTML = `
-      <button class="refresh-btn" id="manualRefreshBtn">
-        <i class="fa-solid fa-rotate"></i> Refresh Data Sekarang
-      </button>
-      <span style="color:var(--gray);font-size:11px;margin-left:12px;">
-        <i class="fa-regular fa-clock"></i> Auto-refresh setiap 3 detik
-      </span>
-    `;
-    statsWrapper.appendChild(refreshDiv);
-
-    var refreshBtn = document.getElementById('manualRefreshBtn');
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', function() {
-        var icon = this.querySelector('i');
-        icon.classList.add('fa-spin');
-        this.disabled = true;
-        this.style.opacity = '0.6';
-
-        // Force update
-        try {
-          var event = new StorageEvent('storage', {
-            key: 'ap_absensi_v2',
-            newValue: localStorage.getItem('ap_absensi_v2')
-          });
-          window.dispatchEvent(event);
-          // Juga panggil langsung
-          if (window.updateStats) window.updateStats();
-        } catch(e) {}
-
-        // Trigger update stats
-        var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
-        var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
-        var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
-        var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
-        var saldo = kas.reduce(function(acc, it) {
-          var a = Number(it.nominal) || 0;
-          return it.jenis === 'masuk' ? acc + a : acc - a;
-        }, 0);
-
-        var elHadir = document.getElementById('landingHadirHariIni');
-        var elMading = document.getElementById('landingJumlahMading');
-        var elSaldo = document.getElementById('landingSaldoKas');
-
-        if (elHadir) elHadir.textContent = hadirCount;
-        if (elMading) elMading.textContent = mading.length;
-        if (elSaldo) elSaldo.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
-
-        // Tampilkan notifikasi
-        showToast('✅ Data berhasil diperbarui!', 'success');
-
-        setTimeout(function() {
-          icon.classList.remove('fa-spin');
-          refreshBtn.disabled = false;
-          refreshBtn.style.opacity = '1';
-        }, 1000);
-      });
-    }
-  }
-})();
-</script>
-
-<!-- ── Override showToast agar global ── -->
-<script>
-// Pastikan showToast tersedia global
-if (typeof showToast === 'undefined') {
-  window.showToast = function(message, type) {
-    var toast = document.createElement('div');
-    toast.className = 'custom-toast';
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: ${type === 'success' ? 'rgba(105,215,232,0.15)' : 'rgba(255,180,60,0.15)'};
-      border: 1px solid ${type === 'success' ? 'rgba(105,215,232,0.3)' : 'rgba(255,180,60,0.3)'};
-      border-radius: 16px;
-      padding: 16px 24px;
-      color: #ffffff;
-      font-family: 'Poppins', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      backdrop-filter: blur(12px);
-      z-index: 999999;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      max-width: 400px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      animation: slideUp 0.4s ease;
-    `;
-
-    var icon = document.createElement('i');
-    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info';
-    icon.style.cssText = `color: ${type === 'success' ? '#69d7e8' : '#ffb43c'}; font-size: 20px;`;
-    toast.appendChild(icon);
-
-    var text = document.createElement('span');
-    text.textContent = message;
-    toast.appendChild(text);
-
-    var closeBtn = document.createElement('span');
-    closeBtn.innerHTML = '&times;';
-    closeBtn.style.cssText = `
-      margin-left: auto;
-      cursor: pointer;
-      font-size: 20px;
-      color: rgba(255,255,255,0.4);
-      padding: 0 4px;
-    `;
-    closeBtn.onclick = function() { toast.remove(); };
-    toast.appendChild(closeBtn);
-
-    document.body.appendChild(toast);
-
-    setTimeout(function() {
-      if (toast.parentNode) {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.5s';
-        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
+      if (taps.length === 2) {
+        showToast('Tap sekali lagi untuk reset', 'info');
       }
-    }, 5000);
-  };
-}
+
+      if (taps.length >= 3) {
+        taps = [];
+        // konfirmasi 2x
+        setTimeout(function(){
+          if (!confirm('PERINGATAN: Reset Total PWA akan menghapus cache offline dan local cache (kecuali data penting). Lanjutkan?')) return;
+          if (!confirm('Konfirmasi ulang: Anda yakin ingin reset?')) return;
+          resetTotalPWA();
+        }, 50);
+      }
+    }, { passive: true });
+
+    // juga dukung pointer/mouse
+    statArea.addEventListener('click', function(){
+      // no-op (agar tidak mengganggu tap mobile)
+    });
+  }
+
+})();
 </script>
+
+
+<!-- REALTIME BLOK LAMA & TOOLS TIDAK DIGUNAKAN (sudah digantikan spec baru reset+auto-refresh 5 detik) -->
 </body>
 </html>
+
