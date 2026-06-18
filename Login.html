@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADHIGANA PRAPTI — Portal & Mading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #69d7e8;
+      --secondary: #4dc3d6;
+      --white: #fff;
+      --gray: #8899aa;
+      --dark: #0b0e14;
+      --card-bg: rgba(13,16,23,.55);
+      --border-glass: rgba(255,255,255,.06);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--dark);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(105,215,232,.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(105,215,232,.04) 0%, transparent 50%);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 12px 0; background: rgba(11,14,20,.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,.04); }
+    .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo img { height: 40px; width: auto; border-radius: 8px; }
+    .logo-text h1 { font-size: 17px; font-weight: 800; line-height: 1.1; color: var(--white); }
+    .logo-text span { font-size: 10px; font-weight: 400; color: var(--gray); letter-spacing: .5px; }
+    .menu { display: flex; align-items: center; gap: 6px; }
+    .menu a { padding: 8px 14px; border-radius: 10px; font-weight: 500; font-size: 13px; color: var(--gray); transition: .3s; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .menu a:hover { color: var(--white); background: rgba(255,255,255,.04); }
+    .menu a.active { color: var(--primary); background: rgba(105,215,232,.06); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { width: 26px; height: 2.5px; background: var(--white); border-radius: 2px; transition: .3s; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; border: none; border-radius: 14px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: .3s; }
+    .btn-primary { background: linear-gradient(145deg, var(--primary), var(--secondary)); color: var(--dark); box-shadow: 0 8px 28px rgba(105,215,232,.15); }
+    .btn-primary:hover { transform: scale(1.02); box-shadow: 0 12px 36px rgba(105,215,232,.25); }
+    .btn-secondary { background: rgba(255,255,255,.04); border: 1px solid var(--border-glass); color: var(--white); }
+    .btn-secondary:hover { background: rgba(255,255,255,.08); }
+
+    /* GLASS */
+    .glass-card { background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border-glass); border-radius: 24px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.25); transition: .3s; }
+    .glass-card:hover { border-color: rgba(105,215,232,.15); }
+
+    /* SECTIONS */
+    .portal-section { display: none; padding: 100px 0 60px; }
+    .portal-section.active { display: block; }
+    #hero { padding: 120px 0 60px; min-height: 100vh; display: flex; align-items: center; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .hero-content h1 { font-size: 44px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+    .hero-content h1 span { color: var(--primary); }
+    .hero-content p { color: var(--gray); font-size: 16px; line-height: 1.8; margin-bottom: 24px; max-width: 500px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-image-placeholder { width: 100%; aspect-ratio: 1; max-width: 450px; background: linear-gradient(145deg, rgba(105,215,232,.06), rgba(105,215,232,.02)); border-radius: 24px; border: 1px solid var(--border-glass); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: rgba(105,215,232,.15); font-size: 20px; font-weight: 600; }
+    .hero-image-placeholder i { font-size: 80px; }
+
+    /* MADING PUBLIK */
+    #madingPublik { padding: 60px 0 80px; }
+    .section-title { text-align: center; margin-bottom: 40px; }
+    .section-title h5 { color: var(--primary); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .section-title h2 { font-size: 36px; font-weight: 800; line-height: 1.2; }
+    .section-title h2 span { color: var(--primary); }
+    .section-title p { color: var(--gray); max-width: 600px; margin: 10px auto 0; font-size: 15px; }
+    .mading-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+    .mading-pub-card { padding: 20px 22px; border-radius: 20px; border: 1px solid var(--border-glass); background: var(--card-bg); }
+    .mading-pub-card h3 { color: var(--primary); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .mading-pub-card .date { color: var(--gray); font-size: 11px; margin-bottom: 10px; }
+    .mading-pub-card p { color: rgba(255,255,255,.8); font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--gray); font-size: 14px; }
+
+    /* FOOTER */
+    footer { padding: 40px 0; border-top: 1px solid var(--border-glass); text-align: center; }
+    footer p { color: var(--gray); font-size: 13px; }
+    footer .social { display: flex; justify-content: center; gap: 16px; margin-top: 12px; }
+    footer .social a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.03); border: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: center; color: var(--gray); transition: .3s; }
+    footer .social a:hover { color: var(--primary); border-color: rgba(105,215,232,.2); }
+
+    /* PORTAL TABS */
+    .portal-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; padding: 4px; background: rgba(255,255,255,.02); border-radius: 16px; border: 1px solid var(--border-glass); }
+    .portal-tab { padding: 10px 20px; border: none; background: transparent; color: var(--gray); font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 12px; transition: .3s; display: flex; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif; }
+    .portal-tab:hover { color: var(--white); background: rgba(255,255,255,.04); }
+    .portal-tab.active { color: var(--primary); background: rgba(105,215,232,.08); }
+    .portal-tab.portal-admin-only { display: none; }
+    .portal-tab.portal-admin-only.show { display: flex; }
+    .portal-tab-content { display: none; }
+    .portal-tab-content.active { display: block; }
+
+    /* ROLE BADGE */
+    .role-badge { display: inline-block; padding: 6px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; background: rgba(255,255,255,.05); color: var(--gray); border: 1px solid rgba(255,255,255,.08); }
+    .role-badge.admin { background: rgba(255,60,60,.15); color: #ff6b6b; border: 1px solid rgba(255,60,60,.2); }
+    .role-badge.pengurus { background: rgba(105,215,232,.15); color: var(--primary); border: 1px solid rgba(105,215,232,.2); }
+
+    /* RINGKAS */
+    .ringkas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .ringkas-card { display: flex; align-items: center; gap: 16px; padding: 20px; }
+    .ringkas-icon { width: 48px; height: 48px; border-radius: 14px; background: rgba(105,215,232,.08); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary); flex-shrink: 0; }
+    .ringkas-label { color: var(--gray); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
+    .ringkas-value { color: var(--white); font-size: 24px; font-weight: 800; }
+    .ringkas-sub { color: var(--gray); font-size: 11px; margin-top: 2px; }
+
+    /* LOGIN OVERLAY */
+    .login-overlay { display: none; position: fixed; inset: 0; background: rgba(11,14,20,.92); backdrop-filter: blur(20px); z-index: 3000; align-items: center; justify-content: center; padding: 24px; }
+    .login-overlay.active { display: flex; }
+    .login-container { max-width: 440px; width: 100%; background: rgba(13,16,23,.9); border-radius: 40px; padding: 40px 32px; border: 1px solid var(--border-glass); box-shadow: 0 30px 80px rgba(0,0,0,.7); position: relative; }
+    .close-login { position: absolute; top: 16px; right: 20px; font-size: 24px; color: var(--gray); cursor: pointer; transition: .3s; background: none; border: none; }
+    .close-login:hover { color: var(--white); }
+    .login-container .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .login-container .brand-icon { width: 48px; height: 48px; background: linear-gradient(145deg, rgba(105,215,232,.12), rgba(105,215,232,.04)); border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(105,215,232,.15); color: var(--primary); font-size: 24px; flex-shrink: 0; }
+    .login-container h1 { font-size: 20px; font-weight: 800; color: var(--white); line-height: 1.2; }
+    .login-container .brand span { display: block; font-size: 12px; color: rgba(255,255,255,.45); font-weight: 400; }
+    .login-container .login-title { margin-bottom: 24px; }
+    .login-container .login-title h2 { font-size: 24px; font-weight: 700; color: var(--white); }
+    .login-container .login-title p { color: rgba(255,255,255,.4); font-size: 14px; margin-top: 4px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-weight: 600; font-size: 13px; color: rgba(255,255,255,.75); margin-bottom: 6px; }
+    .input-wrapper { position: relative; }
+    .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,.25); font-size: 16px; pointer-events: none; }
+    #loginEmail, #loginPassword { width: 100%; padding: 14px 16px 14px 46px; background: rgba(255,255,255,.04); border: 1px solid var(--border-glass); border-radius: 16px; color: var(--white); font-size: 15px; outline: none; font-family: 'Poppins', sans-serif; transition: .25s; }
+    #loginEmail:focus, #loginPassword:focus { border-color: rgba(105,215,232,.4); background: rgba(255,255,255,.06); }
+    .login-btn { width: 100%; padding: 14px; border: none; border-radius: 16px; background: linear-gradient(145deg, var(--primary), var(--secondary)); color: var(--dark); font-weight: 700; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: .2s; margin-top: 6px; font-family: 'Poppins', sans-serif; }
+    .error-message { margin-top: 14px; padding: 12px 16px; border-radius: 14px; background: rgba(255,80,80,.06); border: 1px solid rgba(255,80,80,.12); color: #ffb4b4; font-weight: 500; font-size: 14px; display: none; align-items: center; gap: 10px; }
+    .error-message.show { display: flex; }
+
+    /* ABSENSI ITEM */
+    .abs-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-glass); border-radius: 14px; background: rgba(255,255,255,.02); }
+    .abs-name { min-width: 0; flex: 1; }
+    .abs-name strong { display: block; color: var(--white); font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .abs-name small { color: var(--gray); font-size: 11px; }
+    .abs-btns { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .abs-btn { padding: 6px 12px; border: 1px solid var(--border-glass); border-radius: 10px; background: rgba(255,255,255,.03); color: var(--gray); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: .2s; }
+    .abs-btn:hover { background: rgba(255,255,255,.08); color: var(--white); }
+    .abs-btn.sel-hadir { background: rgba(105,215,232,.12); color: var(--primary); border-color: rgba(105,215,232,.3); }
+    .abs-btn.sel-izin  { background: rgba(255,180,60,.12);  color: #ffb43c;       border-color: rgba(255,180,60,.3); }
+    .abs-btn.sel-alfa  { background: rgba(255,80,80,.12);   color: #ff6b6b;       border-color: rgba(255,80,80,.3); }
+    .status-chip { display: inline-block; padding: 3px 12px; border-radius: 999px; font-weight: 700; font-size: 11px; }
+    .chip-hadir { background: rgba(105,215,232,.12); color: var(--primary); }
+    .chip-izin  { background: rgba(255,180,60,.12);  color: #ffb43c; }
+    .chip-alfa  { background: rgba(255,80,80,.12);   color: #ff6b6b; }
+
+    /* ABSENSI SEARCH */
+    .abs-search { width: 100%; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--border-glass); background: rgba(255,255,255,.04); color: var(--white); font-size: 13px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 12px; }
+    .abs-search:focus { border-color: rgba(105,215,232,.3); }
+
+    /* FORM FIELD UTIL */
+    .field-input { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border-glass); background: rgba(255,255,255,.04); color: var(--white); outline: none; font-family: 'Poppins', sans-serif; font-size: 14px; transition: .2s; }
+    .field-input:focus { border-color: rgba(105,215,232,.3); background: rgba(255,255,255,.06); }
+    select.field-input option { background: #1a1e28; color: var(--white); }
+
+    @media(max-width: 768px) {
+      .menu { display: none; }
+      .hamburger { display: flex; }
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-content p { margin: 0 auto 24px; }
+      .hero-actions { justify-content: center; }
+      #hero { padding-top: 110px; }
+      .abs-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container nav-wrapper">
+    <div class="logo">
+      <img src="/asset/Adhigana prapti.png" alt="Logo" onerror="this.style.display='none'" />
+      <div class="logo-text">
+        <h1>ADHIGANA PRAPTI</h1>
+        <span>Portal &amp; Mading</span>
+      </div>
+    </div>
+    <div class="menu" id="mainMenu">
+      <a href="#" class="active" data-section="hero">Beranda</a>
+      <a href="#" data-section="madingPublik">Mading</a>
+      <a href="#" id="btnOpenLogin" style="background:linear-gradient(145deg,var(--primary),var(--secondary));color:var(--dark);padding:8px 18px;border-radius:12px;font-weight:700;">
+        <i class="fa-solid fa-right-to-bracket"></i> Masuk
+      </a>
+      <a href="#" id="btnLogoutNav" style="display:none;background:rgba(255,80,80,.12);border:1px solid rgba(255,80,80,.2);color:#ff6b6b;padding:8px 18px;border-radius:12px;font-weight:700;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
+      </a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-container">
+    <button class="close-login" id="closeLogin"><i class="fa-solid fa-xmark"></i></button>
+    <div class="brand">
+      <div class="brand-icon"><i class="fa-solid fa-bullhorn"></i></div>
+      <div>
+        <h1>ADHIGANA PRAPTI</h1>
+        <span>Portal &amp; Mading Internal</span>
+      </div>
+    </div>
+    <div class="login-title">
+      <h2>Selamat datang</h2>
+      <p>Masuk dengan akun pengurus untuk mengakses dashboard</p>
+    </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <input type="email" id="loginEmail" placeholder="nama@email.com" required />
+          <i class="fa-regular fa-envelope"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Kata sandi</label>
+        <div class="input-wrapper">
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+          <i class="fa-regular fa-lock"></i>
+        </div>
+      </div>
+      <button type="submit" class="login-btn"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Portal</button>
+      <div id="loginError" class="error-message">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="errorText">Email atau password salah.</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <h1>Mading &amp; Portal <span>Adhigana Prapti</span></h1>
+        <p>Informasi internal terupdate dan akses dashboard pengurus Adhigana Prapti.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="heroBtnLogin"><i class="fa-solid fa-right-to-bracket"></i> Masuk ke Portal</button>
+          <a href="#madingPublik" class="btn btn-secondary"><i class="fa-solid fa-newspaper"></i> Lihat Mading</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-image-placeholder"><i class="fa-solid fa-bullhorn"></i><span>ADHIGANA PRAPTI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MADING PUBLIK -->
+<section id="madingPublik">
+  <div class="container">
+    <div class="section-title">
+      <h5>Pengumuman</h5>
+      <h2>Mading <span>Terbaru</span></h2>
+      <p>Informasi dan pengumuman resmi.</p>
+    </div>
+    <div id="madingPublikList" class="mading-grid">
+      <div class="empty-state"><i class="fa-solid fa-newspaper"></i><br/>Belum ada pengumuman.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTAL DASHBOARD -->
+<section id="portalDashboard" class="portal-section">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:16px;">
+      <div>
+        <h2>Dashboard Internal</h2>
+        <p style="color:var(--gray);font-size:13px;margin-top:4px;" id="portalUserInfo">Loading...</p>
+      </div>
+      <span id="userRoleBadge" class="role-badge">anggota</span>
+    </div>
+
+    <div class="portal-tabs" id="portalTabs">
+      <button class="portal-tab active" data-tab="ringkas"><i class="fa-solid fa-gauge-high"></i> Ringkas</button>
+      <button class="portal-tab" data-tab="absensi"><i class="fa-solid fa-clipboard-check"></i> Absensi</button>
+      <button class="portal-tab" data-tab="mading"><i class="fa-solid fa-newspaper"></i> Mading</button>
+      <button class="portal-tab" data-tab="kas"><i class="fa-solid fa-coins"></i> Kas</button>
+      <button class="portal-tab portal-admin-only" data-tab="kelola"><i class="fa-solid fa-gear"></i> Kelola</button>
+    </div>
+
+    <!-- TAB RINGKAS -->
+    <div id="tabRingkas" class="portal-tab-content active">
+      <div class="ringkas-grid">
+        <div class="ringkas-card glass-card">
+          <div class="ringkas-icon"><i class="fa-solid fa-users"></i></div>
+          <div>
+            <div class="ringkas-label">Kehadiran Hari Ini</div>
+            <div class="ringkas-value" id="ringkasHadir">0</div>
+            <div class="ringkas-sub">dari <span id="ringkasTotalAnggota">54</span> anggota</div>
+          </div>
+        </div>
+        <div class="ringkas-card glass-card">
+          <div class="ringkas-icon"><i class="fa-solid fa-bullhorn"></i></div>
+          <div>
+            <div class="ringkas-label">Pengumuman</div>
+            <div class="ringkas-value" id="ringkasPengumuman">0</div>
+            <div class="ringkas-sub">terbaru</div>
+          </div>
+        </div>
+        <div class="ringkas-card glass-card">
+          <div class="ringkas-icon"><i class="fa-solid fa-coins"></i></div>
+          <div>
+            <div class="ringkas-label">Saldo Kas</div>
+            <div class="ringkas-value" id="ringkasSaldo">Rp 0</div>
+            <div class="ringkas-sub">transparan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB ABSENSI -->
+    <div id="tabAbsensi" class="portal-tab-content">
+      <div class="glass-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+          <div>
+            <h3 style="margin-bottom:4px;">Absensi Rapat / Kegiatan</h3>
+            <div style="color:var(--gray);font-size:13px;">54 anggota — pilih status tiap orang</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-secondary" id="btnHadirSemua" style="padding:9px 16px;font-size:13px;">Hadir Semua</button>
+            <button class="btn btn-secondary" id="btnResetAbsensi" style="padding:9px 16px;font-size:13px;">Reset</button>
+            <button class="btn btn-primary" id="btnSimpanAbsensi" style="padding:9px 16px;font-size:13px;"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+          </div>
+        </div>
+        <input type="text" class="abs-search" id="absSearch" placeholder="Cari nama anggota..." />
+        <div id="absensiDaftar" style="display:flex;flex-direction:column;gap:8px;max-height:480px;overflow:auto;padding-right:4px;"></div>
+      </div>
+    </div>
+
+    <!-- TAB MADING -->
+    <div id="tabMading" class="portal-tab-content">
+      <div class="glass-card">
+        <h3 style="margin-bottom:4px;">Kelola Pengumuman</h3>
+        <div style="color:var(--gray);font-size:13px;margin-bottom:20px;">Publish pengumuman ke halaman Mading publik</div>
+        <div style="display:grid;gap:14px;">
+          <div>
+            <label style="display:block;color:var(--gray);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Judul Pengumuman</label>
+            <input id="madingJudul" type="text" class="field-input" placeholder="Contoh: Rapat Mading Bulanan" />
+          </div>
+          <div>
+            <label style="display:block;color:var(--gray);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Isi Pengumuman</label>
+            <textarea id="madingIsi" rows="6" class="field-input" placeholder="Tulis pengumuman..." style="resize:vertical;"></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+          <button class="btn btn-primary" id="btnPublishMading"><i class="fa-solid fa-paper-plane"></i> Publish</button>
+          <button class="btn btn-secondary" id="btnClearAllMading">Hapus Semua</button>
+        </div>
+        <div style="margin-top:24px;">
+          <h4 style="color:var(--white);margin-bottom:12px;font-size:15px;">Daftar Pengumuman</h4>
+          <div id="madingList" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB KAS -->
+    <div id="tabKas" class="portal-tab-content">
+      <div class="glass-card">
+        <h3 style="margin-bottom:4px;">Kas Adhigana Prapti</h3>
+        <div style="color:var(--gray);font-size:13px;margin-bottom:20px;">Catat pemasukan dan pengeluaran kas organisasi</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+          <div>
+            <label style="display:block;color:var(--gray);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Jenis</label>
+            <select id="kasJenis" class="field-input">
+              <option value="masuk">Pemasukan</option>
+              <option value="keluar">Pengeluaran</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;color:var(--gray);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Nominal (Rp)</label>
+            <input id="kasNominal" type="number" class="field-input" placeholder="0" min="1" />
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="display:block;color:var(--gray);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;">Keterangan</label>
+            <input id="kasKeterangan" type="text" class="field-input" placeholder="Contoh: Beli perlengkapan kegiatan" />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+          <button class="btn btn-primary" id="btnTambahKas"><i class="fa-solid fa-plus"></i> Tambah Transaksi</button>
+          <button class="btn btn-secondary" id="btnClearKas">Hapus Semua</button>
+        </div>
+        <div style="margin-top:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <h4 style="color:var(--white);font-size:15px;">Riwayat Transaksi</h4>
+            <div id="kasSaldoInfo" style="font-size:13px;color:var(--gray);"></div>
+          </div>
+          <div id="kasRiwayat" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB KELOLA -->
+    <div id="tabKelola" class="portal-tab-content">
+      <div class="glass-card">
+        <h3 style="margin-bottom:8px;">Kelola Pengguna</h3>
+        <p style="color:var(--gray);font-size:13px;">Fitur kelola tersedia setelah konfigurasi Firebase.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 ADHIGANA PRAPTI. All rights reserved.</p>
+    <div class="social">
+      <a href="#"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#"><i class="fa-brands fa-youtube"></i></a>
+      <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA ANGGOTA — 54 orang dari semua divisi
+// ============================================================
+const ALL_ANGGOTA = [
+  // Pimpinan Umum (3)
+  { uid: 'u001', nama: 'M. Daffa Saeful Faiz',           jabatan: 'Ketua Umum' },
+  { uid: 'u002', nama: 'Yasna Nur Azka Zakiyah',          jabatan: 'Sekretaris Umum' },
+  { uid: 'u003', nama: 'Putri Nur Apriani',               jabatan: 'Bendahara Umum' },
+  // Pimpinan Pelaksana (3)
+  { uid: 'u004', nama: 'Rafi Keny Akhdan',                jabatan: 'Ketua Pelaksana' },
+  { uid: 'u005', nama: 'Kaysa Hasnah Mumtaaza',           jabatan: 'Sekretaris Pelaksana' },
+  { uid: 'u006', nama: 'Naya Salsabila',                  jabatan: 'Bendahara Pelaksana' },
+  // Divisi Koordinasi Lapangan (5)
+  { uid: 'u007', nama: 'Rayhan Nur Pajri',                jabatan: 'Koord. Div. Lapangan' },
+  { uid: 'u008', nama: 'M. Haikal Abil Fida',             jabatan: 'Div. Koordinasi Lapangan' },
+  { uid: 'u009', nama: 'Ardiansyah Pramadani',            jabatan: 'Div. Koordinasi Lapangan' },
+  { uid: 'u010', nama: 'Fahmi Maulana',                   jabatan: 'Div. Koordinasi Lapangan' },
+  { uid: 'u011', nama: 'Daffa Yusuf Afandy',              jabatan: 'Div. Koordinasi Lapangan' },
+  // Divisi Acara (6)
+  { uid: 'u012', nama: 'M. Faiq Ahsan',                   jabatan: 'Koord. Div. Acara' },
+  { uid: 'u013', nama: 'M. Zidan Ziyadul Haq',            jabatan: 'Div. Acara' },
+  { uid: 'u014', nama: 'Arfan Najmi',                     jabatan: 'Div. Acara' },
+  { uid: 'u015', nama: 'M. Badrul Zaman',                 jabatan: 'Div. Acara' },
+  { uid: 'u016', nama: 'Mutia Zahran',                    jabatan: 'Div. Acara' },
+  { uid: 'u017', nama: 'Raifa Putri Ramadhani',           jabatan: 'Div. Acara' },
+  // Divisi Pubdok (7)
+  { uid: 'u018', nama: 'Panji Jatmika',                   jabatan: 'Koord. Div. Pubdok' },
+  { uid: 'u019', nama: 'Fachri Akbar',                    jabatan: 'Div. Publikasi & Dokumentasi' },
+  { uid: 'u020', nama: 'Muhamad Darul Tahqiq',            jabatan: 'Div. Publikasi & Dokumentasi' },
+  { uid: 'u021', nama: 'Rhicelle Apriliana',              jabatan: 'Div. Publikasi & Dokumentasi' },
+  { uid: 'u022', nama: 'Riska Maulida Fitri',             jabatan: 'Div. Publikasi & Dokumentasi' },
+  { uid: 'u023', nama: 'Agisna Maulida Noer',             jabatan: 'Div. Publikasi & Dokumentasi' },
+  { uid: 'u024', nama: 'Anggita Nurfadillah',             jabatan: 'Div. Publikasi & Dokumentasi' },
+  // Divisi Humas (8)
+  { uid: 'u025', nama: 'M. Alfin Saputra',                jabatan: 'Koord. Div. Humas' },
+  { uid: 'u026', nama: 'M. Huda Kasya Islami',            jabatan: 'Div. Hubungan Masyarakat' },
+  { uid: 'u027', nama: 'M. Irham Ghifarul Khilmi',        jabatan: 'Div. Hubungan Masyarakat' },
+  { uid: 'u028', nama: 'Almas Dara Saputri Wiwaha',       jabatan: 'Div. Hubungan Masyarakat' },
+  { uid: 'u029', nama: 'Zulfa Hamidah',                   jabatan: 'Div. Hubungan Masyarakat' },
+  { uid: 'u030', nama: 'Windi Meliana',                   jabatan: 'Div. Hubungan Masyarakat' },
+  { uid: 'u031', nama: 'Arum Rohimah',                    jabatan: 'Div. Hubungan Masyarakat' },
+  { uid: 'u032', nama: 'Alvyra Mutiara Andira',           jabatan: 'Div. Hubungan Masyarakat' },
+  // Divisi Konsumsi (9)
+  { uid: 'u033', nama: 'Zahran Saputra Wiwaha',           jabatan: 'Koord. Div. Konsumsi' },
+  { uid: 'u034', nama: 'Gema Darma Wijana',               jabatan: 'Div. Konsumsi' },
+  { uid: 'u035', nama: 'Raihan Muzhafar Yusuf',           jabatan: 'Div. Konsumsi' },
+  { uid: 'u036', nama: 'Ari Pratama Putra',               jabatan: 'Div. Konsumsi' },
+  { uid: 'u037', nama: 'Aurel Pricila Ananta',            jabatan: 'Div. Konsumsi' },
+  { uid: 'u038', nama: 'Vina Siti Aminah',                jabatan: 'Div. Konsumsi' },
+  { uid: 'u039', nama: 'April Amelia Putri',              jabatan: 'Div. Konsumsi' },
+  { uid: 'u040', nama: 'Dinda Aulia',                     jabatan: 'Div. Konsumsi' },
+  { uid: 'u041', nama: 'Agnia Ilma Triana Putri Hidayat', jabatan: 'Div. Konsumsi' },
+  // Divisi Dekorasi & Logistik (10)
+  { uid: 'u042', nama: 'M. Abdul Azis',                   jabatan: 'Koord. Div. Dekorasi & Logistik' },
+  { uid: 'u043', nama: 'Romi Zayyinul Aripin',            jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u044', nama: 'Rojab Mulyana',                   jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u045', nama: 'Irfan Naufal Amrulloh',           jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u046', nama: 'Fadlan Nurullah',                 jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u047', nama: 'Arya Maulana',                    jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u048', nama: 'Danil Mauluda',                   jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u049', nama: 'Fabin Alfarizi Rizal Riyansah',   jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u050', nama: 'Rai Nepal Ibrahim',               jabatan: 'Div. Dekorasi & Logistik' },
+  { uid: 'u051', nama: 'Robby Muharram',                  jabatan: 'Div. Dekorasi & Logistik' },
+  // Divisi Kebersihan (3)
+  { uid: 'u052', nama: 'Rama Pratama Adila',              jabatan: 'Koord. Div. Kebersihan' },
+  { uid: 'u053', nama: 'Arfik Ramdhani',                  jabatan: 'Div. Kebersihan' },
+  { uid: 'u054', nama: 'M. Fariz Saeful Ammar',           jabatan: 'Div. Kebersihan' },
+];
+
+// ============================================================
+// STORAGE HELPERS
+// ============================================================
+const SK = { absensi: 'ap_absensi_v2', mading: 'ap_mading_v2', kas: 'ap_kas_v2' };
+
+function loadLS(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; }
+  catch { return def; }
+}
+function saveLS(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function formatRp(n) {
+  return 'Rp ' + (Number(n)||0).toLocaleString('id-ID');
+}
+
+function fmtDate(ts) {
+  return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+}
+function fmtDateTime(ts) {
+  return new Date(ts).toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+// ============================================================
+// LOGIN / SESSION
+// ============================================================
+const loginOverlay = document.getElementById('loginOverlay');
+const loginForm    = document.getElementById('loginForm');
+const loginError   = document.getElementById('loginError');
+const errorText    = document.getElementById('errorText');
+
+const portalDashboard   = document.getElementById('portalDashboard');
+const heroSection       = document.getElementById('hero');
+const madingPublikSection = document.getElementById('madingPublik');
+const portalUserInfo    = document.getElementById('portalUserInfo');
+const userRoleBadge     = document.getElementById('userRoleBadge');
+const btnLogoutNav      = document.getElementById('btnLogoutNav');
+const btnOpenLogin      = document.getElementById('btnOpenLogin');
+
+function openLogin() {
+  loginOverlay.classList.add('active');
+  loginError.classList.remove('show');
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginEmail').focus();
+}
+function hideLogin() { loginOverlay.classList.remove('active'); }
+
+document.getElementById('btnOpenLogin')?.addEventListener('click', e => { e.preventDefault(); openLogin(); });
+document.getElementById('closeLogin')?.addEventListener('click', hideLogin);
+document.getElementById('heroBtnLogin')?.addEventListener('click', openLogin);
+loginOverlay?.addEventListener('click', e => { if (e.target === loginOverlay) hideLogin(); });
+
+document.querySelectorAll('[data-section]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById(link.dataset.section)?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Portal tabs
+document.querySelectorAll('.portal-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.portal-tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    const name = tab.dataset.tab;
+    const el = document.getElementById('tab' + name[0].toUpperCase() + name.slice(1));
+    if (el) el.classList.add('active');
+  });
+});
+
+function showDashboard() {
+  portalDashboard.classList.add('active');
+  heroSection.style.display = 'none';
+  madingPublikSection.style.display = 'none';
+
+  const nama = sessionStorage.getItem('userNama') || 'Pengguna';
+  const role = sessionStorage.getItem('userRole') || 'anggota';
+  portalUserInfo.textContent = nama + ' · ' + role;
+  userRoleBadge.textContent = role;
+  userRoleBadge.className = 'role-badge' + (role === 'admin' ? ' admin' : role === 'pengurus' ? ' pengurus' : '');
+
+  document.querySelectorAll('.portal-admin-only').forEach(el => {
+    role === 'admin' ? el.classList.add('show') : el.classList.remove('show');
+  });
+
+  btnOpenLogin.style.display = 'none';
+  btnLogoutNav.style.display = 'inline-flex';
+
+  initAbsensi();
+  renderMadingList();
+  renderKasList();
+  refreshRingkasan();
+}
+
+function hideDashboard() {
+  portalDashboard.classList.remove('active');
+  heroSection.style.display = 'flex';
+  madingPublikSection.style.display = 'block';
+  btnOpenLogin.style.display = 'inline-flex';
+  btnLogoutNav.style.display = 'none';
+  renderMadingPublik();
+}
+
+btnLogoutNav?.addEventListener('click', e => {
+  e.preventDefault();
+  sessionStorage.clear();
+  hideDashboard();
+});
+
+// Demo login (tanpa Firebase — gunakan session lokal)
+loginForm?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+
+  if (!email || !password) {
+    errorText.textContent = 'Harap isi email dan password.';
+    loginError.classList.add('show');
+    return;
+  }
+
+  // ── Coba Firebase jika tersedia ──────────────────────────
+  const btn = loginForm.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+  try {
+    // Firebase auth (akan error gracefully jika firebase.js tidak ada)
+    const { auth, db } = await import('./firebase.js').catch(() => ({ auth: null, db: null }));
+
+    if (auth && db) {
+      const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js');
+      const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      const data = snap.exists() ? snap.data() : {};
+      sessionStorage.setItem('userUid', cred.user.uid);
+      sessionStorage.setItem('userEmail', cred.user.email);
+      sessionStorage.setItem('userNama', data.nama || 'Pengguna');
+      sessionStorage.setItem('userRole', data.role || 'anggota');
+    } else {
+      // Demo fallback
+      sessionStorage.setItem('userEmail', email);
+      sessionStorage.setItem('userNama', email.split('@')[0]);
+      sessionStorage.setItem('userRole', email.includes('admin') ? 'admin' : 'pengurus');
+    }
+
+    sessionStorage.setItem('userLoggedIn', 'true');
+    hideLogin();
+    showDashboard();
+  } catch (err) {
+    errorText.textContent = 'Gagal masuk. Periksa email & password.';
+    loginError.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = orig;
+  }
+});
+
+if (sessionStorage.getItem('userLoggedIn') === 'true') {
+  showDashboard();
+}
+
+// ============================================================
+// RINGKASAN
+// ============================================================
+function refreshRingkasan() {
+  const absState = loadLS(SK.absensi, { records: {}, hadirCount: 0 });
+  const hadir = Object.values(absState.records || {}).filter(v => v === 'hadir').length;
+  document.getElementById('ringkasHadir').textContent = hadir;
+  document.getElementById('ringkasTotalAnggota').textContent = ALL_ANGGOTA.length;
+
+  const mItems = loadLS(SK.mading, []);
+  document.getElementById('ringkasPengumuman').textContent = mItems.length;
+
+  const kItems = loadLS(SK.kas, []);
+  const saldo = kItems.reduce((acc, it) => {
+    const a = Number(it.nominal) || 0;
+    return it.jenis === 'masuk' ? acc + a : acc - a;
+  }, 0);
+  document.getElementById('ringkasSaldo').textContent = formatRp(saldo);
+}
+
+// ============================================================
+// ABSENSI
+// ============================================================
+let absensiDraft = { records: {}, hadirCount: 0 };
+
+function initAbsensi() {
+  const stored = loadLS(SK.absensi, null);
+  if (stored && stored.records) {
+    absensiDraft = stored;
+  } else {
+    absensiDraft = { records: {}, hadirCount: 0 };
+    ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'alfa');
+  }
+  absensiDraft.hadirCount = Object.values(absensiDraft.records).filter(v => v === 'hadir').length;
+  renderAbsensi('');
+}
+
+function renderAbsensi(filter) {
+  const container = document.getElementById('absensiDaftar');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const q = (filter || '').toLowerCase();
+  const list = q ? ALL_ANGGOTA.filter(a => a.nama.toLowerCase().includes(q) || a.jabatan.toLowerCase().includes(q)) : ALL_ANGGOTA;
+
+  if (!list.length) {
+    container.innerHTML = '<div style="color:var(--gray);font-size:13px;padding:12px 0;">Tidak ditemukan.</div>';
+    return;
+  }
+
+  list.forEach(a => {
+    const st = absensiDraft.records[a.uid] || 'alfa';
+    const row = document.createElement('div');
+    row.className = 'abs-row';
+    row.innerHTML = `
+      <div class="abs-name">
+        <strong>${esc(a.nama)}</strong>
+        <small>${esc(a.jabatan)}</small>
+      </div>
+      <div class="abs-btns">
+        <button class="abs-btn ${st==='hadir'?'sel-hadir':''}" data-uid="${a.uid}" data-status="hadir">Hadir</button>
+        <button class="abs-btn ${st==='izin'?'sel-izin':''}"  data-uid="${a.uid}" data-status="izin">Izin</button>
+        <button class="abs-btn ${st==='alfa'?'sel-alfa':''}"  data-uid="${a.uid}" data-status="alfa">Alfa</button>
+      </div>
+    `;
+    row.querySelectorAll('.abs-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        absensiDraft.records[btn.dataset.uid] = btn.dataset.status;
+        absensiDraft.hadirCount = Object.values(absensiDraft.records).filter(v => v === 'hadir').length;
+        renderAbsensi(document.getElementById('absSearch')?.value || '');
+        refreshRingkasan();
+      });
+    });
+    container.appendChild(row);
+  });
+}
+
+document.getElementById('absSearch')?.addEventListener('input', e => renderAbsensi(e.target.value));
+
+document.getElementById('btnHadirSemua')?.addEventListener('click', () => {
+  ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'hadir');
+  absensiDraft.hadirCount = ALL_ANGGOTA.length;
+  renderAbsensi(document.getElementById('absSearch')?.value || '');
+  refreshRingkasan();
+});
+
+document.getElementById('btnResetAbsensi')?.addEventListener('click', () => {
+  ALL_ANGGOTA.forEach(a => absensiDraft.records[a.uid] = 'alfa');
+  absensiDraft.hadirCount = 0;
+  renderAbsensi(document.getElementById('absSearch')?.value || '');
+  refreshRingkasan();
+});
+
+document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
+  saveLS(SK.absensi, absensiDraft);
+  refreshRingkasan();
+  alert('✅ Absensi tersimpan! Hadir: ' + absensiDraft.hadirCount + ' dari ' + ALL_ANGGOTA.length + ' anggota.');
+});
+
+// ============================================================
+// MADING
+// ============================================================
+function renderMadingList() {
+  const list = document.getElementById('madingList');
+  if (!list) return;
+  const items = loadLS(SK.mading, []);
+  if (!items.length) {
+    list.innerHTML = '<div style="color:var(--gray);font-size:13px;">Belum ada pengumuman. Tulis dan publish di atas.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  items.forEach((it, idx) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding:14px 16px;border:1px solid var(--border-glass);border-radius:16px;background:rgba(255,255,255,.02);';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:0;">
+          <div style="color:var(--primary);font-weight:700;font-size:14px;margin-bottom:4px;">${esc(it.judul)}</div>
+          <div style="color:var(--gray);font-size:11px;margin-bottom:8px;">${fmtDate(it.tanggal)}</div>
+          <div style="color:rgba(255,255,255,.82);font-size:13px;white-space:pre-wrap;line-height:1.7;">${esc(it.isi)}</div>
+        </div>
+        <button data-del="${idx}" style="padding:8px 14px;border-radius:12px;border:1px solid rgba(255,80,80,.2);background:rgba(255,80,80,.06);color:#ff6b6b;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;flex-shrink:0;white-space:nowrap;">
+          <i class="fa-solid fa-trash"></i> Hapus
+        </button>
+      </div>
+    `;
+    div.querySelector('[data-del]').addEventListener('click', () => {
+      const arr = loadLS(SK.mading, []);
+      arr.splice(idx, 1);
+      saveLS(SK.mading, arr);
+      renderMadingList();
+      renderMadingPublik();
+      refreshRingkasan();
+    });
+    list.appendChild(div);
+  });
+}
+
+function renderMadingPublik() {
+  const container = document.getElementById('madingPublikList');
+  if (!container) return;
+  const items = loadLS(SK.mading, []);
+  if (!items.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-newspaper"></i><br/>Belum ada pengumuman.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  items.forEach(it => {
+    const card = document.createElement('div');
+    card.className = 'mading-pub-card';
+    card.innerHTML = `
+      <h3>${esc(it.judul)}</h3>
+      <div class="date"><i class="fa-regular fa-calendar"></i> ${fmtDate(it.tanggal)}</div>
+      <p>${esc(it.isi)}</p>
+    `;
+    container.appendChild(card);
+  });
+}
+
+document.getElementById('btnPublishMading')?.addEventListener('click', () => {
+  const judul = document.getElementById('madingJudul')?.value?.trim();
+  const isi   = document.getElementById('madingIsi')?.value?.trim();
+  if (!judul || !isi) { alert('Judul dan isi wajib diisi!'); return; }
+  const arr = loadLS(SK.mading, []);
+  arr.unshift({ judul, isi, tanggal: Date.now() });
+  saveLS(SK.mading, arr);
+  document.getElementById('madingJudul').value = '';
+  document.getElementById('madingIsi').value = '';
+  renderMadingList();
+  renderMadingPublik();
+  refreshRingkasan();
+  alert('✅ Pengumuman berhasil dipublish!');
+});
+
+document.getElementById('btnClearAllMading')?.addEventListener('click', () => {
+  if (!confirm('Hapus SEMUA pengumuman?')) return;
+  saveLS(SK.mading, []);
+  renderMadingList();
+  renderMadingPublik();
+  refreshRingkasan();
+});
+
+// ============================================================
+// KAS
+// ============================================================
+function renderKasList() {
+  const container = document.getElementById('kasRiwayat');
+  if (!container) return;
+  const items = loadLS(SK.kas, []);
+
+  const saldo = items.reduce((acc, it) => {
+    const a = Number(it.nominal) || 0;
+    return it.jenis === 'masuk' ? acc + a : acc - a;
+  }, 0);
+
+  const infoEl = document.getElementById('kasSaldoInfo');
+  if (infoEl) {
+    infoEl.innerHTML = `Saldo: <strong style="color:${saldo>=0?'var(--primary)':'#ff6b6b'}">${formatRp(saldo)}</strong>`;
+  }
+
+  if (!items.length) {
+    container.innerHTML = '<div style="color:var(--gray);font-size:13px;">Belum ada transaksi.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  items.forEach((it, idx) => {
+    const isMasuk = it.jenis === 'masuk';
+    const div = document.createElement('div');
+    div.style.cssText = 'padding:14px 16px;border:1px solid var(--border-glass);border-radius:16px;background:rgba(255,255,255,.02);';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:0;">
+          <div style="color:${isMasuk?'var(--primary)':'#ff6b6b'};font-weight:700;font-size:13px;margin-bottom:4px;">
+            ${isMasuk?'<i class="fa-solid fa-arrow-up"></i> Pemasukan':'<i class="fa-solid fa-arrow-down"></i> Pengeluaran'}
+          </div>
+          <div style="color:var(--gray);font-size:11px;margin-bottom:6px;">${fmtDateTime(it.tanggal)}</div>
+          <div style="color:rgba(255,255,255,.82);font-size:13px;">${esc(it.keterangan)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-weight:800;font-size:16px;color:${isMasuk?'var(--primary)':'#ff6b6b'};">${formatRp(it.nominal)}</div>
+          <button data-del="${idx}" style="margin-top:8px;padding:7px 14px;border-radius:12px;border:1px solid rgba(255,80,80,.2);background:rgba(255,80,80,.06);color:#ff6b6b;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+            <i class="fa-solid fa-trash"></i> Hapus
+          </button>
+        </div>
+      </div>
+    `;
+    div.querySelector('[data-del]').addEventListener('click', () => {
+      const arr = loadLS(SK.kas, []);
+      arr.splice(idx, 1);
+      saveLS(SK.kas, arr);
+      renderKasList();
+      refreshRingkasan();
+    });
+    container.appendChild(div);
+  });
+}
+
+document.getElementById('btnTambahKas')?.addEventListener('click', () => {
+  const jenis      = document.getElementById('kasJenis')?.value;
+  const nominal    = Number(document.getElementById('kasNominal')?.value);
+  const keterangan = document.getElementById('kasKeterangan')?.value?.trim();
+  if (!jenis || !Number.isFinite(nominal) || nominal <= 0 || !keterangan) {
+    alert('Isi jenis, nominal lebih dari 0, dan keterangan!');
+    return;
+  }
+  const arr = loadLS(SK.kas, []);
+  arr.unshift({ jenis, nominal, keterangan, tanggal: Date.now() });
+  saveLS(SK.kas, arr);
+  document.getElementById('kasNominal').value = '';
+  document.getElementById('kasKeterangan').value = '';
+  renderKasList();
+  refreshRingkasan();
+});
+
+document.getElementById('btnClearKas')?.addEventListener('click', () => {
+  if (!confirm('Hapus SEMUA riwayat transaksi kas?')) return;
+  saveLS(SK.kas, []);
+  renderKasList();
+  refreshRingkasan();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderMadingPublik();
+refreshRingkasan();
+
+// ============================================================
+// PUSH NOTIFICATION (FCM) + SOUND (best effort)
+// ============================================================
+// VAPID public key dari web push certificate (kamu sudah kirim nilainya)
+const VAPID_PUBLIC_KEY = 'BIQ_exdx6K-2OBIYLw0VlyxnG8Ek1PKysiX_Y-6ExC3VAP6CkalGhFsMhi1RUxqNYy0UH-GukDZjhGlFzJIq0Qk';
+
+async function ensureMessaging() {
+  try {
+    const { messaging, getToken } = await import('./firebase.js');
+    if (!messaging || !('serviceWorker' in navigator)) return null;
+    return { messaging, getToken };
+  } catch {
+    return null;
+  }
+}
+
+function playNotifSound() {
+  // Best effort: pakai Audio elemen sederhana.
+  // Browser mungkin menolak autoplay audio sampai user interaction.
+  try {
+    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+
+
+    audio.volume = 1.0;
+    audio.play().catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
+async function enablePush() {
+  const messagingPack = await ensureMessaging();
+  if (!messagingPack) {
+    alert('FCM belum siap (firebase-messaging belum terpasang atau service worker tidak didukung).');
+    return;
+  }
+
+  const { messaging, getToken } = messagingPack;
+
+  // minta izin notif
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') {
+    alert('Izin notifikasi ditolak.');
+    return;
+  }
+
+  const swReg = await navigator.serviceWorker.getRegistration();
+  if (!swReg) {
+    alert('Service worker belum terdaftar.');
+    return;
+  }
+
+  // ambil token FCM
+  const token = await getToken(messaging, {
+    vapidKey: VAPID_PUBLIC_KEY,
+  });
+
+  if (token) {
+    localStorage.setItem('fcm_token', token);
+    alert('✅ Notifikasi diaktifkan.');
+  } else {
+    alert('Gagal mendapatkan token.');
+  }
+}
+
+// Subscribe foreground message + play sound
+async function setupOnMessage() {
+  try {
+    const mod = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging.js');
+    const { getMessaging, onMessage } = mod;
+    const { messaging } = await import('./firebase.js');
+    if (!messaging) return;
+
+    onMessage(messaging, (payload) => {
+      try {
+        const title = payload?.notification?.title || payload?.data?.title || 'Pengumuman Mading';
+        const body = payload?.notification?.body || payload?.data?.body || 'Ada pengumuman baru.';
+        playNotifSound();
+
+        if (Notification.permission === 'granted') {
+          new Notification(title, {
+            body,
+            icon: payload?.notification?.icon || './asset/Adhigana prapti.png',
+            tag: payload?.data?.tag || 'mading',
+            data: { url: payload?.data?.clickUrl || './Login.html' }
+          });
+        }
+      } catch {
+        // ignore
+      }
+    });
+  } catch {
+    // ignore
+  }
+}
+
+// Tombol UI (insert sederhana jika belum ada)
+(function insertNotifButton() {
+  try {
+    const portalDashboardEl = document.getElementById('portalDashboard');
+    if (!portalDashboardEl) return;
+
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '18px';
+    wrap.innerHTML = `
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button id="btnEnablePush" class="btn btn-primary" style="padding:10px 16px;font-size:13px;">
+          <i class="fa-solid fa-bell"></i> Aktifkan Notif Pengumuman
+        </button>
+        <button id="btnTestNotif" class="btn btn-secondary" style="padding:10px 16px;font-size:13px;">
+          <i class="fa-solid fa-volume-high"></i> Tes Notif
+        </button>
+        <span id="notifStatus" style="color:var(--gray);font-size:12px;">Status: -</span>
+      </div>
+    `;
+
+    // sisipkan di atas tabs (dekat header)
+    const portalTabs = document.getElementById('portalTabs');
+    portalTabs?.before(wrap);
+
+    document.getElementById('btnEnablePush')?.addEventListener('click', async () => {
+      document.getElementById('notifStatus').textContent = 'Status: meminta izin...';
+      await enablePush();
+      document.getElementById('notifStatus').textContent = 'Status: selesai';
+    });
+
+    document.getElementById('btnTestNotif')?.addEventListener('click', () => {
+      playNotifSound();
+      if (Notification.permission === 'granted') {
+        new Notification('Tes Notif', { body: 'Ini bunyi notif dari aplikasi.', icon: './asset/Adhigana prapti.png', tag: 'test' });
+      } else {
+        alert('Izin notifikasi belum diberikan. Tekan Aktifkan Notif dulu.');
+      }
+    });
+
+  } catch {
+    // ignore
+  }
+})();
+
+// set up foreground onMessage
+setupOnMessage();
+</script>
+</body>
+</html>
