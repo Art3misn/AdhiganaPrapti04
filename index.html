@@ -732,349 +732,379 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
- <!-- ============================================================
-  SOLUSI ULTIMATE: FORCE REFRESH PWA DI HP
-  Letakkan di bagian paling bawah HTML, sebelum </body>
+<!-- ============================================================
+  TAMBAHAN: REALTIME REFRESH & NOTIFIKASI
+  Letakkan di bagian bawah HTML, sebelum </body>
 ============================================================ -->
 <script>
-// ── SOLUSI ULTIMATE REFRESH PWA ────────────────────────────
-
+// ── REALTIME REFRESH (tanpa perlu reload halaman) ─────────────
 (function() {
-  console.log('🔥 ULTIMATE REFRESH SYSTEM AKTIF!');
+  // Simpan data sebelumnya untuk deteksi perubahan
+  let prevData = {
+    hadir: 0,
+    mading: 0,
+    saldo: 0,
+    totalAnggota: 54
+  };
 
-  // ============================================================
-  // 1. CEK APAKAH DI PWA
-  // ============================================================
-  function isPWA() {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           window.navigator.standalone === true ||
-           document.referrer.includes('android-app://');
-  }
+  // Fungsi untuk menampilkan notifikasi (toast)
+  function showToast(message, type) {
+    // Hapus toast lama jika ada
+    var oldToast = document.querySelector('.custom-toast');
+    if (oldToast) oldToast.remove();
 
-  // ============================================================
-  // 2. FUNGSI RESET TOTAL
-  // ============================================================
-  function ultimateReset() {
-    // Tampilkan overlay loading
-    var overlay = document.createElement('div');
-    overlay.id = 'ultimate-reset-overlay';
-    overlay.style.cssText = `
+    var toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.style.cssText = `
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.95);
-      backdrop-filter: blur(20px);
-      z-index: 9999999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
+      bottom: 30px;
+      right: 30px;
+      background: ${type === 'success' ? 'rgba(105,215,232,0.15)' : 'rgba(255,180,60,0.15)'};
+      border: 1px solid ${type === 'success' ? 'rgba(105,215,232,0.3)' : 'rgba(255,180,60,0.3)'};
+      border-radius: 16px;
+      padding: 16px 24px;
+      color: var(--text, #ffffff);
       font-family: 'Poppins', sans-serif;
-      animation: fadeIn 0.3s ease;
+      font-size: 14px;
+      font-weight: 500;
+      backdrop-filter: blur(12px);
+      z-index: 999999;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.4s ease;
+      transition: opacity 0.5s;
     `;
-    overlay.innerHTML = `
-      <div style="text-align:center;max-width:400px;padding:20px;">
-        <div style="width:80px;height:80px;border:4px solid rgba(105,215,232,0.1);border-top-color:var(--primary, #69d7e8);border-radius:50%;animation:spin 0.6s linear infinite;margin:0 auto 30px;"></div>
-        <h2 style="color:var(--primary, #69d7e8);font-size:28px;margin-bottom:10px;">🔄 Membersihkan</h2>
-        <p style="color:var(--gray, #8899aa);font-size:16px;line-height:1.6;">Menghapus semua cache dan service worker...</p>
-        <div id="reset-progress" style="margin-top:20px;font-size:14px;color:var(--gray, #8899aa);">Memulai...</div>
-        <div style="margin-top:20px;width:100%;height:4px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
-          <div id="reset-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--primary, #69d7e8),var(--secondary, #f3d36c));border-radius:4px;transition:width 0.3s;"></div>
-        </div>
-      </div>
+
+    var icon = document.createElement('i');
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info';
+    icon.style.cssText = `color: ${type === 'success' ? 'var(--primary, #69d7e8)' : '#ffb43c'}; font-size: 20px;`;
+    toast.appendChild(icon);
+
+    var text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(text);
+
+    // Close button
+    var closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.cssText = `
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 20px;
+      color: rgba(255,255,255,0.4);
+      padding: 0 4px;
     `;
-    document.body.appendChild(overlay);
+    closeBtn.onclick = function() { toast.remove(); };
+    toast.appendChild(closeBtn);
 
-    // Tambahkan CSS animasi
-    var style = document.createElement('style');
-    style.textContent = `
-      @keyframes spin { to { transform: rotate(360deg); } }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    `;
-    document.head.appendChild(style);
+    document.body.appendChild(toast);
 
-    var progress = document.getElementById('reset-progress');
-    var progressBar = document.getElementById('reset-progress-bar');
-
-    // Step 1: Hapus semua cache
-    progress.textContent = '📦 Menghapus cache...';
-    progressBar.style.width = '25%';
-
+    // Auto remove setelah 5 detik
     setTimeout(function() {
-      if ('caches' in window) {
-        caches.keys().then(function(cacheNames) {
-          var deletePromises = cacheNames.map(function(cacheName) {
-            return caches.delete(cacheName);
-          });
-          return Promise.all(deletePromises);
-        }).then(function() {
-          progress.textContent = '✅ Cache dihapus';
-          progressBar.style.width = '50%';
-          
-          // Step 2: Unregister Service Worker
-          progress.textContent = '🔧 Menghapus Service Worker...';
-          setTimeout(function() {
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                var unregisterPromises = registrations.map(function(registration) {
-                  return registration.unregister();
-                });
-                return Promise.all(unregisterPromises);
-              }).then(function() {
-                progress.textContent = '✅ Service Worker dihapus';
-                progressBar.style.width = '75%';
-                
-                // Step 3: Clear localStorage (kecuali data penting)
-                progress.textContent = '🗑️ Membersihkan storage...';
-                setTimeout(function() {
-                  // Simpan data penting
-                  var absensi = localStorage.getItem('ap_absensi_v2');
-                  var mading = localStorage.getItem('ap_mading_v2');
-                  var kas = localStorage.getItem('ap_kas_v2');
-                  
-                  // Hapus semua localStorage
-                  localStorage.clear();
-                  
-                  // Kembalikan data penting
-                  if (absensi) localStorage.setItem('ap_absensi_v2', absensi);
-                  if (mading) localStorage.setItem('ap_mading_v2', mading);
-                  if (kas) localStorage.setItem('ap_kas_v2', kas);
-                  
-                  progress.textContent = '✅ Storage dibersihkan';
-                  progressBar.style.width = '100%';
-                  
-                  // Step 4: Force reload dengan cache busting
-                  progress.textContent = '🔄 Memuat ulang halaman...';
-                  setTimeout(function() {
-                    var url = window.location.href.split('?')[0];
-                    var timestamp = Date.now();
-                    var newUrl = url + '?force=' + timestamp + '&v=' + Math.random();
-                    
-                    // Force reload dengan replace
-                    window.location.replace(newUrl);
-                  }, 500);
-                }, 300);
-              });
-            } else {
-              // Tidak ada service worker, langsung reload
-              progress.textContent = '🔄 Memuat ulang...';
-              setTimeout(function() {
-                window.location.reload(true);
-              }, 500);
-            }
-          }, 300);
-        });
-      } else {
-        // Tidak ada cache API
-        progress.textContent = '🔄 Memuat ulang...';
-        setTimeout(function() {
-          window.location.reload(true);
-        }, 500);
+      if (toast.parentNode) {
+        toast.style.opacity = '0';
+        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
       }
-    }, 500);
+    }, 5000);
   }
 
-  // ============================================================
-  // 3. TOMBOL RESET ULTIMATE
-  // ============================================================
-  function addUltimateResetButton() {
-    if (document.querySelector('.ultimate-reset-btn')) return;
-
-    var container = document.querySelector('.stats-wrapper');
-    if (!container) {
-      container = document.querySelector('.stats');
-      if (!container) return;
+  // Tambahkan CSS untuk animasi toast
+  var style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+    .custom-toast {
+      animation: slideUp 0.4s ease;
+    }
+  `;
+  document.head.appendChild(style);
 
-    var resetDiv = document.createElement('div');
-    resetDiv.style.cssText = 'text-align:center;margin-top:20px;grid-column:1/-1;';
+  // Fungsi untuk update stats
+  function updateStats() {
+    try {
+      var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
+      var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
+      var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
 
-    resetDiv.innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-        <button class="ultimate-reset-btn" style="
-          display: inline-flex;
-          align-items: center;
-          gap: 12px;
-          padding: 16px 32px;
-          border-radius: 16px;
-          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-          border: none;
-          color: white;
-          font-family: 'Poppins', sans-serif;
-          font-size: 16px;
-          font-weight: 700;
-          cursor: pointer;
-          transition: 0.3s;
-          box-shadow: 0 8px 30px rgba(255,80,80,0.3);
-          width: 100%;
-          max-width: 400px;
-          justify-content: center;
-        ">
-          <i class="fa-solid fa-bolt"></i>
-          🔥 RESET TOTAL & REFRESH
-        </button>
-        <span style="color:var(--gray);font-size:12px;">
-          <i class="fa-regular fa-triangle-exclamation" style="color:#ff6b6b;"></i> 
-          Menghapus semua cache & service worker, merefresh total
-        </span>
-        <span style="color:var(--gray);font-size:11px;background:rgba(255,80,80,0.1);padding:4px 12px;border-radius:999px;color:#ff6b6b;">
-          ⚡ Khusus HP - Force Refresh Total
-        </span>
-      </div>
-    `;
+      var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
+      var saldo = kas.reduce(function(acc, it) {
+        var a = Number(it.nominal) || 0;
+        return it.jenis === 'masuk' ? acc + a : acc - a;
+      }, 0);
 
-    if (container.tagName === 'DIV' && container.classList.contains('stats-wrapper')) {
-      container.appendChild(resetDiv);
-    } else {
-      var statsWrapper = document.querySelector('.stats-wrapper');
-      if (statsWrapper) {
-        statsWrapper.appendChild(resetDiv);
-      } else {
-        container.appendChild(resetDiv);
+      // Update elemen stats
+      var elHadir = document.getElementById('landingHadirHariIni');
+      var elMading = document.getElementById('landingJumlahMading');
+      var elSaldo = document.getElementById('landingSaldoKas');
+      var elTotal = document.getElementById('landingTotalAnggota');
+
+      var totalAnggota = 54;
+
+      // Deteksi perubahan untuk notifikasi
+      var changes = [];
+
+      if (elHadir) {
+        var newHadir = hadirCount;
+        var oldHadir = prevData.hadir;
+        if (newHadir !== oldHadir) {
+          changes.push('Kehadiran: ' + oldHadir + ' → ' + newHadir + ' hadir');
+        }
+        elHadir.textContent = newHadir;
+        prevData.hadir = newHadir;
       }
-    }
 
-    // Event listener
-    var resetBtn = document.querySelector('.ultimate-reset-btn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Konfirmasi double
-        if (confirm('⚠️ RESET TOTAL PWA\n\nAkan menghapus:\n• Semua cache\n• Service Worker\n• Storage sementara\n\nData penting (absensi, mading, kas) akan tetap tersimpan.\n\nLanjutkan?')) {
-          if (confirm('💥 YAKIN? Ini akan merefresh total seperti pertama kali install!')) {
-            ultimateReset();
+      if (elMading) {
+        var newMading = mading.length;
+        var oldMading = prevData.mading;
+        if (newMading !== oldMading) {
+          if (newMading > oldMading) {
+            var judulTerbaru = mading[0]?.judul || 'Pengumuman baru';
+            changes.push('📢 ' + judulTerbaru);
           }
         }
-      });
+        elMading.textContent = newMading;
+        prevData.mading = newMading;
+      }
 
-      // Hover effect
-      resetBtn.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.02)';
-        this.style.boxShadow = '0 12px 40px rgba(255,80,80,0.4)';
-      });
-      resetBtn.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-        this.style.boxShadow = '0 8px 30px rgba(255,80,80,0.3)';
-      });
+      if (elSaldo) {
+        var newSaldo = saldo;
+        var oldSaldo = prevData.saldo;
+        if (newSaldo !== oldSaldo) {
+          var selisih = newSaldo - oldSaldo;
+          var jenis = selisih > 0 ? 'masuk' : 'keluar';
+          changes.push('💰 Kas ' + jenis + ': Rp ' + Math.abs(selisih).toLocaleString('id-ID'));
+        }
+        var formattedSaldo = 'Rp ' + newSaldo.toLocaleString('id-ID');
+        elSaldo.textContent = formattedSaldo;
+        prevData.saldo = newSaldo;
+      }
+
+      if (elTotal) {
+        elTotal.textContent = totalAnggota;
+        prevData.totalAnggota = totalAnggota;
+      }
+
+      // Tampilkan notifikasi jika ada perubahan
+      if (changes.length > 0) {
+        var message = changes.join(' • ');
+        showToast('🔄 Update: ' + message, 'success');
+      }
+
+    } catch (e) {
+      console.log('Update stats error:', e);
     }
   }
 
-  // ============================================================
-  // 4. AUTO DETECT - JIKA DI PWA DAN DATA STALE
-  // ============================================================
-  function autoDetectStale() {
-    // Jika di PWA dan data sudah lebih dari 30 menit
-    var lastUpdate = localStorage.getItem('pwa_last_update');
-    var now = Date.now();
-    
-    if (isPWA() && lastUpdate && (now - parseInt(lastUpdate) > 1800000)) {
-      console.log('⏰ Data sudah 30 menit, auto refresh...');
-      // Tampilkan notifikasi
-      showToast('🔄 Data diperbarui otomatis...', 'info');
-      // Refresh ringan
-      setTimeout(function() {
-        window.location.reload();
-      }, 1000);
+  // Update pertama kali
+  setTimeout(updateStats, 500);
+
+  // Update setiap 3 detik (realtime)
+  setInterval(updateStats, 3000);
+
+  // Juga update saat ada perubahan storage dari tab lain
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'ap_absensi_v2' || e.key === 'ap_mading_v2' || e.key === 'ap_kas_v2') {
+      updateStats();
     }
-    
-    // Update timestamp
-    localStorage.setItem('pwa_last_update', String(now));
-  }
+  });
 
-  // ============================================================
-  // 5. SHOW TOAST (jika belum ada)
-  // ============================================================
-  if (typeof showToast === 'undefined') {
-    window.showToast = function(message, type) {
-      var toast = document.createElement('div');
-      toast.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.85);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 16px;
-        padding: 14px 24px;
-        color: white;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        z-index: 999999;
-        max-width: 90%;
-        text-align: center;
-        animation: slideUp 0.4s ease;
-      `;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(function() {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.5s';
-        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
-      }, 3000);
-    };
-  }
-
-  // ============================================================
-  // 6. INITIALIZE
-  // ============================================================
-  setTimeout(function() {
-    addUltimateResetButton();
-    autoDetectStale();
-    
-    console.log('🔥 ULTIMATE RESET SYSTEM READY!');
-    console.log('📱 Klik tombol merah untuk reset total di HP');
-    console.log('📍 Mode:', isPWA() ? 'PWA' : 'Browser');
-  }, 1000);
+  console.log('✅ Realtime refresh aktif! Data akan update otomatis setiap 3 detik.');
 
 })();
 </script>
 
 <!-- ============================================================
-  TAMBAHAN: SHORTCUT GESTURE UNTUK HP (3x tap)
+  TAMBAHAN: TOMBOL REFRESH MANUAL (opsional)
+  Bisa diletakkan di dekat stats untuk refresh manual
 ============================================================ -->
+<style>
+  .refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(105,215,232,0.1);
+    border: 1px solid rgba(105,215,232,0.2);
+    color: var(--primary, #69d7e8);
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+  }
+  .refresh-btn:hover {
+    background: rgba(105,215,232,0.2);
+    transform: scale(1.02);
+  }
+  .refresh-btn i {
+    font-size: 14px;
+  }
+  .refresh-btn.spinning i {
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Badge notifikasi di stats */
+  .stat-box {
+    position: relative;
+  }
+  .stat-update-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary, #69d7e8);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-update-badge.show {
+    opacity: 1;
+  }
+</style>
+
+<!-- Tambahan: Tombol Refresh Manual di Stats -->
 <script>
-// ── TAP 3 KALI CEPAT UNTUK RESET ──────────────────────────
-
+// Tambahkan tombol refresh di bawah stats
 (function() {
-  var tapCount = 0;
-  var tapTimer = null;
-  var lastTapTime = 0;
+  var statsWrapper = document.querySelector('.stats-wrapper');
+  if (statsWrapper) {
+    var refreshDiv = document.createElement('div');
+    refreshDiv.style.cssText = 'text-align:center;margin-top:16px;grid-column:1/-1;';
+    refreshDiv.innerHTML = `
+      <button class="refresh-btn" id="manualRefreshBtn">
+        <i class="fa-solid fa-rotate"></i> Refresh Data Sekarang
+      </button>
+      <span style="color:var(--gray);font-size:11px;margin-left:12px;">
+        <i class="fa-regular fa-clock"></i> Auto-refresh setiap 3 detik
+      </span>
+    `;
+    statsWrapper.appendChild(refreshDiv);
 
-  document.addEventListener('click', function(e) {
-    // Cek apakah klik di stats area
-    var statsArea = document.querySelector('.stats') || document.querySelector('.stats-wrapper');
-    if (!statsArea) return;
-    if (!statsArea.contains(e.target)) return;
+    var refreshBtn = document.getElementById('manualRefreshBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function() {
+        var icon = this.querySelector('i');
+        icon.classList.add('fa-spin');
+        this.disabled = true;
+        this.style.opacity = '0.6';
 
-    var now = Date.now();
-    if (now - lastTapTime > 500) {
-      tapCount = 0;
+        // Force update
+        try {
+          var event = new StorageEvent('storage', {
+            key: 'ap_absensi_v2',
+            newValue: localStorage.getItem('ap_absensi_v2')
+          });
+          window.dispatchEvent(event);
+          // Juga panggil langsung
+          if (window.updateStats) window.updateStats();
+        } catch(e) {}
+
+        // Trigger update stats
+        var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
+        var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
+        var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
+        var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
+        var saldo = kas.reduce(function(acc, it) {
+          var a = Number(it.nominal) || 0;
+          return it.jenis === 'masuk' ? acc + a : acc - a;
+        }, 0);
+
+        var elHadir = document.getElementById('landingHadirHariIni');
+        var elMading = document.getElementById('landingJumlahMading');
+        var elSaldo = document.getElementById('landingSaldoKas');
+
+        if (elHadir) elHadir.textContent = hadirCount;
+        if (elMading) elMading.textContent = mading.length;
+        if (elSaldo) elSaldo.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
+
+        // Tampilkan notifikasi
+        showToast('✅ Data berhasil diperbarui!', 'success');
+
+        setTimeout(function() {
+          icon.classList.remove('fa-spin');
+          refreshBtn.disabled = false;
+          refreshBtn.style.opacity = '1';
+        }, 1000);
+      });
     }
-    
-    tapCount++;
-    lastTapTime = now;
-
-    if (tapCount === 3) {
-      tapCount = 0;
-      // Trigger reset
-      var resetBtn = document.querySelector('.ultimate-reset-btn');
-      if (resetBtn) {
-        resetBtn.click();
-      } else {
-        showToast('🔴 Tap 3x untuk reset!', 'info');
-      }
-    } else if (tapCount === 2) {
-      showToast('🔄 Tap sekali lagi untuk reset total', 'info');
-    }
-  });
-
-  console.log('👆 Tap 3x cepat di area stats untuk reset');
+  }
 })();
+</script>
+
+<!-- ── Override showToast agar global ── -->
+<script>
+// Pastikan showToast tersedia global
+if (typeof showToast === 'undefined') {
+  window.showToast = function(message, type) {
+    var toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: ${type === 'success' ? 'rgba(105,215,232,0.15)' : 'rgba(255,180,60,0.15)'};
+      border: 1px solid ${type === 'success' ? 'rgba(105,215,232,0.3)' : 'rgba(255,180,60,0.3)'};
+      border-radius: 16px;
+      padding: 16px 24px;
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      backdrop-filter: blur(12px);
+      z-index: 999999;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.4s ease;
+    `;
+
+    var icon = document.createElement('i');
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info';
+    icon.style.cssText = `color: ${type === 'success' ? '#69d7e8' : '#ffb43c'}; font-size: 20px;`;
+    toast.appendChild(icon);
+
+    var text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(text);
+
+    var closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.cssText = `
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 20px;
+      color: rgba(255,255,255,0.4);
+      padding: 0 4px;
+    `;
+    closeBtn.onclick = function() { toast.remove(); };
+    toast.appendChild(closeBtn);
+
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      if (toast.parentNode) {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s';
+        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
+      }
+    }, 5000);
+  };
+}
 </script>
 </body>
 </html>
