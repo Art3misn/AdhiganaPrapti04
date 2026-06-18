@@ -732,6 +732,380 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+  <!-- ============================================================
+  TAMBAHAN: REALTIME REFRESH & NOTIFIKASI
+  Letakkan di bagian bawah HTML, sebelum </body>
+============================================================ -->
+<script>
+// ── REALTIME REFRESH (tanpa perlu reload halaman) ─────────────
+(function() {
+  // Simpan data sebelumnya untuk deteksi perubahan
+  let prevData = {
+    hadir: 0,
+    mading: 0,
+    saldo: 0,
+    totalAnggota: 54
+  };
+
+  // Fungsi untuk menampilkan notifikasi (toast)
+  function showToast(message, type) {
+    // Hapus toast lama jika ada
+    var oldToast = document.querySelector('.custom-toast');
+    if (oldToast) oldToast.remove();
+
+    var toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: ${type === 'success' ? 'rgba(105,215,232,0.15)' : 'rgba(255,180,60,0.15)'};
+      border: 1px solid ${type === 'success' ? 'rgba(105,215,232,0.3)' : 'rgba(255,180,60,0.3)'};
+      border-radius: 16px;
+      padding: 16px 24px;
+      color: var(--text, #ffffff);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      backdrop-filter: blur(12px);
+      z-index: 999999;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.4s ease;
+      transition: opacity 0.5s;
+    `;
+
+    var icon = document.createElement('i');
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info';
+    icon.style.cssText = `color: ${type === 'success' ? 'var(--primary, #69d7e8)' : '#ffb43c'}; font-size: 20px;`;
+    toast.appendChild(icon);
+
+    var text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(text);
+
+    // Close button
+    var closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.cssText = `
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 20px;
+      color: rgba(255,255,255,0.4);
+      padding: 0 4px;
+    `;
+    closeBtn.onclick = function() { toast.remove(); };
+    toast.appendChild(closeBtn);
+
+    document.body.appendChild(toast);
+
+    // Auto remove setelah 5 detik
+    setTimeout(function() {
+      if (toast.parentNode) {
+        toast.style.opacity = '0';
+        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
+      }
+    }, 5000);
+  }
+
+  // Tambahkan CSS untuk animasi toast
+  var style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-toast {
+      animation: slideUp 0.4s ease;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Fungsi untuk update stats
+  function updateStats() {
+    try {
+      var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
+      var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
+      var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
+
+      var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
+      var saldo = kas.reduce(function(acc, it) {
+        var a = Number(it.nominal) || 0;
+        return it.jenis === 'masuk' ? acc + a : acc - a;
+      }, 0);
+
+      // Update elemen stats
+      var elHadir = document.getElementById('landingHadirHariIni');
+      var elMading = document.getElementById('landingJumlahMading');
+      var elSaldo = document.getElementById('landingSaldoKas');
+      var elTotal = document.getElementById('landingTotalAnggota');
+
+      var totalAnggota = 54;
+
+      // Deteksi perubahan untuk notifikasi
+      var changes = [];
+
+      if (elHadir) {
+        var newHadir = hadirCount;
+        var oldHadir = prevData.hadir;
+        if (newHadir !== oldHadir) {
+          changes.push('Kehadiran: ' + oldHadir + ' → ' + newHadir + ' hadir');
+        }
+        elHadir.textContent = newHadir;
+        prevData.hadir = newHadir;
+      }
+
+      if (elMading) {
+        var newMading = mading.length;
+        var oldMading = prevData.mading;
+        if (newMading !== oldMading) {
+          if (newMading > oldMading) {
+            var judulTerbaru = mading[0]?.judul || 'Pengumuman baru';
+            changes.push('📢 ' + judulTerbaru);
+          }
+        }
+        elMading.textContent = newMading;
+        prevData.mading = newMading;
+      }
+
+      if (elSaldo) {
+        var newSaldo = saldo;
+        var oldSaldo = prevData.saldo;
+        if (newSaldo !== oldSaldo) {
+          var selisih = newSaldo - oldSaldo;
+          var jenis = selisih > 0 ? 'masuk' : 'keluar';
+          changes.push('💰 Kas ' + jenis + ': Rp ' + Math.abs(selisih).toLocaleString('id-ID'));
+        }
+        var formattedSaldo = 'Rp ' + newSaldo.toLocaleString('id-ID');
+        elSaldo.textContent = formattedSaldo;
+        prevData.saldo = newSaldo;
+      }
+
+      if (elTotal) {
+        elTotal.textContent = totalAnggota;
+        prevData.totalAnggota = totalAnggota;
+      }
+
+      // Tampilkan notifikasi jika ada perubahan
+      if (changes.length > 0) {
+        var message = changes.join(' • ');
+        showToast('🔄 Update: ' + message, 'success');
+      }
+
+    } catch (e) {
+      console.log('Update stats error:', e);
+    }
+  }
+
+  // Update pertama kali
+  setTimeout(updateStats, 500);
+
+  // Update setiap 3 detik (realtime)
+  setInterval(updateStats, 3000);
+
+  // Juga update saat ada perubahan storage dari tab lain
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'ap_absensi_v2' || e.key === 'ap_mading_v2' || e.key === 'ap_kas_v2') {
+      updateStats();
+    }
+  });
+
+  console.log('✅ Realtime refresh aktif! Data akan update otomatis setiap 3 detik.');
+
+})();
+</script>
+
+<!-- ============================================================
+  TAMBAHAN: TOMBOL REFRESH MANUAL (opsional)
+  Bisa diletakkan di dekat stats untuk refresh manual
+============================================================ -->
+<style>
+  .refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(105,215,232,0.1);
+    border: 1px solid rgba(105,215,232,0.2);
+    color: var(--primary, #69d7e8);
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+  }
+  .refresh-btn:hover {
+    background: rgba(105,215,232,0.2);
+    transform: scale(1.02);
+  }
+  .refresh-btn i {
+    font-size: 14px;
+  }
+  .refresh-btn.spinning i {
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Badge notifikasi di stats */
+  .stat-box {
+    position: relative;
+  }
+  .stat-update-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary, #69d7e8);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-update-badge.show {
+    opacity: 1;
+  }
+</style>
+
+<!-- Tambahan: Tombol Refresh Manual di Stats -->
+<script>
+// Tambahkan tombol refresh di bawah stats
+(function() {
+  var statsWrapper = document.querySelector('.stats-wrapper');
+  if (statsWrapper) {
+    var refreshDiv = document.createElement('div');
+    refreshDiv.style.cssText = 'text-align:center;margin-top:16px;grid-column:1/-1;';
+    refreshDiv.innerHTML = `
+      <button class="refresh-btn" id="manualRefreshBtn">
+        <i class="fa-solid fa-rotate"></i> Refresh Data Sekarang
+      </button>
+      <span style="color:var(--gray);font-size:11px;margin-left:12px;">
+        <i class="fa-regular fa-clock"></i> Auto-refresh setiap 3 detik
+      </span>
+    `;
+    statsWrapper.appendChild(refreshDiv);
+
+    var refreshBtn = document.getElementById('manualRefreshBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function() {
+        var icon = this.querySelector('i');
+        icon.classList.add('fa-spin');
+        this.disabled = true;
+        this.style.opacity = '0.6';
+
+        // Force update
+        try {
+          var event = new StorageEvent('storage', {
+            key: 'ap_absensi_v2',
+            newValue: localStorage.getItem('ap_absensi_v2')
+          });
+          window.dispatchEvent(event);
+          // Juga panggil langsung
+          if (window.updateStats) window.updateStats();
+        } catch(e) {}
+
+        // Trigger update stats
+        var absState = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{},"hadirCount":0}');
+        var hadirCount = Object.values(absState.records || {}).filter(function(v) { return v === 'hadir'; }).length;
+        var mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]');
+        var kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]');
+        var saldo = kas.reduce(function(acc, it) {
+          var a = Number(it.nominal) || 0;
+          return it.jenis === 'masuk' ? acc + a : acc - a;
+        }, 0);
+
+        var elHadir = document.getElementById('landingHadirHariIni');
+        var elMading = document.getElementById('landingJumlahMading');
+        var elSaldo = document.getElementById('landingSaldoKas');
+
+        if (elHadir) elHadir.textContent = hadirCount;
+        if (elMading) elMading.textContent = mading.length;
+        if (elSaldo) elSaldo.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
+
+        // Tampilkan notifikasi
+        showToast('✅ Data berhasil diperbarui!', 'success');
+
+        setTimeout(function() {
+          icon.classList.remove('fa-spin');
+          refreshBtn.disabled = false;
+          refreshBtn.style.opacity = '1';
+        }, 1000);
+      });
+    }
+  }
+})();
+</script>
+
+<!-- ── Override showToast agar global ── -->
+<script>
+// Pastikan showToast tersedia global
+if (typeof showToast === 'undefined') {
+  window.showToast = function(message, type) {
+    var toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: ${type === 'success' ? 'rgba(105,215,232,0.15)' : 'rgba(255,180,60,0.15)'};
+      border: 1px solid ${type === 'success' ? 'rgba(105,215,232,0.3)' : 'rgba(255,180,60,0.3)'};
+      border-radius: 16px;
+      padding: 16px 24px;
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      backdrop-filter: blur(12px);
+      z-index: 999999;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.4s ease;
+    `;
+
+    var icon = document.createElement('i');
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info';
+    icon.style.cssText = `color: ${type === 'success' ? '#69d7e8' : '#ffb43c'}; font-size: 20px;`;
+    toast.appendChild(icon);
+
+    var text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(text);
+
+    var closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.cssText = `
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 20px;
+      color: rgba(255,255,255,0.4);
+      padding: 0 4px;
+    `;
+    closeBtn.onclick = function() { toast.remove(); };
+    toast.appendChild(closeBtn);
+
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      if (toast.parentNode) {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s';
+        setTimeout(function() { if (toast.parentNode) toast.remove(); }, 500);
+      }
+    }, 5000);
+  };
+}
+</script>
 
 </body>
 </html>
