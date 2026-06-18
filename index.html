@@ -1,948 +1,1007 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Karang Taruna Adhigana Prapti</title>
-
-  <!-- FONT -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- ICON -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-  />
-
-  <link rel="stylesheet" href="style.css">
-
-  <!-- PWA META -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#69d7e8">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-  <style>
-
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      scroll-behavior:smooth;
-    }
-
-    :root{
-      --primary:#69d7e8;
-      --secondary:#f3d36c;
-      --dark:#06070b;
-      --card:#10131b;
-      --text:#ffffff;
-      --gray:#b9c0ce;
-      --border:rgba(255,255,255,0.08);
-    }
-
-    body{
-      font-family:'Poppins',sans-serif;
-      background:var(--dark);
-      color:var(--text);
-      overflow-x:hidden;
-    }
-
-    a{
-      text-decoration:none;
-      color:inherit;
-    }
-
-    img{
-      width:100%;
-      display:block;
-    }
-
-    .container{
-      width:90%;
-      max-width:1300px;
-      margin:auto;
-    }
-
-    /* ================= NAVBAR ================= */
-
-    nav{
-      width:100%;
-      position:fixed;
-      top:0;
-      left:0;
-      z-index:999;
-      backdrop-filter:blur(12px);
-      background:rgba(0,0,0,0.55);
-      border-bottom:1px solid var(--border);
-    }
-
-    .nav-wrapper{
-      height:90px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:15px;
-    }
-
-    .logo img{
-      width:58px;
-      height:58px;
-      object-fit:contain;
-    }
-
-    .logo-text h1{
-      font-size:20px;
-      font-weight:800;
-      color:var(--secondary);
-      line-height:1;
-    }
-
-    .logo-text span{
-      font-size:12px;
-      color:var(--gray);
-    }
-
-    .menu{
-      display:flex;
-      align-items:center;
-      gap:35px;
-    }
-
-    .menu a{
-      font-size:15px;
-      font-weight:500;
-      transition:.3s;
-      position:relative;
-    }
-
-    .menu a:hover{
-      color:var(--primary);
-    }
-
-    .btn{
-      padding:14px 26px;
-      border-radius:14px;
-      background:linear-gradient(135deg,var(--primary),#45c1d4);
-      color:#000;
-      font-weight:700;
-      transition:.3s;
-      box-shadow:0 10px 25px rgba(105,215,232,.25);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
-
-    .btn:hover{
-      transform:translateY(-3px);
-    }
-
-    /* ================= HERO ================= */
-
-    .hero{
-      min-height:100vh;
-      position:relative;
-      display:flex;
-      align-items:center;
-      overflow:hidden;
-      padding-top:100px;
-    }
-
-    .hero::before{
-      content:"";
-      position:absolute;
-      width:700px;
-      height:700px;
-      background:rgba(105,215,232,.15);
-      border-radius:50%;
-      filter:blur(120px);
-      top:-250px;
-      right:-150px;
-    }
-
-    .hero::after{
-      content:"";
-      position:absolute;
-      width:500px;
-      height:500px;
-      background:rgba(243,211,108,.10);
-      border-radius:50%;
-      filter:blur(120px);
-      bottom:-200px;
-      left:-100px;
-    }
-
-    .hero-wrapper{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      align-items:center;
-      gap:60px;
-      position:relative;
-      z-index:2;
-    }
-
-    .hero-text h5{
-      color:var(--primary);
-      letter-spacing:3px;
-      margin-bottom:18px;
-    }
-
-    .hero-text h1{
-      font-size:78px;
-      line-height:1.05;
-      font-weight:800;
-      margin-bottom:25px;
-    }
-
-    .hero-text h1 span{
-      color:var(--secondary);
-    }
-
-    .hero-text p{
-      color:var(--gray);
-      font-size:18px;
-      line-height:1.9;
-      margin-bottom:35px;
-      max-width:650px;
-      text-align:justify;
-    }
-
-    .hero-buttons{
-      display:flex;
-      gap:18px;
-      flex-wrap:wrap;
-    }
-
-    .btn-outline{
-      padding:14px 26px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.15);
-      transition:.3s;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
-
-    .btn-outline:hover{
-      background:rgba(255,255,255,.06);
-    }
-
-    .hero-card{
-      background:linear-gradient(
-      145deg,
-      rgba(255,255,255,.08),
-      rgba(255,255,255,.03)
-      );
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:40px;
-      padding:40px;
-      position:relative;
-      overflow:hidden;
-      box-shadow:0 25px 80px rgba(0,0,0,.45);
-    }
-
-    .hero-card::before{
-      content:"";
-      position:absolute;
-      width:250px;
-      height:250px;
-      background:rgba(105,215,232,.25);
-      border-radius:50%;
-      top:-100px;
-      right:-100px;
-      filter:blur(60px);
-    }
-
-    .hero-logo{
-      width:220px;
-      margin:auto;
-      margin-bottom:25px;
-    }
-
-    .hero-card h3{
-      text-align:center;
-      font-size:28px;
-      margin-bottom:15px;
-      color:var(--secondary);
-    }
-
-    .hero-card p{
-      text-align:justify;
-      color:var(--gray);
-      line-height:1.9;
-    }
-
-    /* ================= STATS ================= */
-
-    .stats{
-      margin-top:-60px;
-      position:relative;
-      z-index:10;
-    }
-
-    .stats-wrapper{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:25px;
-    }
-
-    .stat-box{
-      background:var(--card);
-      border:1px solid var(--border);
-      padding:35px;
-      border-radius:28px;
-      transition:.3s;
-    }
-
-    .stat-box:hover{
-      transform:translateY(-8px);
-      border-color:rgba(105,215,232,.35);
-    }
-
-    .stat-box i{
-      font-size:32px;
-      color:var(--primary);
-      margin-bottom:20px;
-    }
-
-    .stat-box h2{
-      font-size:38px;
-      margin-bottom:8px;
-      color:var(--secondary);
-    }
-
-    .stat-box p{
-      color:var(--gray);
-    }
-
-    /* ================= SECTION ================= */
-
-    section{
-      padding:120px 0;
-    }
-
-    .section-title{
-      text-align:center;
-      margin-bottom:70px;
-    }
-
-    .section-title h5{
-      color:var(--primary);
-      letter-spacing:3px;
-      margin-bottom:15px;
-    }
-
-    .section-title h2{
-      font-size:52px;
-      line-height:1.2;
-    }
-
-    .section-title h2 span{
-      color:var(--secondary);
-    }
-
-    /* ================= ABOUT ================= */
-
-    .about-wrapper{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:60px;
-      align-items:center;
-    }
-
-    .about-image{
-      position:relative;
-    }
-
-    .about-image img{
-      border-radius:40px;
-      border:2px solid rgba(255,255,255,.08);
-    }
-
-    .about-text h3{
-      font-size:48px;
-      line-height:1.2;
-      margin-bottom:25px;
-    }
-
-    .about-text h3 span{
-      color:var(--secondary);
-    }
-
-    .about-text p{
-      color:var(--gray);
-      line-height:2;
-      margin-bottom:35px;
-    }
-
-    .features{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:20px;
-    }
-
-    .feature{
-      background:var(--card);
-      border-radius:24px;
-      padding:25px;
-      border:1px solid var(--border);
-    }
-
-    .feature i{
-      color:var(--primary);
-      font-size:26px;
-      margin-bottom:15px;
-    }
-
-    .feature h4{
-      margin-bottom:8px;
-    }
-
-    .feature p{
-      font-size:14px;
-      margin:0;
-    }
-
-    /* ================= EVENTS ================= */
-
-    .events-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:30px;
-    }
-
-    .event-card{
-      background:var(--card);
-      border-radius:32px;
-      overflow:hidden;
-      border:1px solid var(--border);
-      transition:.4s;
-    }
-
-    .event-card:hover{
-      transform:translateY(-10px);
-    }
-
-    .event-image{
-      height:260px;
-      overflow:hidden;
-    }
-
-    .event-image img{
-      height:100%;
-      object-fit:cover;
-      transition:.5s;
-    }
-
-    .event-card:hover img{
-      transform:scale(1.08);
-    }
-
-    .event-content{
-      padding:30px;
-    }
-
-    .event-date{
-      display:inline-block;
-      background:rgba(105,215,232,.12);
-      color:var(--primary);
-      padding:8px 16px;
-      border-radius:999px;
-      font-size:13px;
-      margin-bottom:18px;
-    }
-
-    .event-content h3{
-      font-size:28px;
-      margin-bottom:15px;
-    }
-
-    .event-content p{
-      color:var(--gray);
-      line-height:1.8;
-      margin-bottom:25px;
-    }
-
-    /* ================= NEWS ================= */
-
-    .news-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:30px;
-    }
-
-    .news-card{
-      background:var(--card);
-      border-radius:32px;
-      overflow:hidden;
-      border:1px solid var(--border);
-      transition:.4s;
-    }
-
-    .news-card:hover{
-      transform:translateY(-10px);
-    }
-
-    .news-image{
-      height:260px;
-      overflow:hidden;
-    }
-
-    .news-image img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      transition:.5s;
-    }
-
-    .news-card:hover img{
-      transform:scale(1.08);
-    }
-
-    .news-content{
-      padding:30px;
-    }
-
-    .news-date{
-      display:inline-block;
-      background:rgba(243,211,108,.12);
-      color:var(--secondary);
-      padding:8px 16px;
-      border-radius:999px;
-      font-size:13px;
-      margin-bottom:18px;
-    }
-
-    .news-content h3{
-      font-size:26px;
-      margin-bottom:15px;
-      line-height:1.4;
-    }
-
-    .news-content p{
-      color:var(--gray);
-      line-height:1.8;
-      margin-bottom:25px;
-    }
-
-    /* ================= GALLERY ================= */
-
-    .gallery-grid{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:20px;
-    }
-
-    .gallery-grid img{
-      border-radius:24px;
-      height:250px;
-      object-fit:cover;
-      transition:.4s;
-      border:1px solid var(--border);
-      cursor:pointer;
-    }
-
-    .gallery-grid img:hover{
-      transform:scale(1.03);
-    }
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-  .reel-card{
-    grid-template-columns:1fr;
-    text-align:center;
-  }
-
-  .reel-info h3{
-    font-size:32px;
-  }
-
-}
-
-    /* ================= FOOTER ================= */
-
-    footer{
-      background:#040509;
-      border-top:1px solid var(--border);
-      padding:80px 0 30px;
-    }
-
-    .footer-wrapper{
-      display:grid;
-      grid-template-columns:2fr 1fr 1fr 1fr;
-      gap:40px;
-      margin-bottom:50px;
-    }
-
-    .footer-about p{
-      color:var(--gray);
-      line-height:1.9;
-      margin-top:20px;
-      max-width:350px;
-    }
-
-    .footer-title{
-      margin-bottom:25px;
-      color:var(--secondary);
-    }
-
-    .footer-links{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-
-    .footer-links a{
-      color:var(--gray);
-      transition:.3s;
-    }
-
-    .footer-links a:hover{
-      color:var(--primary);
-    }
-
-    .copyright{
-      border-top:1px solid var(--border);
-      padding-top:30px;
-      text-align:center;
-      color:var(--gray);
-    }
-
-    /* ================= MOBILE SIDEBAR ================= */
-
-.hamburger{
-  width:50px;
-  height:50px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.1);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:5px;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.hamburger:hover{
-  background:rgba(255,255,255,.05);
-}
-
-.hamburger span{
-  width:22px;
-  height:2px;
-  background:white;
-  border-radius:10px;
-}
-
-.mobile-sidebar{
-  position:fixed;
-  top:0;
-  right:-100%;
-  width:320px;
-  height:100vh;
-  background:#0b0e14;
-  z-index:99999;
-  transition:.4s ease;
-  padding:30px;
-  border-left:1px solid rgba(255,255,255,.08);
-}
-
-.mobile-sidebar.active{
-  right:0;
-}
-
-.mobile-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:40px;
-}
-
-.mobile-header h2{
-  color:var(--secondary);
-}
-
-.mobile-header i{
-  font-size:32px;
-  cursor:pointer;
-}
-
-.mobile-links{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-.mobile-links a{
-  padding:16px;
-  border-radius:14px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.05);
-  transition:.3s;
-  font-weight:500;
-}
-
-.mobile-links a:hover{
-  background:rgba(105,215,232,.12);
-  color:var(--primary);
-}
-
-.mobile-btn{
-  margin-top:15px;
-  text-align:center;
-  background:linear-gradient(
-    135deg,
-    var(--primary),
-    #45c1d4
-  ) !important;
-  color:#000 !important;
-  font-weight:700;
-}
-
-.sidebar-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  z-index:9999;
-  opacity:0;
-  visibility:hidden;
-  transition:.3s;
-}
-
-.sidebar-overlay.active{
-  opacity:1;
-  visibility:visible;
-}
-
-    /* ================= RESPONSIVE ================= */
-
-    @media(max-width:1100px){
-
-      .hero-wrapper,
-      .about-wrapper{
-        grid-template-columns:1fr;
+  <!DOCTYPE html>
+  <html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Karang Taruna Adhigana Prapti</title>
+
+    <!-- FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ICON -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA META -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#69d7e8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <style>
+
+
+      *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        scroll-behavior:smooth;
       }
 
-      .events-grid,
-      .news-grid{
-        grid-template-columns:1fr 1fr;
+      :root{
+        --primary:#69d7e8;
+        --secondary:#f3d36c;
+        --dark:#06070b;
+        --card:#10131b;
+        --text:#ffffff;
+        --gray:#b9c0ce;
+        --border:rgba(255,255,255,0.08);
       }
 
-      .gallery-grid{
-        grid-template-columns:1fr 1fr;
+      body{
+        font-family:'Poppins',sans-serif;
+        background:var(--dark);
+        color:var(--text);
+        overflow-x:hidden;
       }
 
-      .stats-wrapper{
-        grid-template-columns:1fr 1fr;
+      a{
+        text-decoration:none;
+        color:inherit;
       }
 
-      .footer-wrapper{
-        grid-template-columns:1fr 1fr;
+      img{
+        width:100%;
+        display:block;
       }
 
-    }
+      .container{
+        width:90%;
+        max-width:1300px;
+        margin:auto;
+      }
 
-    @media(max-width:768px){
+      /* ================= NAVBAR ================= */
+
+      nav{
+        width:100%;
+        position:fixed;
+        top:0;
+        left:0;
+        z-index:999;
+        backdrop-filter:blur(12px);
+        background:rgba(0,0,0,0.55);
+        border-bottom:1px solid var(--border);
+      }
+
+      .nav-wrapper{
+        height:90px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+      }
+
+      .logo{
+        display:flex;
+        align-items:center;
+        gap:15px;
+      }
+
+      .logo img{
+        width:58px;
+        height:58px;
+        object-fit:contain;
+      }
+
+      .logo-text h1{
+        font-size:20px;
+        font-weight:800;
+        color:var(--secondary);
+        line-height:1;
+      }
+
+      .logo-text span{
+        font-size:12px;
+        color:var(--gray);
+      }
 
       .menu{
-  display:none;
-}
+        display:flex;
+        align-items:center;
+        gap:35px;
+      }
 
-.hamburger{
-  display:flex;
-}
+      .menu a{
+        font-size:15px;
+        font-weight:500;
+        transition:.3s;
+        position:relative;
+      }
 
-.nav-wrapper .btn{
-  display:none;
-}
+      .menu a:hover{
+        color:var(--primary);
+      }
+
+      .btn{
+        padding:14px 26px;
+        border-radius:14px;
+        background:linear-gradient(135deg,var(--primary),#45c1d4);
+        color:#000;
+        font-weight:700;
+        transition:.3s;
+        box-shadow:0 10px 25px rgba(105,215,232,.25);
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+      }
+
+      .btn:hover{
+        transform:translateY(-3px);
+      }
+
+      /* ================= HERO ================= */
+
+      .hero{
+        min-height:100vh;
+        position:relative;
+        display:flex;
+        align-items:center;
+        overflow:hidden;
+        padding-top:100px;
+      }
+
+      .hero::before{
+        content:"";
+        position:absolute;
+        width:700px;
+        height:700px;
+        background:rgba(105,215,232,.15);
+        border-radius:50%;
+        filter:blur(120px);
+        top:-250px;
+        right:-150px;
+      }
+
+      .hero::after{
+        content:"";
+        position:absolute;
+        width:500px;
+        height:500px;
+        background:rgba(243,211,108,.10);
+        border-radius:50%;
+        filter:blur(120px);
+        bottom:-200px;
+        left:-100px;
+      }
+
+      .hero-wrapper{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        align-items:center;
+        gap:60px;
+        position:relative;
+        z-index:2;
+      }
+
+      .hero-text h5{
+        color:var(--primary);
+        letter-spacing:3px;
+        margin-bottom:18px;
+      }
 
       .hero-text h1{
-        font-size:54px;
+        font-size:78px;
+        line-height:1.05;
+        font-weight:800;
+        margin-bottom:25px;
       }
 
-      .section-title h2{
-        font-size:38px;
+      .hero-text h1 span{
+        color:var(--secondary);
       }
 
-      .events-grid,
-      .gallery-grid,
-      .stats-wrapper,
-      .features,
-      .footer-wrapper,
-      .news-grid{
-        grid-template-columns:1fr;
+      .hero-text p{
+        color:var(--gray);
+        font-size:18px;
+        line-height:1.9;
+        margin-bottom:35px;
+        max-width:650px;
+        text-align:justify;
+      }
+
+      .hero-buttons{
+        display:flex;
+        gap:18px;
+        flex-wrap:wrap;
+      }
+
+      .btn-outline{
+        padding:14px 26px;
+        border-radius:14px;
+        border:1px solid rgba(255,255,255,.15);
+        transition:.3s;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+      }
+
+      .btn-outline:hover{
+        background:rgba(255,255,255,.06);
       }
 
       .hero-card{
+        background:linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.03)
+        );
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:40px;
+        padding:40px;
+        position:relative;
+        overflow:hidden;
+        box-shadow:0 25px 80px rgba(0,0,0,.45);
+      }
+
+      .hero-card::before{
+        content:"";
+        position:absolute;
+        width:250px;
+        height:250px;
+        background:rgba(105,215,232,.25);
+        border-radius:50%;
+        top:-100px;
+        right:-100px;
+        filter:blur(60px);
+      }
+
+      .hero-logo{
+        width:220px;
+        margin:auto;
+        margin-bottom:25px;
+      }
+
+      .hero-card h3{
+        text-align:center;
+        font-size:28px;
+        margin-bottom:15px;
+        color:var(--secondary);
+      }
+
+      .hero-card p{
+        text-align:justify;
+        color:var(--gray);
+        line-height:1.9;
+      }
+
+      /* ================= STATS ================= */
+
+      .stats{
+        margin-top:-60px;
+        position:relative;
+        z-index:10;
+      }
+
+      .stats-wrapper{
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:25px;
+      }
+
+      .stat-box{
+        background:var(--card);
+        border:1px solid var(--border);
+        padding:35px;
+        border-radius:28px;
+        transition:.3s;
+      }
+
+      .stat-box:hover{
+        transform:translateY(-8px);
+        border-color:rgba(105,215,232,.35);
+      }
+
+      .stat-box i{
+        font-size:32px;
+        color:var(--primary);
+        margin-bottom:20px;
+      }
+
+      .stat-box h2{
+        font-size:38px;
+        margin-bottom:8px;
+        color:var(--secondary);
+      }
+
+      .stat-box p{
+        color:var(--gray);
+      }
+
+      /* ================= SECTION ================= */
+
+      section{
+        padding:120px 0;
+      }
+
+      .section-title{
+        text-align:center;
+        margin-bottom:70px;
+      }
+
+      .section-title h5{
+        color:var(--primary);
+        letter-spacing:3px;
+        margin-bottom:15px;
+      }
+
+      .section-title h2{
+        font-size:52px;
+        line-height:1.2;
+      }
+
+      .section-title h2 span{
+        color:var(--secondary);
+      }
+
+      /* ================= ABOUT ================= */
+
+      .about-wrapper{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:60px;
+        align-items:center;
+      }
+
+      .about-image{
+        position:relative;
+      }
+
+      .about-image img{
+        border-radius:40px;
+        border:2px solid rgba(255,255,255,.08);
+      }
+
+      .about-text h3{
+        font-size:48px;
+        line-height:1.2;
+        margin-bottom:25px;
+      }
+
+      .about-text h3 span{
+        color:var(--secondary);
+      }
+
+      .about-text p{
+        color:var(--gray);
+        line-height:2;
+        margin-bottom:35px;
+      }
+
+      .features{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:20px;
+      }
+
+      .feature{
+        background:var(--card);
+        border-radius:24px;
+        padding:25px;
+        border:1px solid var(--border);
+      }
+
+      .feature i{
+        color:var(--primary);
+        font-size:26px;
+        margin-bottom:15px;
+      }
+
+      .feature h4{
+        margin-bottom:8px;
+      }
+
+      .feature p{
+        font-size:14px;
+        margin:0;
+      }
+
+      /* ================= EVENTS ================= */
+
+      .events-grid{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:30px;
+      }
+
+      .event-card{
+        background:var(--card);
+        border-radius:32px;
+        overflow:hidden;
+        border:1px solid var(--border);
+        transition:.4s;
+      }
+
+      .event-card:hover{
+        transform:translateY(-10px);
+      }
+
+      .event-image{
+        height:260px;
+        overflow:hidden;
+      }
+
+      .event-image img{
+        height:100%;
+        object-fit:cover;
+        transition:.5s;
+      }
+
+      .event-card:hover img{
+        transform:scale(1.08);
+      }
+
+      .event-content{
         padding:30px;
       }
 
-    }
+      .event-date{
+        display:inline-block;
+        background:rgba(105,215,232,.12);
+        color:var(--primary);
+        padding:8px 16px;
+        border-radius:999px;
+        font-size:13px;
+        margin-bottom:18px;
+      }
 
-    /* ================= ORG ACCORDION ================= */
+      .event-content h3{
+        font-size:28px;
+        margin-bottom:15px;
+      }
 
-    .org-accordion{
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-      max-width:1000px;
-      margin:0 auto;
-    }
+      .event-content p{
+        color:var(--gray);
+        line-height:1.8;
+        margin-bottom:25px;
+      }
 
-    .org-item{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      overflow:hidden;
-    }
+      /* ================= NEWS ================= */
 
-    .org-trigger{
-      width:100%;
-      background:transparent;
-      border:0;
-      color:var(--text);
-      padding:18px 22px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      cursor:pointer;
-      font-family:'Poppins',sans-serif;
-      font-weight:700;
-      font-size:16px;
-    }
+      .news-grid{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:30px;
+      }
 
-    .org-trigger i{
-      color:var(--primary);
-      transition:.25s ease;
-    }
+      .news-card{
+        background:var(--card);
+        border-radius:32px;
+        overflow:hidden;
+        border:1px solid var(--border);
+        transition:.4s;
+      }
 
-    .org-item[data-open="true"] .org-trigger i{
-      transform:rotate(180deg);
-    }
+      .news-card:hover{
+        transform:translateY(-10px);
+      }
 
-    .org-panel{
-      padding:18px 22px 22px;
-    }
+      .news-image{
+        height:260px;
+        overflow:hidden;
+      }
 
-    .org-subgrid{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:14px;
-    }
+      .news-image img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        transition:.5s;
+      }
 
-    .org-role{
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;
-      padding:14px;
+      .news-card:hover img{
+        transform:scale(1.08);
+      }
+
+      .news-content{
+        padding:30px;
+      }
+
+      .news-date{
+        display:inline-block;
+        background:rgba(243,211,108,.12);
+        color:var(--secondary);
+        padding:8px 16px;
+        border-radius:999px;
+        font-size:13px;
+        margin-bottom:18px;
+      }
+
+      .news-content h3{
+        font-size:26px;
+        margin-bottom:15px;
+        line-height:1.4;
+      }
+
+      .news-content p{
+        color:var(--gray);
+        line-height:1.8;
+        margin-bottom:25px;
+      }
+
+      /* ================= GALLERY ================= */
+
+      .gallery-grid{
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:20px;
+      }
+
+      .gallery-grid img{
+        border-radius:24px;
+        height:250px;
+        object-fit:cover;
+        transition:.4s;
+        border:1px solid var(--border);
+        cursor:pointer;
+      }
+
+      .gallery-grid img:hover{
+        transform:scale(1.03);
+      }
+
+  /* RESPONSIVE */
+
+  @media(max-width:900px){
+
+    .reel-card{
+      grid-template-columns:1fr;
       text-align:center;
     }
 
-    .org-role h4{
-      font-size:13px;
-      margin-bottom:10px;
-      color:var(--secondary);
+    .reel-info h3{
+      font-size:32px;
     }
 
-    .org-role img{
-      height:140px;
-      width:100%;
-      object-fit:cover;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-    }
+  }
 
-    @media(max-width:1100px){
-      .org-subgrid{
-        grid-template-columns:repeat(2,1fr);
+      /* ================= FOOTER ================= */
+
+      footer{
+        background:#040509;
+        border-top:1px solid var(--border);
+        padding:80px 0 30px;
       }
-    }
 
-    @media(max-width:768px){
+      .footer-wrapper{
+        display:grid;
+        grid-template-columns:2fr 1fr 1fr 1fr;
+        gap:40px;
+        margin-bottom:50px;
+      }
+
+      .footer-about p{
+        color:var(--gray);
+        line-height:1.9;
+        margin-top:20px;
+        max-width:350px;
+      }
+
+      .footer-title{
+        margin-bottom:25px;
+        color:var(--secondary);
+      }
+
+      .footer-links{
+        display:flex;
+        flex-direction:column;
+        gap:14px;
+      }
+
+      .footer-links a{
+        color:var(--gray);
+        transition:.3s;
+      }
+
+      .footer-links a:hover{
+        color:var(--primary);
+      }
+
+      .copyright{
+        border-top:1px solid var(--border);
+        padding-top:30px;
+        text-align:center;
+        color:var(--gray);
+      }
+
+      /* ================= MOBILE SIDEBAR ================= */
+
+  .hamburger{
+    width:50px;
+    height:50px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.1);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:5px;
+    cursor:pointer;
+    transition:.3s;
+  }
+
+  .hamburger:hover{
+    background:rgba(255,255,255,.05);
+  }
+
+  .hamburger span{
+    width:22px;
+    height:2px;
+    background:white;
+    border-radius:10px;
+  }
+
+  .mobile-sidebar{
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:320px;
+    height:100vh;
+    background:#0b0e14;
+    z-index:99999;
+    transition:.4s ease;
+    padding:30px;
+    border-left:1px solid rgba(255,255,255,.08);
+  }
+
+  .mobile-sidebar.active{
+    right:0;
+  }
+
+  .mobile-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:40px;
+  }
+
+  .mobile-header h2{
+    color:var(--secondary);
+  }
+
+  .mobile-header i{
+    font-size:32px;
+    cursor:pointer;
+  }
+
+  .mobile-links{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .mobile-links a{
+    padding:16px;
+    border-radius:14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.05);
+    transition:.3s;
+    font-weight:500;
+  }
+
+  .mobile-links a:hover{
+    background:rgba(105,215,232,.12);
+    color:var(--primary);
+  }
+
+  .mobile-btn{
+    margin-top:15px;
+    text-align:center;
+    background:linear-gradient(
+      135deg,
+      var(--primary),
+      #45c1d4
+    ) !important;
+    color:#000 !important;
+    font-weight:700;
+  }
+
+  .sidebar-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:9999;
+    opacity:0;
+    visibility:hidden;
+    transition:.3s;
+  }
+
+  .sidebar-overlay.active{
+    opacity:1;
+    visibility:visible;
+  }
+
+      /* ================= RESPONSIVE ================= */
+
+      @media(max-width:1100px){
+
+        .hero-wrapper,
+        .about-wrapper{
+          grid-template-columns:1fr;
+        }
+
+        .events-grid,
+        .news-grid{
+          grid-template-columns:1fr 1fr;
+        }
+
+        .gallery-grid{
+          grid-template-columns:1fr 1fr;
+        }
+
+        .stats-wrapper{
+          grid-template-columns:1fr 1fr;
+        }
+
+        .footer-wrapper{
+          grid-template-columns:1fr 1fr;
+        }
+
+      }
+
+      @media(max-width:768px){
+
+        .menu{
+    display:none;
+  }
+
+  .hamburger{
+    display:flex;
+  }
+
+  .nav-wrapper .btn{
+    display:none;
+  }
+
+        .hero-text h1{
+          font-size:54px;
+        }
+
+        .section-title h2{
+          font-size:38px;
+        }
+
+        .events-grid,
+        .gallery-grid,
+        .stats-wrapper,
+        .features,
+        .footer-wrapper,
+        .news-grid{
+          grid-template-columns:1fr;
+        }
+
+        .hero-card{
+          padding:30px;
+        }
+
+      }
+
+      /* ================= ORG ACCORDION ================= */
+
+      .org-accordion{
+        display:flex;
+        flex-direction:column;
+        gap:16px;
+        max-width:1000px;
+        margin:0 auto;
+      }
+
+      .org-item{
+        background:var(--card);
+        border:1px solid var(--border);
+        border-radius:18px;
+        overflow:hidden;
+      }
+
+      .org-trigger{
+        width:100%;
+        background:transparent;
+        border:0;
+        color:var(--text);
+        padding:18px 22px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;
+        font-family:'Poppins',sans-serif;
+        font-weight:700;
+        font-size:16px;
+      }
+
+      .org-trigger i{
+        color:var(--primary);
+        transition:.25s ease;
+      }
+
+      .org-item[data-open="true"] .org-trigger i{
+        transform:rotate(180deg);
+      }
+
+      .org-panel{
+        padding:18px 22px 22px;
+      }
+
       .org-subgrid{
-        grid-template-columns:1fr;
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:14px;
+      }
+
+      .org-role{
+        background:rgba(255,255,255,.03);
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:16px;
+        padding:14px;
+        text-align:center;
+      }
+
+      .org-role h4{
+        font-size:13px;
+        margin-bottom:10px;
+        color:var(--secondary);
       }
 
       .org-role img{
-        height:220px;
+        height:140px;
+        width:100%;
+        object-fit:cover;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,.08);
       }
-    }
 
-    /* ================= GALLERY MODAL ================= */
+      @media(max-width:1100px){
+        .org-subgrid{
+          grid-template-columns:repeat(2,1fr);
+        }
+      }
 
-    .gallery-modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.95);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      opacity:0;
-      visibility:hidden;
-      transition:.4s;
-      z-index:99999;
-      padding:20px;
-    }
+      @media(max-width:768px){
+        .org-subgrid{
+          grid-template-columns:1fr;
+        }
 
-    .gallery-modal.active{
-      opacity:1;
-      visibility:visible;
-    }
+        .org-role img{
+          height:220px;
+        }
+      }
 
-    .gallery-modal img{
-      max-width:90%;
-      max-height:90vh;
-      border-radius:20px;
-    }
+      /* ================= GALLERY MODAL ================= */
 
-    .close-gallery{
-      position:absolute;
-      top:30px;
-      right:30px;
-      font-size:40px;
-      color:white;
-      cursor:pointer;
-    }
+      .gallery-modal{
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.95);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        opacity:0;
+        visibility:hidden;
+        transition:.4s;
+        z-index:99999;
+        padding:20px;
+      }
 
-  </style>
-</head>
+      .gallery-modal.active{
+        opacity:1;
+        visibility:visible;
+      }
 
-<body>
+      .gallery-modal img{
+        max-width:90%;
+        max-height:90vh;
+        border-radius:20px;
+      }
 
-  <!-- NAVBAR -->
+      .close-gallery{
+        position:absolute;
+        top:30px;
+        right:30px;
+        font-size:40px;
+        color:white;
+        cursor:pointer;
+      }
 
-<nav>
+    </style>
+  </head>
 
-  <div class="container nav-wrapper">
+  <body>
 
-    <div class="logo">
+    <!-- NAVBAR -->
 
-      <img
-        src="/asset/Adhigana prapti.png"
-        alt="Logo"
-      >
+  <nav>
 
-      <div class="logo-text">
-        <h1>ADHIGANA PRAPTI</h1>
-        <span>Karang Taruna RW 04</span>
+    <div class="container nav-wrapper">
+
+      <div class="logo">
+
+        <img
+          src="/asset/Adhigana prapti.png"
+          alt="Logo"
+        >
+
+        <div class="logo-text">
+          <h1>ADHIGANA PRAPTI</h1>
+          <span>Karang Taruna RW 04</span>
+        </div>
+
       </div>
+
+      <div class="menu" id="landingMenu">
+
+        <a href="#beranda">Beranda</a>
+        <a href="#profil">Profil</a>
+        <a href="#struktur">Struktur Organisasi</a>
+        <a href="#event">Event</a>
+        <a href="#galeri">Galeri</a>
+        <a href="#berita">Berita</a>
+        <a href="#kontak">Kontak</a>
+        <a href="/Login.html" id="navMasuk"><i class="fa-solid fa-right-to-bracket" style="margin-right:8px;"></i>Masuk</a>
+
+      </div>
+
+      <!-- HAMBURGER -->
+
+      <div
+        class="hamburger"
+        id="hamburger"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <!-- INSTALL APP -->
+
+      <button
+        type="button"
+        class="btn"
+        id="pwaInstallTop"
+        style="display:none;"
+      >
+        <i class="fa-solid fa-download"></i>
+        Install Aplikasi
+      </button>
 
     </div>
 
-    <div class="menu">
+  </nav>
+
+
+  <!-- MOBILE SIDEBAR -->
+
+  <div
+    class="mobile-sidebar"
+    id="mobileSidebar"
+  >
+
+    <div class="mobile-header">
+
+      <h2>MENU</h2>
+
+      <i
+        class="fa-solid fa-xmark"
+        id="closeSidebar"
+      ></i>
+
+    </div>
+
+    <div class="mobile-links">
 
       <a href="#beranda">Beranda</a>
       <a href="#profil">Profil</a>
@@ -951,228 +1010,172 @@
       <a href="#galeri">Galeri</a>
       <a href="#berita">Berita</a>
       <a href="#kontak">Kontak</a>
+      <a href="/Login.html" id="navMasuk"><i class="fa-solid fa-right-to-bracket" style="margin-right:8px;"></i>Masuk</a>
+      <!-- INSTALL APP MOBILE -->
 
-    </div>
-
-    <!-- HAMBURGER -->
-
-    <div
-      class="hamburger"
-      id="hamburger"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-    <!-- INSTALL APP -->
-
-    <button
-      type="button"
-      class="btn"
-      id="pwaInstallTop"
-      style="display:none;"
-    >
-      <i class="fa-solid fa-download"></i>
-      Install Aplikasi
-    </button>
-
-  </div>
-
-</nav>
-
-
-<!-- MOBILE SIDEBAR -->
-
-<div
-  class="mobile-sidebar"
-  id="mobileSidebar"
->
-
-  <div class="mobile-header">
-
-    <h2>MENU</h2>
-
-    <i
-      class="fa-solid fa-xmark"
-      id="closeSidebar"
-    ></i>
-
-  </div>
-
-  <div class="mobile-links">
-
-    <a href="#beranda">Beranda</a>
-    <a href="#profil">Profil</a>
-    <a href="#struktur">Struktur Organisasi</a>
-    <a href="#event">Event</a>
-    <a href="#galeri">Galeri</a>
-    <a href="#berita">Berita</a>
-    <a href="#kontak">Kontak</a>
-
-    <!-- INSTALL APP MOBILE -->
-
-    <button
-      type="button"
-      class="mobile-btn"
-      id="pwaInstallMobile"
-      style="display:none;"
-    >
-      <i class="fa-solid fa-download"></i>
-      Install Aplikasi
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- OVERLAY -->
-
-<div
-  class="sidebar-overlay"
-  id="sidebarOverlay"
-></div>
-
-  <!-- HERO -->
-
-  <section class="hero" id="beranda">
-
-    <div class="container hero-wrapper">
-
-
-      <div class="hero-text">
-
-        <h5>KARANG TARUNA RW 04</h5>
-
-        <h1>
-          ADHIGANA
-          <span>PRAPTI</span>
-        </h1>
-
-        <p>
-          "Meraih keunggulan dan mencapai kemajuan bersama" Karang taruna Adhigana Prapti Sirnagalih merupakan wadah generasi muda yang berkomitmen untuk terus berkembang, berkarya, dan berkontribusi dalam mewujudkan kemajuan lingkungan melalui semangat kebersamaan, kreativitas, serta pengabdian kepada masyarakat.
-        </p>
-
-        <div class="hero-buttons">
-          <a href="#struktur" class="btn">Struktur Organisasi</a>
-          <a href="#profil" class="btn-outline">Tentang Kami</a>
-        </div>
-
-
-
-
-
-      </div>
-
-      <div class="hero-card">
-
-        <div class="hero-logo">
-          <img src="/asset/Adhigana prapti.png" alt="Logo">
-        </div>
-
-        <h3>Solidaritas • Prestasi • Dedikasi</h3>
-
-        <p>
-          Logo karang taruna Adhigana Prapti melambangkan solidaritas, prestasi, dan dedikasi. Bentuk perisai menunjukkan keteguhan dan perlindungan, Rantai melambangkan kebersamaan antar pemuda, padi menggambarkan kesejahteraan dan harapan, sedangkan nama Adhigana Prapti memiliki makna semangat untuk meraih prestasi dan kemajuan bersama demi kemajuan masyarakat, khususnya masyarakat Sirnagalih.
-        </p>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- STATS -->
-
-  <div class="stats">
-
-    <div class="container stats-wrapper">
-
-      <div class="stat-box">
-        <i class="fa-solid fa-users"></i>
-        <h2>50+</h2>
-        <p>Anggota Aktif</p>
-      </div>
-
-      <div class="stat-box">
-        <i class="fa-solid fa-calendar-days"></i>
-        <h2>10+</h2>
-        <p>Kegiatan Tahunan</p>
-      </div>
-
-      <div class="stat-box">
-        <i class="fa-solid fa-handshake-angle"></i>
-        <h2>10+</h2>
-        <p>Program Sosial</p>
-      </div>
-
-      <div class="stat-box">
-        <i class="fa-solid fa-award"></i>
-        <h2>5+</h2>
-        <p>Prestasi Organisasi</p>
-      </div>
+      <button
+        type="button"
+        class="mobile-btn"
+        id="pwaInstallMobile"
+        style="display:none;"
+      >
+        <i class="fa-solid fa-download"></i>
+        Install Aplikasi
+      </button>
 
     </div>
 
   </div>
 
-  <!-- ABOUT -->
 
-  <section id="profil">
+  <!-- OVERLAY -->
 
-    <div class="container">
+  <div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+  ></div>
+
+    <!-- HERO -->
+
+    <section class="hero" id="beranda">
+
+      <div class="container hero-wrapper">
 
 
-      <div class="section-title">
-        <h5>TENTANG KAMI</h5>
-        <h2>
-          Membangun Generasi
-          <span>Aktif & Kreatif</span>
-        </h2>
-      </div>
+        <div class="hero-text">
 
-      <div class="about-wrapper">
+          <h5>KARANG TARUNA RW 04</h5>
 
-        <div class="about-image">
-          <img src="asset/Karang Taruna.jpg" alt="">
-        </div>
-
-        <div class="about-text">
-
-          <h3>
-            Karang Taruna dengan
-            Semangat <span>Kebersamaan</span>
-          </h3>
+          <h1>
+            ADHIGANA
+            <span>PRAPTI</span>
+          </h1>
 
           <p>
-            Adhigana Prapti hadir sebagai wadah pemuda untuk mengembangkan kreativitas, kepedulian sosial, dan kegiatan positif bagi masyarakat sekitar.
+            "Meraih keunggulan dan mencapai kemajuan bersama" Karang taruna Adhigana Prapti Sirnagalih merupakan wadah generasi muda yang berkomitmen untuk terus berkembang, berkarya, dan berkontribusi dalam mewujudkan kemajuan lingkungan melalui semangat kebersamaan, kreativitas, serta pengabdian kepada masyarakat.
           </p>
 
-          <div class="features">
+          <div class="hero-buttons">
+            <a href="#struktur" class="btn">Struktur Organisasi</a>
+            <a href="#profil" class="btn-outline">Tentang Kami</a>
+          </div>
 
-            <div class="feature">
-              <i class="fa-solid fa-people-group"></i>
-              <h4>Solid</h4>
-              <p>Mengutamakan kebersamaan dan gotong royong.</p>
-            </div>
 
-            <div class="feature">
-              <i class="fa-solid fa-lightbulb"></i>
-              <h4>Kreatif</h4>
-              <p>Mendorong ide dan inovasi pemuda.</p>
-            </div>
 
-            <div class="feature">
-              <i class="fa-solid fa-heart"></i>
-              <h4>Peduli</h4>
-              <p>Aktif dalam kegiatan sosial masyarakat.</p>
-            </div>
 
-            <div class="feature">
-              <i class="fa-solid fa-shield-heart"></i>
-              <h4>Aktif</h4>
-              <p>Berpartisipasi dalam berbagai kegiatan warga.</p>
+
+        </div>
+
+        <div class="hero-card">
+
+          <div class="hero-logo">
+            <img src="/asset/Adhigana prapti.png" alt="Logo">
+          </div>
+
+          <h3>Solidaritas • Prestasi • Dedikasi</h3>
+          
+          <p>
+            Logo karang taruna Adhigana Prapti melambangkan solidaritas, prestasi, dan dedikasi. Bentuk perisai menunjukkan keteguhan dan perlindungan, Rantai melambangkan kebersamaan antar pemuda, padi menggambarkan kesejahteraan dan harapan, sedangkan nama Adhigana Prapti memiliki makna semangat untuk meraih prestasi dan kemajuan bersama demi kemajuan masyarakat, khususnya masyarakat Sirnagalih.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+      <div class="container stats-wrapper">
+
+        <div class="stat-box">
+          <i class="fa-solid fa-users"></i>
+          <h2 id="landingTotalAnggota">0</h2>
+          <p>Total Anggota</p>
+        </div>
+
+        <div class="stat-box">
+          <i class="fa-solid fa-calendar-days"></i>
+          <h2 id="landingHadirHariIni">0</h2>
+          <p>Hadir Hari Ini</p>
+        </div>
+
+        <div class="stat-box">
+          <i class="fa-solid fa-coins"></i>
+          <h2 id="landingSaldoKas">Rp 0</h2>
+          <p>Saldo Kas</p>
+        </div>
+
+        <div class="stat-box">
+          <i class="fa-solid fa-newspaper"></i>
+          <h2 id="landingJumlahMading">0</h2>
+          <p>Jumlah Mading</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ABOUT -->
+
+    <section id="profil">
+
+      <div class="container">
+
+
+        <div class="section-title">
+          <h5>TENTANG KAMI</h5>
+          <h2>
+            Membangun Generasi
+            <span>Aktif & Kreatif</span>
+          </h2>
+        </div>
+
+        <div class="about-wrapper">
+
+          <div class="about-image">
+            <img src="asset/Karang Taruna.jpg" alt="">
+          </div>
+
+          <div class="about-text">
+
+            <h3>
+              Karang Taruna dengan
+              Semangat <span>Kebersamaan</span>
+            </h3>
+
+            <p>
+              Adhigana Prapti hadir sebagai wadah pemuda untuk mengembangkan kreativitas, kepedulian sosial, dan kegiatan positif bagi masyarakat sekitar.
+            </p>
+
+            <div class="features">
+
+              <div class="feature">
+                <i class="fa-solid fa-people-group"></i>
+                <h4>Solid</h4>
+                <p>Mengutamakan kebersamaan dan gotong royong.</p>
+              </div>
+
+              <div class="feature">
+                <i class="fa-solid fa-lightbulb"></i>
+                <h4>Kreatif</h4>
+                <p>Mendorong ide dan inovasi pemuda.</p>
+              </div>
+
+              <div class="feature">
+                <i class="fa-solid fa-heart"></i>
+                <h4>Peduli</h4>
+                <p>Aktif dalam kegiatan sosial masyarakat.</p>
+              </div>
+
+              <div class="feature">
+                <i class="fa-solid fa-shield-heart"></i>
+                <h4>Aktif</h4>
+                <p>Berpartisipasi dalam berbagai kegiatan warga.</p>
+              </div>
+
             </div>
 
           </div>
@@ -1181,789 +1184,848 @@
 
       </div>
 
+    </section>
+
+  <!-- ORGANIZATION / STRUKTUR ORGANISASI -->
+
+  <section class="struktur-section" id="struktur">
+
+    <div class="container">
+
+      <div class="section-title">
+        <h5>Struktur</h5>
+        <h2>Struktur <span>Kepanitiaan</span></h2>
+      </div>
+
+      <div class="struktur-preview">
+
+        <img
+          src="/asset/Struktur.png"
+          alt="Struktur Organisasi"
+        >
+
+        <a
+          href="asset/Struktur.pdf"
+          target="_blank"
+          class="download-btn"
+        >
+          Download PDF
+        </a>
+
+      </div>
+
     </div>
 
   </section>
 
-<!-- ORGANIZATION / STRUKTUR ORGANISASI -->
+    <!-- =========================================
+  PENGURUS KARANG TARUNA
+  ========================================= -->
 
-<section class="struktur-section" id="struktur">
-
-  <div class="container">
+  <section class="pengurus-marquee" aria-label="Pengurus Karang Taruna">
 
     <div class="section-title">
-      <h5>Struktur</h5>
-      <h2>Struktur <span>Kepanitiaan</span></h2>
+      <h5>PENGURUS</h5>
+      <h2>Karang Taruna <span>Adhigana Prapti</span></h2>
     </div>
 
-    <div class="struktur-preview">
+  <!-- BARIS 1 -->
 
-      <img
-        src="/asset/Struktur.png"
-        alt="Struktur Organisasi"
-      >
+    <div class="marquee">
 
-      <a
-        href="asset/Struktur.pdf"
-        target="_blank"
-        class="download-btn"
-      >
-        Download PDF
-      </a>
+    <div class="marquee-content">
+
+      <div class="pengurus-item"><img src="/asset/Profil Foto/M. Daffa.JPG"><h4>M. Daffa Saeful Faiz</h4><span>Ketua Umum</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Yasna.JPG"><h4>Yasna Nur Azka Zakiyah</h4><span>Sekretaris Umum</span></div>
+      <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Putri Nur Apriani</h4><span>Bendahara Umum</span></div>
+
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Rafi Keny.JPG"><h4>Rafi Keny Akhdan</h4><span>Ketua Pelaksana</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Kaysa.JPG"><h4>Kaysa Hasnah Mumtaaza</h4><span>Sekretaris Pelaksana</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Naya.JPG"><h4>Naya Salsabila</h4><span>Bendahara Pelaksana</span></div>
+
+      <div class="pengurus-item"><img src="/asset/Profil Foto/rayhan korlap.JPG"><h4>Rayhan Nur Pajri</h4><span>Koordinator Divisi Lapangan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/haikal.JPG"><h4>M. Haikal Abil Fida</h4><span> Divisi Koordinasi Lapangan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Ardi.JPG"><h4>Ardiansyah Pramadani</h4><span>Divisi Koordinasi Lapangan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/fahmi.JPG"><h4>Fahmi Maulana</h4><span>Divisi Koordinasi Lapangan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/daffa kecil.JPG"><h4>Daffa Yusuf Afandy</h4><span>Divisi Koordinasi Lapangan</span></div>
 
     </div>
 
   </div>
+      <div class="marquee reverse">
 
-</section>
+    <div class="marquee-content">
 
-  <!-- =========================================
-PENGURUS KARANG TARUNA
-========================================= -->
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Faiq.JPG"><h4>M. Faiq Ahsan</h4><span>Koordinator Divisi Acara</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Zidan.JPG"><h4>M. Zidan Ziyadul Haq</h4><span>Divisi Acara</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/arfan.JPG"><h4>Arfan Najmi</h4><span>Divisi Acara</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Badrul.JPG"><h4>M. Badrul Zaman</h4><span>Divisi Acara</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/mutia.JPG"><h4>Mutia Zahran</h4><span>Divisi Acara</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/raifa inong.JPG"><h4>Raifa Putri Ramadhani</h4><span>Divisi Acara</span></div>
 
-<section class="pengurus-marquee" aria-label="Pengurus Karang Taruna">
+      <div class="pengurus-item"><img src="/asset/Profil Foto/panji.JPG"><h4>Panji Jatmika</h4><span>Koordinator Divisi Publikasi & Dokumentasi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/ari pdd.JPG"><h4>Fachri Akbar</h4><span>Divisi Publikasi & Dokumentasi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/erul.JPG"><h4>Muhamad Darul Tahqiq</h4><span>Divisi Publikasi & Dokumentasi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/riccel.JPG"><h4>Rhicelle Apriliana</h4><span>Divisi Publikasi & Dokumentasi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/riska.JPG"><h4>Riska Maulida Fitri</h4><span>Divisi Publikasi & Dokumentasi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/agisna.JPG"><h4>Agisna Maulida Noer</h4><span>Divisi Publikasi & Dokumentasi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/gita.JPG"><h4>Anggita Nurfadillah</h4><span>Divisi Publikasi & Dokumentasi</span></div>
+    </div>
 
-  <div class="section-title">
-    <h5>PENGURUS</h5>
-    <h2>Karang Taruna <span>Adhigana Prapti</span></h2>
   </div>
 
-<!-- BARIS 1 -->
+    <!-- BARIS 2 -->
 
   <div class="marquee">
 
-  <div class="marquee-content">
+    <div class="marquee-content">
 
-    <div class="pengurus-item"><img src="/asset/Profil Foto/M. Daffa.JPG"><h4>M. Daffa Saeful Faiz</h4><span>Ketua Umum</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Yasna.JPG"><h4>Yasna Nur Azka Zakiyah</h4><span>Sekretaris Umum</span></div>
-    <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Putri Nur Apriani</h4><span>Bendahara Umum</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Alfin.JPG"><h4>M. Alfin Saputra</h4><span>Koordinator Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/huda.JPG"><h4>M. Huda Kasya Islami</h4><span>Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/irham.JPG"><h4>M. Irham Ghifarul Khilmi</h4><span>Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/almas.JPG"><h4>Almas Dara Saputri Wiwaha</h4><span>Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Zulfa Hamidah</h4><span>Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Windi Meliana</h4><span>Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/arum.JPG"><h4>Arum Rohimah</h4><span>Divisi Hubungan Masyarakat</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/tiara.JPG"><h4>Alvyra Mutiara Andira</h4><span>Divisi Hubungan Masyarakat</span></div>
 
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Rafi Keny.JPG"><h4>Rafi Keny Akhdan</h4><span>Ketua Pelaksana</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Kaysa.JPG"><h4>Kaysa Hasnah Mumtaaza</h4><span>Sekretaris Pelaksana</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Naya.JPG"><h4>Naya Salsabila</h4><span>Bendahara Pelaksana</span></div>
 
-    <div class="pengurus-item"><img src="/asset/Profil Foto/rayhan korlap.JPG"><h4>Rayhan Nur Pajri</h4><span>Koordinator Divisi Lapangan</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/haikal.JPG"><h4>M. Haikal Abil Fida</h4><span> Divisi Koordinasi Lapangan</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Ardi.JPG"><h4>Ardiansyah Pramadani</h4><span>Divisi Koordinasi Lapangan</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/fahmi.JPG"><h4>Fahmi Maulana</h4><span>Divisi Koordinasi Lapangan</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/daffa kecil.JPG"><h4>Daffa Yusuf Afandy</h4><span>Divisi Koordinasi Lapangan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Zahran.JPG"><h4>Zahran Saputra Wiwaha</h4><span>Koordinator Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Gema.JPG"><h4>Gema Darma Wijana</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Cean.JPG"><h4>Raihan Muzhafar Yusuf</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Ari.JPG"><h4>Ari Pratama Putra</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Aurel.JPG"><h4>Aurel Pricila Ananta</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Vina.JPG"><h4>Vina Siti Aminah</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/April.JPG"><h4>April Amelia Putri</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Dinda.JPG"><h4>Dinda Aulia</h4><span>Divisi Konsumsi</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Agnia.JPG"><h4>Agnia Ilma Triana Putri Hidayat</h4><span>Divisi Konsumsi</span></div>
+
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Azis.JPG"><h4>M. Abdul Azis</h4><span>Koordinator Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Romi.JPG"><h4>Romi Zayyinul Aripin</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Rojab.JPG"><h4>Rojab Mulyana</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Irfan.JPG"><h4>Irfan Naufal Amrulloh</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Fadlan.JPG"><h4>Fadlan Nurullah</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Arya.JPG"><h4>Arya Maulana</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Danil Mauluda</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/fabin.JPG"><h4>Fabin Alfarizi Rizal Riyansah</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/rai.JPG"><h4>Rai Nepal Ibrahim</h4><span>Divisi Dekorasi & Logistik</span></div>
+      
+      <div class="pengurus-item"><img src="/asset/Profil Foto/robi.JPG"><h4>Robby Muharram</h4><span>Divisi Dekorasi & Logistik</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/Rama.JPG"><h4>Rama Pratama Adila</h4><span>Koordinator Divisi Kebersihan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/arfik.JPG"><h4>Arfik Ramdhani</h4><span>Divisi Kebersihan</span></div>
+      <div class="pengurus-item"><img src="/asset/Profil Foto/ais.JPG"><h4>M. Fariz Saeful Ammar</h4><span> Divisi Kebersihan</span></div>
+      
+    </div>
 
   </div>
-
-</div>
-     <div class="marquee reverse">
-
-  <div class="marquee-content">
-
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Faiq.JPG"><h4>M. Faiq Ahsan</h4><span>Koordinator Divisi Acara</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Zidan.JPG"><h4>M. Zidan Ziyadul Haq</h4><span>Divisi Acara</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/arfan.JPG"><h4>Arfan Najmi</h4><span>Divisi Acara</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Badrul.JPG"><h4>M. Badrul Zaman</h4><span>Divisi Acara</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/mutia.JPG"><h4>Mutia Zahran</h4><span>Divisi Acara</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/raifa inong.JPG"><h4>Raifa Putri Ramadhani</h4><span>Divisi Acara</span></div>
-
-    <div class="pengurus-item"><img src="/asset/Profil Foto/panji.JPG"><h4>Panji Jatmika</h4><span>Koordinator Divisi Publikasi & Dokumentasi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/ari pdd.JPG"><h4>Fachri Akbar</h4><span>Divisi Publikasi & Dokumentasi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/erul.JPG"><h4>Muhamad Darul Tahqiq</h4><span>Divisi Publikasi & Dokumentasi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/riccel.JPG"><h4>Rhicelle Apriliana</h4><span>Divisi Publikasi & Dokumentasi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/riska.JPG"><h4>Riska Maulida Fitri</h4><span>Divisi Publikasi & Dokumentasi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/agisna.JPG"><h4>Agisna Maulida Noer</h4><span>Divisi Publikasi & Dokumentasi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/gita.JPG"><h4>Anggita Nurfadillah</h4><span>Divisi Publikasi & Dokumentasi</span></div>
-  </div>
-
-</div>
-
-  <!-- BARIS 2 -->
-
-<div class="marquee">
-
-  <div class="marquee-content">
-
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Alfin.JPG"><h4>M. Alfin Saputra</h4><span>Koordinator Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/huda.JPG"><h4>M. Huda Kasya Islami</h4><span>Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/irham.JPG"><h4>M. Irham Ghifarul Khilmi</h4><span>Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/almas.JPG"><h4>Almas Dara Saputri Wiwaha</h4><span>Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Zulfa Hamidah</h4><span>Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Windi Meliana</h4><span>Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/arum.JPG"><h4>Arum Rohimah</h4><span>Divisi Hubungan Masyarakat</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/tiara.JPG"><h4>Alvyra Mutiara Andira</h4><span>Divisi Hubungan Masyarakat</span></div>
-
-
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Zahran.JPG"><h4>Zahran Saputra Wiwaha</h4><span>Koordinator Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Gema.JPG"><h4>Gema Darma Wijana</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Cean.JPG"><h4>Raihan Muzhafar Yusuf</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Ari.JPG"><h4>Ari Pratama Putra</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Aurel.JPG"><h4>Aurel Pricila Ananta</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Vina.JPG"><h4>Vina Siti Aminah</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/April.JPG"><h4>April Amelia Putri</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Dinda.JPG"><h4>Dinda Aulia</h4><span>Divisi Konsumsi</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Agnia.JPG"><h4>Agnia Ilma Triana Putri Hidayat</h4><span>Divisi Konsumsi</span></div>
-
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Azis.JPG"><h4>M. Abdul Azis</h4><span>Koordinator Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Romi.JPG"><h4>Romi Zayyinul Aripin</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Rojab.JPG"><h4>Rojab Mulyana</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Irfan.JPG"><h4>Irfan Naufal Amrulloh</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Fadlan.JPG"><h4>Fadlan Nurullah</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Arya.JPG"><h4>Arya Maulana</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Avatar.png"><h4>Danil Mauluda</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/fabin.JPG"><h4>Fabin Alfarizi Rizal Riyansah</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/rai.JPG"><h4>Rai Nepal Ibrahim</h4><span>Divisi Dekorasi & Logistik</span></div>
-    
-    <div class="pengurus-item"><img src="/asset/Profil Foto/robi.JPG"><h4>Robby Muharram</h4><span>Divisi Dekorasi & Logistik</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/Rama.JPG"><h4>Rama Pratama Adila</h4><span>Koordinator Divisi Kebersihan</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/arfik.JPG"><h4>Arfik Ramdhani</h4><span>Divisi Kebersihan</span></div>
-    <div class="pengurus-item"><img src="/asset/Profil Foto/ais.JPG"><h4>M. Fariz Saeful Ammar</h4><span> Divisi Kebersihan</span></div>
-    
-  </div>
-
-</div>
-
-</section>
-
-  <!-- EVENTS (EVENT BESAR) - Untuk index.html -->
-<section id="event">
-  <div class="container">
-
-    <style>
-      /* Link supaya bisa diklik seluruh area kartu */
-      .event-link{display:block;color:inherit;text-decoration:none;}
-    </style>
-
-
-    <div class="section-title">
-      <h5>EVENT & KEGIATAN</h5>
-      <h2>
-        Aktivitas dan
-        <span>Program Terbaru</span>
-      </h2>
-    </div>
-
-    <div class="events-grid">
-
-      <!-- EVENT 1: Pawai Obor & Pesta Rakyat -->
-      <div class="event-card">
-        <a href="Event 1.html" class="event-link" aria-label="Lihat detail Pawai Obor & Pesta Rakyat" tabindex="0">
-          <div class="event-image">
-            <img src="/asset/Pawai Obor.jpg" alt="Pawai Obor & Pesta Rakyat">
-          </div>
-          <div class="event-content">
-            <div class="event-date">16 Agustus 2026</div>
-            <h3>Pawai Obor &amp; Pesta Rakyat</h3>
-            <p>Pawai obor malam kemerdekaan yang meriah diiringi pesta rakyat sebagai wujud syukur dan semangat kebangsaan warga RW 04.</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- EVENT 2: Karnaval -->
-      <div class="event-card">
-        <a href="Event 2.html" class="event-link" aria-label="Lihat detail Karnaval" tabindex="0">
-          <div class="event-image">
-            <img src="/asset/Karnaval.jpg" alt="Karnaval HUT RI">
-          </div>
-          <div class="event-content">
-            <div class="event-date">17 Agustus 2026</div>
-            <h3>Karnaval HUT RI</h3>
-            <p>Karnaval perayaan kemerdekaan Indonesia dengan kostum kreatif, arak-arakan, dan semangat kebersamaan seluruh warga RW 04.</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- EVENT 3: Kreasi Seni -->
-      <div class="event-card">
-        <a href="Event 3.html" class="event-link" aria-label="Lihat detail Kreasi Seni" tabindex="0">
-          <div class="event-image">
-            <img src="/asset/Pentas Seni.jpg" alt="Kreasi Seni RW 04">
-          </div>
-          <div class="event-content">
-            <div class="event-date">4 September 2026</div>
-            <h3>Kreasi Seni</h3>
-            <p>Ajang unjuk bakat seni warga RW 04 — dari pertunjukan musik, tari, hingga pameran karya kreatif warga dan pemuda.</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- EVENT 4: Maulid Nabi -->
-      <div class="event-card">
-        <a href="Event 4.html" class="event-link" aria-label="Lihat detail Maulid Nabi" tabindex="0">
-          <div class="event-image">
-            <img src="/asset/Poster Maulid Nabi.png" alt="Maulid Nabi RW 04">
-          </div>
-          <div class="event-content">
-            <div class="event-date">25 Agustus 2026</div>
-            <h3>Maulid Nabi</h3>
-            <p>Ajang perayaan Maulid Nabi Muhammad SAW dengan berbagai kegiatan keagamaan dan kebersamaan warga RW 04.</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- EVENT 5: Jalan Sehat -->
-      <div class="event-card">
-        <div class="event-image">
-          <img src="/asset/Jalan Santai.JPG" alt="Jalan Sehat RW 04">
-        </div>
-        <div class="event-content">
-          <div class="event-date">5 September 2026</div>
-          <h3>SIRAFEST</h3>
-          <p>Event tahunan penuh kebersamaan, doorprize, dan hiburan masyarakat dalam rangka merayakan kebersamaan warga RW 04.</p>
-          <a href="https://sirafest.netlify.app/" class="btn" target="_blank">Daftar Event</a>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- PREMIUM COMPETITION HIGHLIGHT SECTION -->
-<div class="premium-lomba-container">
-  <div class="lomba-highlight-card">
-    <!-- Glow Effect Decorator -->
-    <div class="absolute-glow"></div>
-    
-    <div class="lomba-header">
-      <span class="lomba-tagline">Kompetisi & Kebersamaan</span>
-      <h2 class="lomba-title">Panggung Karya Warga</h2>
-      <div class="lomba-divider"></div>
-      <p class="lomba-description">
-        Salurkan bakat, pererat silaturahmi, dan raih kemenangan. Ikuti berbagai lini kompetisi menarik yang dirancang khusus untuk memajukan potensi serta kebersamaan kita.
-      </p>
-    </div>
-
-    <!-- Interactive Lomba Cards Grid -->
-    <div class="lomba-showcase-grid">
-      <div class="lomba-item-card">
-        <span class="lomba-icon">🏸</span>
-        <span class="lomba-name">Bulu Tangkis</span>
-      </div>
-      <div class="lomba-item-card">
-        <span class="lomba-icon">🎮</span>
-        <span class="lomba-name">PS4 FIFA</span>
-      </div>
-      <div class="lomba-item-card">
-        <span class="lomba-icon">⚔️</span>
-        <span class="lomba-name">Mobile Legends</span>
-      </div>
-      <div class="lomba-item-card">
-        <span class="lomba-icon">♟️</span>
-        <span class="lomba-name">Catur Klasik</span>
-      </div>
-      <div class="lomba-item-card">
-        <span class="lomba-icon">🍚</span>
-        <span class="lomba-name">Lomba Liwet</span>
-      </div>
-    </div>
-
-    <!-- Elegant Action Button -->
-    <div class="lomba-action-wrapper">
-      <a href="lomba.html" class="premium-lomba-btn">
-        <span>Jelajahi Semua Kompetisi</span>
-        <svg class="btn-arrow" width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 7H17M17 7L11 1M17 7L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-    </div>
-  </div>
-</div>
-
-  <!-- NEWS -->
-
-<section id="berita">
-
-    
-
-
-  <div class="container">
-
-    <div class="section-title">
-      <h5>BERITA TERBARU</h5>
-      <h2>
-        Informasi dan
-        <span>Kegiatan Pemuda</span>
-      </h2>
-    </div>
-
-    <div class="news-grid">
-
-      <div class="news-card">
-
-        <div class="news-image">
-          <img src="/Mini Soccer.jpeg">
-        </div>
-
-        <div class="news-content">
-
-          <div class="news-date">
-            12 Juni 2026
-          </div>
-
-          <h3>
-            Membakar Semangat di Lapangan Hijau: Kick-Off Mini Soccer Adhigana Prapti Jadi Pemantik Awal Pergerakan Pemuda
-          </h3>
-
-          <p>
-            Langkah besar selalu dimulai dari satu hentakan kecil.
-          </p>
-
-          <a href="Berita 1.html" class="btn-outline">
-  Baca Selengkapnya
-</a>
-        </div>
-
-      </div>
-
-      <div class="news-card">
-
-        <div class="news-image">
-          <img src="/Rapat minggu ke 3.jpeg">
-        </div>
-
-        <div class="news-content">
-
-          <div class="news-date">
-            13 Juni 2026
-          </div>
-
-          <h3>
-            Matangkan Persiapan Program Kerja, Karang Taruna Gelar Rapat Mingguan Ke-3
-          </h3>
-
-          <p>
-            TASIKMALAYA, 13 Juni 2026 – Pengurus Karang Taruna kembali menggelar rapat rutin minggu ketiga pada Sabtu malam guna mematangkan kesiapan roda organisasi dalam menghadapi program kerja ke depan.
-          </p>
-
-          <a href="Berita 2.html" class="btn-outline">
-  Baca Selengkapnya
-</a>
-
-        </div>
-
-      </div>
-
-    </div>
 
   </section>
 
-  <!-- GALLERY -->
+    <!-- EVENTS (EVENT BESAR) - Untuk index.html -->
+  <section id="event">
+    <div class="container">
 
-  <section id="galeri">
+      <style>
+        /* Link supaya bisa diklik seluruh area kartu */
+        .event-link{display:block;color:inherit;text-decoration:none;}
+      </style>
+
+
+      <div class="section-title">
+        <h5>EVENT & KEGIATAN</h5>
+        <h2>
+          Aktivitas dan
+          <span>Program Terbaru</span>
+        </h2>
+      </div>
+
+      <div class="events-grid">
+
+        <!-- EVENT 1: Pawai Obor & Pesta Rakyat -->
+        <div class="event-card">
+          <a href="Event 1.html" class="event-link" aria-label="Lihat detail Pawai Obor & Pesta Rakyat" tabindex="0">
+            <div class="event-image">
+              <img src="/asset/Pawai Obor.jpg" alt="Pawai Obor & Pesta Rakyat">
+            </div>
+            <div class="event-content">
+              <div class="event-date">16 Agustus 2026</div>
+              <h3>Pawai Obor &amp; Pesta Rakyat</h3>
+              <p>Pawai obor malam kemerdekaan yang meriah diiringi pesta rakyat sebagai wujud syukur dan semangat kebangsaan warga RW 04.</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- EVENT 2: Karnaval -->
+        <div class="event-card">
+          <a href="Event 2.html" class="event-link" aria-label="Lihat detail Karnaval" tabindex="0">
+            <div class="event-image">
+              <img src="/asset/Karnaval.jpg" alt="Karnaval HUT RI">
+            </div>
+            <div class="event-content">
+              <div class="event-date">17 Agustus 2026</div>
+              <h3>Karnaval HUT RI</h3>
+              <p>Karnaval perayaan kemerdekaan Indonesia dengan kostum kreatif, arak-arakan, dan semangat kebersamaan seluruh warga RW 04.</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- EVENT 3: Kreasi Seni -->
+        <div class="event-card">
+          <a href="Event 3.html" class="event-link" aria-label="Lihat detail Kreasi Seni" tabindex="0">
+            <div class="event-image">
+              <img src="/asset/Pentas Seni.jpg" alt="Kreasi Seni RW 04">
+            </div>
+            <div class="event-content">
+              <div class="event-date">4 September 2026</div>
+              <h3>Kreasi Seni</h3>
+              <p>Ajang unjuk bakat seni warga RW 04 — dari pertunjukan musik, tari, hingga pameran karya kreatif warga dan pemuda.</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- EVENT 4: Maulid Nabi -->
+        <div class="event-card">
+          <a href="Event 4.html" class="event-link" aria-label="Lihat detail Maulid Nabi" tabindex="0">
+            <div class="event-image">
+              <img src="/asset/Poster Maulid Nabi.png" alt="Maulid Nabi RW 04">
+            </div>
+            <div class="event-content">
+              <div class="event-date">25 Agustus 2026</div>
+              <h3>Maulid Nabi</h3>
+              <p>Ajang perayaan Maulid Nabi Muhammad SAW dengan berbagai kegiatan keagamaan dan kebersamaan warga RW 04.</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- EVENT 5: Jalan Sehat -->
+        <div class="event-card">
+          <div class="event-image">
+            <img src="/asset/Jalan Santai.JPG" alt="Jalan Sehat RW 04">
+          </div>
+          <div class="event-content">
+            <div class="event-date">5 September 2026</div>
+            <h3>Jalan Sehat RW 04</h3>
+            <p>Event tahunan penuh kebersamaan, doorprize, dan hiburan masyarakat dalam rangka merayakan kebersamaan warga RW 04.</p>
+            <a href="https://sirafest.netlify.app/" class="btn" target="_blank">Daftar Event</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PREMIUM COMPETITION HIGHLIGHT SECTION -->
+  <div class="premium-lomba-container">
+    <div class="lomba-highlight-card">
+      <!-- Glow Effect Decorator -->
+      <div class="absolute-glow"></div>
+      
+      <div class="lomba-header">
+        <span class="lomba-tagline">Kompetisi & Kebersamaan</span>
+        <h2 class="lomba-title">Panggung Karya Warga</h2>
+        <div class="lomba-divider"></div>
+        <p class="lomba-description">
+          Salurkan bakat, pererat silaturahmi, dan raih kemenangan. Ikuti berbagai lini kompetisi menarik yang dirancang khusus untuk memajukan potensi serta kebersamaan kita.
+        </p>
+      </div>
+
+      <!-- Interactive Lomba Cards Grid -->
+      <div class="lomba-showcase-grid">
+        <div class="lomba-item-card">
+          <span class="lomba-icon">🏸</span>
+          <span class="lomba-name">Bulu Tangkis</span>
+        </div>
+        <div class="lomba-item-card">
+          <span class="lomba-icon">🎮</span>
+          <span class="lomba-name">PS4 FIFA</span>
+        </div>
+        <div class="lomba-item-card">
+          <span class="lomba-icon">⚔️</span>
+          <span class="lomba-name">Mobile Legends</span>
+        </div>
+        <div class="lomba-item-card">
+          <span class="lomba-icon">♟️</span>
+          <span class="lomba-name">Catur Klasik</span>
+        </div>
+        <div class="lomba-item-card">
+          <span class="lomba-icon">🍚</span>
+          <span class="lomba-name">Lomba Liwet</span>
+        </div>
+      </div>
+
+      <!-- Elegant Action Button -->
+      <div class="lomba-action-wrapper">
+        <a href="lomba.html" class="premium-lomba-btn">
+          <span>Jelajahi Semua Kompetisi</span>
+          <svg class="btn-arrow" width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 7H17M17 7L11 1M17 7L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+    <!-- NEWS -->
+
+  <section id="berita">
+
+      
 
 
     <div class="container">
 
       <div class="section-title">
-        <h5>DOKUMENTASI</h5>
+        <h5>BERITA TERBARU</h5>
         <h2>
-          Momen dan
-          <span>Kebersamaan</span>
+          Informasi dan
+          <span>Kegiatan Pemuda</span>
         </h2>
       </div>
 
-      <div class="gallery-grid">
+      <div class="news-grid">
 
-  <div>
-    <img src="/asset/3.jpg">
+        <div class="news-card">
 
-    <div style="
-      text-align:center;
-      margin-top:12px;
-    ">
-      <a
-        href="https://drive.google.com/drive/folders/1IRp0DBNsf45Xi5rt8DtTBs9Hm8EKBXmJ?usp=sharing"
-        target="_blank"
-        class="btn-outline"
-      >
-        Dokumentasi Jalan Santai
-      </a>
-    </div>
-  </div>
-
-  <div>
-    <img src="/asset/Karnaval.jpg">
-
-    <div style="
-      text-align:center;
-      margin-top:12px;
-    ">
-      <a
-        href="https://drive.google.com/drive/folders/1TIwbeIdGvz_KnXgUJryfnVxkEYTBn-VE?usp=sharing"
-        target="_blank"
-        class="btn-outline"
-      >
-        Dokumentasi Karnaval
-      </a>
-    </div>
-  </div>
-
-  <div>
-    <img src="/asset/Pawai Obor.JPG">
-
-    <div style="
-      text-align:center;
-      margin-top:12px;
-    ">
-      <a
-        href="https://drive.google.com/drive/folders/1CjmS_mI8A9JizQgeE0G2cD6-ANBQamvw?usp=sharing"
-        target="_blank"
-        class="btn-outline"
-      >
-        Dokumentasi Pawai Obor
-      </a>
-    </div>
-  </div>
-
-  <div>
-    <img src="/asset/Pentas Seni.jpg">
-
-    <div style="
-      text-align:center;
-      margin-top:12px;
-    ">
-      <a
-        href="https://drive.google.com/drive/folders/14uu688fYdXA4PAt_INeHBh3XeqUZ7uK3?usp=sharing"
-        target="_blank"
-        class="btn-outline"
-      >
-        Dokumentasi Pentas Seni
-      </a>
-    </div>
-  </div>
-
-</div>
-  </section>
-
-  <!-- CONTACT -->
-
-  <section id="kontak">
-
-    <div class="container">
-
-      <div class="section-title">
-        <h5>KONTAK</h5>
-        <h2>
-          Gabung &
-          <span>Diskusikan Program</span>
-        </h2>
-      </div>
-
-      <div class="about-wrapper">
-        <div class="about-image">
-          <img src="asset/Karang Taruna.jpg" alt="">
-        </div>
-
-        <div class="about-text">
-          <h3>
-            Siap <span>Bergabung</span>
-          </h3>
-
-          <p>
-            Untuk informasi kegiatan, pendaftaran, atau kolaborasi, hubungi admin grup melalui WhatsApp.
-          </p>
-
-          <div class="features">
-            <div class="feature">
-              <i class="fa-solid fa-phone"></i>
-              <h4>WhatsApp Admin</h4>
-              <p>
-                <a href="https://wa.me/6287835333349" target="_blank" rel="noopener">+62 878-3533-3349</a>
-              </p>
-            </div>
-
-            <div class="feature">
-              <i class="fa-solid fa-envelope"></i>
-              <h4>Email</h4>
-              <p>
-                <a href="mailto:adhigana.prapti04@gmail.com">adhigana.prapti04@gmail.com</a>
-              </p>
-            </div>
-
-            <div class="feature">
-              <i class="fa-solid fa-location-dot"></i>
-              <h4>Alamat</h4>
-              <p>RW 04 Sirnagalih, Kec. Indihiang, Kota Tasikmalaya</p>
-            </div>
-
-            <div class="feature">
-              <i class="fa-solid fa-user-plus"></i>
-              <h4>Gabung Sekarang</h4>
-              <p>
-                <a href="https://wa.me/6287835333349" class="btn" target="_blank" rel="noopener">Chat Admin</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-
-  <footer>
-
-
-    <div class="container">
-
-      <div class="footer-wrapper">
-
-        <div class="footer-about">
-
-          <div class="logo">
-
-            <img src="/asset/Adhigana prapti.png" alt="">
-            <div class="logo-text">
-              <h1>ADHIGANA PRAPTI</h1>
-              <span>Karang Taruna RW 04</span>
-            </div>
+          <div class="news-image">
+            <img src="/asset/Jalan Santai Persiapan.JPG">
           </div>
 
-          <p>
-            Website resmi Karang Taruna Adhigana Prapti
-            sebagai pusat informasi kegiatan,
-            event, dan program kepemudaan.
-          </p>
+          <div class="news-content">
 
-        </div>
+            <div class="news-date">
+              7 September 2025
+            </div>
 
-        <div>
+            <h3>
+              Persiapan Jalan Santai RW 04 Berlangsung Meriah
+            </h3>
 
-          <h3 class="footer-title">Menu</h3>
+            <p>
+              Langkah besar selalu dimulai dari satu hentakan kecil. Sebelum menyongsong rentetan agenda besar dan program kerja yang padat di masa mendatang, Karang Taruna Adhigana Prapti memilih lapangan hijau sebagai tempat untuk menyalakan api pergerakan mereka
+            </p>
 
-          <div class="footer-links">
-            <a href="#beranda">Beranda</a>
-            <a href="#profil">Profil</a>
-            <a href="#kegiatan">Kegiatan</a>
-            <a href="#event">Event</a>
-            <a href="#galeri">Galeri</a>
-            <a href="#berita">Berita</a>
-            <a href="#kontak">Kontak</a>
-          </div>
-
-
-        </div>
-
-        <div>
-
-          <h3 class="footer-title">Media Sosial</h3>
-
-          <div class="footer-links">
-            <a href="https://www.instagram.com/adhigana.prapti/" target="_blank" rel="noopener">Instagram</a>
-            <a href="https://www.tiktok.com/@adhigana.prapti" target="_blank" rel="noopener">TikTok</a>
+            <a href="Berita 1.html" class="btn-outline">
+    Baca Selengkapnya
+  </a>
           </div>
 
         </div>
 
+        <div class="news-card">
 
-        <div>
-
-          <h3 class="footer-title">Kontak</h3>
-
-          <div class="footer-links">
-            <a href="#">RW 04 Sirnagalih, Kec. Indihiang, Kota Tasikmalaya</a>
-            <a href="https://wa.me/628991139730" target="_blank" rel="noopener">087835333349</a>
-            <a href="#">adhigana.prapti04@gmail.com</a>
+          <div class="news-image">
+            <img src="/asset/Ml.jpeg">
           </div>
 
+          <div class="news-content">
+
+            <div class="news-date">
+              20 Oktober 2025
+            </div>
+
+            <h3>
+              Turnamen Mobile Legends Sukses Digelar
+            </h3>
+
+            <p>
+              Antusias peserta meningkat, dan persaingan berlangsung seru hingga akhir.
+            </p>
+
+            <a href="Berita 2.html" class="btn-outline">
+    Baca Selengkapnya
+  </a>
+
+          </div>
 
         </div>
 
       </div>
-        
-      <div class="copyright">
-        © 2026 Karang Taruna Adhigana Prapti — All Rights Reserved
-      </div>
 
+    </section>
+
+    <!-- GALLERY -->
+
+    <section id="galeri">
+
+
+      <div class="container">
+
+        <div class="section-title">
+          <h5>DOKUMENTASI</h5>
+          <h2>
+            Momen dan
+            <span>Kebersamaan</span>
+          </h2>
+        </div>
+
+        <div class="gallery-grid">
+
+    <div>
+      <img src="/asset/3.jpg">
+
+      <div style="
+        text-align:center;
+        margin-top:12px;
+      ">
+        <a
+          href="https://drive.google.com/drive/folders/1IRp0DBNsf45Xi5rt8DtTBs9Hm8EKBXmJ?usp=sharing"
+          target="_blank"
+          class="btn-outline"
+        >
+          Dokumentasi Jalan Santai
+        </a>
+      </div>
     </div>
 
-  </footer>
+    <div>
+      <img src="/asset/Karnaval.jpg">
 
-  <!-- GALLERY MODAL -->
-  
-  <div class="gallery-modal" id="galleryModal">
-  
-    <span class="close-gallery" id="closeGallery">
-      &times;
-    </span>
-  
-    <img id="galleryPreview">
-  
+      <div style="
+        text-align:center;
+        margin-top:12px;
+      ">
+        <a
+          href="https://drive.google.com/drive/folders/1TIwbeIdGvz_KnXgUJryfnVxkEYTBn-VE?usp=sharing"
+          target="_blank"
+          class="btn-outline"
+        >
+          Dokumentasi Karnaval
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <img src="/asset/Pawai Obor.JPG">
+
+      <div style="
+        text-align:center;
+        margin-top:12px;
+      ">
+        <a
+          href="https://drive.google.com/drive/folders/1CjmS_mI8A9JizQgeE0G2cD6-ANBQamvw?usp=sharing"
+          target="_blank"
+          class="btn-outline"
+        >
+          Dokumentasi Pawai Obor
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <img src="/asset/Pentas Seni.jpg">
+
+      <div style="
+        text-align:center;
+        margin-top:12px;
+      ">
+        <a
+          href="https://drive.google.com/drive/folders/14uu688fYdXA4PAt_INeHBh3XeqUZ7uK3?usp=sharing"
+          target="_blank"
+          class="btn-outline"
+        >
+          Dokumentasi Pentas Seni
+        </a>
+      </div>
+    </div>
+
   </div>
+    </section>
+
+    <!-- CONTACT -->
+
+    <section id="kontak">
+
+      <div class="container">
+
+        <div class="section-title">
+          <h5>KONTAK</h5>
+          <h2>
+            Gabung &
+            <span>Diskusikan Program</span>
+          </h2>
+        </div>
+
+        <div class="about-wrapper">
+          <div class="about-image">
+            <img src="asset/Karang Taruna.jpg" alt="">
+          </div>
+
+          <div class="about-text">
+            <h3>
+              Siap <span>Bergabung</span>
+            </h3>
+
+            <p>
+              Untuk informasi kegiatan, pendaftaran, atau kolaborasi, hubungi admin grup melalui WhatsApp.
+            </p>
+
+            <div class="features">
+              <div class="feature">
+                <i class="fa-solid fa-phone"></i>
+                <h4>WhatsApp Admin</h4>
+                <p>
+                  <a href="https://wa.me/6287835333349" target="_blank" rel="noopener">+62 878-3533-3349</a>
+                </p>
+              </div>
+
+              <div class="feature">
+                <i class="fa-solid fa-envelope"></i>
+                <h4>Email</h4>
+                <p>
+                  <a href="mailto:adhigana.prapti04@gmail.com">adhigana.prapti04@gmail.com</a>
+                </p>
+              </div>
+
+              <div class="feature">
+                <i class="fa-solid fa-location-dot"></i>
+                <h4>Alamat</h4>
+                <p>RW 04 Sirnagalih, Kec. Indihiang, Kota Tasikmalaya</p>
+              </div>
+
+              <div class="feature">
+                <i class="fa-solid fa-user-plus"></i>
+                <h4>Gabung Sekarang</h4>
+                <p>
+                  <a href="https://wa.me/6287835333349" class="btn" target="_blank" rel="noopener">Chat Admin</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+
+      <div class="container">
+
+        <div class="footer-wrapper">
+
+          <div class="footer-about">
+
+            <div class="logo">
+
+              <img src="/asset/Adhigana prapti.png" alt="">
+              <div class="logo-text">
+                <h1>ADHIGANA PRAPTI</h1>
+                <span>Karang Taruna RW 04</span>
+              </div>
+            </div>
+
+            <p>
+              Website resmi Karang Taruna Adhigana Prapti
+              sebagai pusat informasi kegiatan,
+              event, dan program kepemudaan.
+            </p>
+
+          </div>
+
+          <div>
+
+            <h3 class="footer-title">Menu</h3>
+
+            <div class="footer-links">
+              <a href="#beranda">Beranda</a>
+              <a href="#profil">Profil</a>
+              <a href="#kegiatan">Kegiatan</a>
+              <a href="#event">Event</a>
+              <a href="#galeri">Galeri</a>
+              <a href="#berita">Berita</a>
+              <a href="#kontak">Kontak</a>
+            </div>
+
+
+          </div>
+
+          <div>
+
+            <h3 class="footer-title">Media Sosial</h3>
+
+            <div class="footer-links">
+              <a href="https://www.instagram.com/adhigana.prapti/" target="_blank" rel="noopener">Instagram</a>
+              <a href="https://www.tiktok.com/@adhigana.prapti" target="_blank" rel="noopener">TikTok</a>
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <h3 class="footer-title">Kontak</h3>
+
+            <div class="footer-links">
+              <a href="#">RW 04 Sirnagalih, Kec. Indihiang, Kota Tasikmalaya</a>
+              <a href="https://wa.me/628991139730" target="_blank" rel="noopener">087835333349</a>
+              <a href="#">adhigana.prapti04@gmail.com</a>
+            </div>
+
+
+          </div>
+
+        </div>
+          
+        <div class="copyright">
+          © 2026 Karang Taruna Adhigana Prapti — All Rights Reserved
+        </div>
+
+      </div>
+
+    </footer>
+
+    <!-- GALLERY MODAL -->
+    
+    <div class="gallery-modal" id="galleryModal">
+    
+      <span class="close-gallery" id="closeGallery">
+        &times;
+      </span>
+    
+      <img id="galleryPreview">
+    
+    </div>
 
   <script>
 
-const galleryImages = document.querySelectorAll('.gallery-grid img');
-const galleryModal = document.getElementById('galleryModal');
-const galleryPreview = document.getElementById('galleryPreview');
-const closeGallery = document.getElementById('closeGallery');
+  import { auth, db } from './firebase.js';
+  import { collection, doc, getDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
 
-galleryImages.forEach(img => {
-
-  img.addEventListener('click', () => {
-
-    galleryModal.classList.add('active');
-    galleryPreview.src = img.src;
-
-  });
-
-});
-
-closeGallery.addEventListener('click', () => {
-  galleryModal.classList.remove('active');
-});
-
-galleryModal.addEventListener('click', (e) => {
-
-  if(e.target === galleryModal){
-    galleryModal.classList.remove('active');
+  function todayKey(){
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${yyyy}-${mm}-${dd}`;
   }
 
-});
+  const landingTotalAnggotaEl = document.getElementById('landingTotalAnggota');
+  const landingHadirHariIniEl = document.getElementById('landingHadirHariIni');
+  const landingSaldoKasEl = document.getElementById('landingSaldoKas');
+  const landingJumlahMadingEl = document.getElementById('landingJumlahMading');
 
-/* ================= ORG ACCORDION ================= */
-const orgItems = document.querySelectorAll('.org-item');
-orgItems.forEach((item) => {
-  const trigger = item.querySelector('.org-trigger');
-  const panel = item.querySelector('.org-panel');
+  function formatRp(n){
+    const num = Number(n) || 0;
+    return 'Rp ' + num.toLocaleString('id-ID');
+  }
 
-  if(!trigger || !panel) return;
+  function getPengurusCount(){
+    const items = document.querySelectorAll('.pengurus-item');
+    return items ? items.length : 0;
+  }
 
-  trigger.addEventListener('click', () => {
-    const isOpen = item.getAttribute('data-open') === 'true';
-    item.setAttribute('data-open', String(!isOpen));
-    panel.hidden = isOpen;
-    trigger.setAttribute('aria-expanded', String(!isOpen));
+  async function loadLandingRingkasan(){
+    if(!landingTotalAnggotaEl) return;
+
+    // Total anggota dari marquee pengurus
+    landingTotalAnggotaEl.textContent = String(getPengurusCount());
+
+    // Default angka
+    landingHadirHariIniEl.textContent = '0';
+    landingSaldoKasEl.textContent = 'Rp 0';
+    landingJumlahMadingEl.textContent = '0';
+
+    try{
+      const rkRef = doc(db, 'meta', 'ringkas');
+      const rkSnap = await getDoc(rkRef);
+      if(rkSnap.exists()){
+        const data = rkSnap.data() || {};
+        landingSaldoKasEl.textContent = formatRp(data.saldoKas ?? 0);
+        landingJumlahMadingEl.textContent = String(data.jumlahMading ?? 0);
+      }
+
+      // Absensi hari ini (hadirCount)
+      const absRef = doc(db, 'absensi', todayKey());
+      const absSnap = await getDoc(absRef);
+      if(absSnap.exists()){
+        const data = absSnap.data() || {};
+        landingHadirHariIniEl.textContent = String(data.hadirCount ?? 0);
+      }
+
+    }catch(e){
+      console.error('Gagal load landing ringkas:', e);
+    }
+  }
+
+  loadLandingRingkasan();
+
+  const galleryImages = document.querySelectorAll('.gallery-grid img');
+  const galleryModal = document.getElementById('galleryModal');
+  const galleryPreview = document.getElementById('galleryPreview');
+  const closeGallery = document.getElementById('closeGallery');
+
+  galleryImages.forEach(img => {
+
+    img.addEventListener('click', () => {
+
+      galleryModal.classList.add('active');
+      galleryPreview.src = img.src;
+
+    });
+
   });
-});
 
-/* ================= MOBILE SIDEBAR ================= */
+  closeGallery.addEventListener('click', () => {
+    galleryModal.classList.remove('active');
+  });
 
-const hamburger = document.getElementById('hamburger');
-const mobileSidebar = document.getElementById('mobileSidebar');
-const closeSidebar = document.getElementById('closeSidebar');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
+  galleryModal.addEventListener('click', (e) => {
 
-hamburger.addEventListener('click', () => {
+    if(e.target === galleryModal){
+      galleryModal.classList.remove('active');
+    }
 
-  mobileSidebar.classList.add('active');
-  sidebarOverlay.classList.add('active');
+  });
 
-});
+  /* ================= ORG ACCORDION ================= */
+  const orgItems = document.querySelectorAll('.org-item');
+  orgItems.forEach((item) => {
+    const trigger = item.querySelector('.org-trigger');
+    const panel = item.querySelector('.org-panel');
 
-closeSidebar.addEventListener('click', () => {
+    if(!trigger || !panel) return;
 
-  mobileSidebar.classList.remove('active');
-  sidebarOverlay.classList.remove('active');
+    trigger.addEventListener('click', () => {
+      const isOpen = item.getAttribute('data-open') === 'true';
+      item.setAttribute('data-open', String(!isOpen));
+      panel.hidden = isOpen;
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
 
-});
+  /* ================= MOBILE SIDEBAR ================= */
 
-sidebarOverlay.addEventListener('click', () => {
+  const hamburger = document.getElementById('hamburger');
+  const mobileSidebar = document.getElementById('mobileSidebar');
+  const closeSidebar = document.getElementById('closeSidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-  mobileSidebar.classList.remove('active');
-  sidebarOverlay.classList.remove('active');
+  hamburger.addEventListener('click', () => {
 
-});
+    mobileSidebar.classList.add('active');
+    sidebarOverlay.classList.add('active');
 
-/* AUTO CLOSE SAAT LINK DIKLIK */
+  });
 
-document.querySelectorAll('.mobile-links a').forEach(link => {
-
-  link.addEventListener('click', () => {
+  closeSidebar.addEventListener('click', () => {
 
     mobileSidebar.classList.remove('active');
     sidebarOverlay.classList.remove('active');
 
   });
 
-});
+  sidebarOverlay.addEventListener('click', () => {
 
-document.querySelectorAll('.marquee-content').forEach(track => {
-    track.innerHTML += track.innerHTML;
-});
+    mobileSidebar.classList.remove('active');
+    sidebarOverlay.classList.remove('active');
+
+  });
+
+  /* AUTO CLOSE SAAT LINK DIKLIK */
+
+  document.querySelectorAll('.mobile-links a').forEach(link => {
+
+    link.addEventListener('click', () => {
+
+      mobileSidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+
+    });
+
+  });
+
+  document.querySelectorAll('.marquee-content').forEach(track => {
+      track.innerHTML += track.innerHTML;
+  });
+
+    </script>
+
+    <script>
+
+  let deferredPrompt;
+
+  const btnTop =
+  document.getElementById(
+    'pwaInstallTop'
+  );
+
+  const btnMobile =
+  document.getElementById(
+    'pwaInstallMobile'
+  );
+
+  window.addEventListener(
+  'beforeinstallprompt',
+  (e)=>{
+
+  e.preventDefault();
+
+  deferredPrompt=e;
+
+  if(btnTop)
+  btnTop.style.display=
+  'inline-flex';
+
+  if(btnMobile)
+  btnMobile.style.display=
+  'inline-flex';
+
+  });
+
+  async function installPWA(){
+
+  if(!deferredPrompt)
+  return;
+
+  deferredPrompt.prompt();
+
+  await deferredPrompt.userChoice;
+
+  deferredPrompt=null;
+
+  if(btnTop)
+  btnTop.style.display=
+  'none';
+
+  if(btnMobile)
+  btnMobile.style.display=
+  'none';
+
+  }
+
+  btnTop?.addEventListener(
+  'click',
+  installPWA
+  );
+
+  btnMobile?.addEventListener(
+  'click',
+  installPWA
+  );
+
+  /* SERVICE WORKER */
+
+  if(
+  'serviceWorker'
+  in navigator
+  ){
+
+  window.addEventListener(
+  'load',
+  ()=>{
+
+  navigator
+  .serviceWorker
+  .register(
+  './service-worker.js'
+  )
+  .catch(()=>{});
+
+  });
+
+  }
 
   </script>
 
-  <script>
 
-let deferredPrompt;
-
-const btnTop =
-document.getElementById(
-  'pwaInstallTop'
-);
-
-const btnMobile =
-document.getElementById(
-  'pwaInstallMobile'
-);
-
-window.addEventListener(
-'beforeinstallprompt',
-(e)=>{
-
-e.preventDefault();
-
-deferredPrompt=e;
-
-if(btnTop)
-btnTop.style.display=
-'inline-flex';
-
-if(btnMobile)
-btnMobile.style.display=
-'inline-flex';
-
-});
-
-async function installPWA(){
-
-if(!deferredPrompt)
-return;
-
-deferredPrompt.prompt();
-
-await deferredPrompt.userChoice;
-
-deferredPrompt=null;
-
-if(btnTop)
-btnTop.style.display=
-'none';
-
-if(btnMobile)
-btnMobile.style.display=
-'none';
-
-}
-
-btnTop?.addEventListener(
-'click',
-installPWA
-);
-
-btnMobile?.addEventListener(
-'click',
-installPWA
-);
-
-/* SERVICE WORKER */
-
-if(
-'serviceWorker'
-in navigator
-){
-
-window.addEventListener(
-'load',
-()=>{
-
-navigator
-.serviceWorker
-.register(
-'./service-worker.js'
-)
-.catch(()=>{});
-
-});
-
-}
-
-</script>
-
-
-</body>
-</html>
+  </body>
+  </html>
