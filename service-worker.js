@@ -65,3 +65,55 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
+// ============================================================
+// PUSH NOTIFICATION (FCM)
+// ============================================================
+self.addEventListener('push', (event) => {
+  let payload = {};
+  try {
+    if (event.data) payload = event.data.json();
+  } catch (e) {
+    // ignore parsing errors
+  }
+
+  const title = payload.title || 'Pengumuman Mading';
+  const body = payload.body || 'Ada pengumuman baru.';
+  const clickUrl = payload.clickUrl || './Login.html';
+
+  const options = {
+    body,
+    tag: payload.tag || 'mading',
+    data: { url: clickUrl },
+    icon: payload.icon || './asset/Adhigana prapti.png',
+    badge: payload.badge || './asset/Adhigana prapti.png',
+    // catatan: sound untuk service-worker masih tidak konsisten di semua browser.
+    // bunyi akan kita coba lewat client-foreground.
+    // (beberapa browser mengabaikan opsi sound, jadi kita tidak mengandalkannya)
+    vibrate: [100, 50, 100],
+  }; 
+
+
+  event.waitUntil(self.registration.showNotification(title, options));
+
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification?.data?.url || './Login.html';
+
+  event.waitUntil(
+    (async () => {
+      const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const client of allClients) {
+        if ('focus' in client) {
+          await client.focus();
+          client.postMessage({ type: 'NOTIF_CLICKED', url });
+          return;
+        }
+      }
+      await self.clients.openWindow(url);
+    })()
+  );
+});
+
+
