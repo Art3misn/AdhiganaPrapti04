@@ -605,6 +605,10 @@ function hideDashboard() {
   btnOpenLogin.style.display = 'inline-flex';
   btnLogoutNav.style.display = 'none';
   renderMadingPublik();
+
+  // tombol logout HP
+  const btnLogoutMobile = document.getElementById('btnLogoutMobile');
+  if (btnLogoutMobile) btnLogoutMobile.style.display = 'none';
 }
 
 btnLogoutNav?.addEventListener('click', e => {
@@ -612,6 +616,31 @@ btnLogoutNav?.addEventListener('click', e => {
   sessionStorage.clear();
   hideDashboard();
 });
+
+// Tombol logout khusus HP (agar selalu terlihat saat menu hamburger)
+(function initMobileLogout() {
+  if (window.matchMedia && !window.matchMedia('(max-width: 768px)').matches) return;
+
+  // Sisipkan tombol di HERO (dekat tombol masuk)
+  const heroActions = document.querySelector('#hero .hero-actions');
+  if (!heroActions) return;
+  if (document.getElementById('btnLogoutMobile')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'btnLogoutMobile';
+  btn.className = 'btn btn-secondary';
+  btn.type = 'button';
+  btn.style.display = 'none';
+  btn.innerHTML = '<i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar';
+  heroActions.appendChild(btn);
+
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    sessionStorage.clear();
+    hideDashboard();
+  });
+})();
+
 
 // Demo login (tanpa Firebase — gunakan session lokal)
 loginForm?.addEventListener('submit', async e => {
