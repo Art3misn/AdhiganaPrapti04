@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#070a10"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="Adhigana"/>
-  <link rel="manifest" href="manifest.json"/>
+  <!-- Meta tag yang sudah ada -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#070a10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Adhigana" />
+  
+  <!-- ===== TAMBAHKAN INI UNTUK iOS ===== -->
+  <!-- iOS splash screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Adhigana Prapti">
+  
+  <!-- iOS icons -->
+  <link rel="apple-touch-icon" href="/asset/icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/asset/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/asset/icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/asset/icon-180x180.png">
+  
+  <!-- iOS splash screen -->
+  <link rel="apple-touch-startup-image" href="/asset/splash-iphone.png" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
+  <link rel="apple-touch-startup-image" href="/asset/splash-iphone-6-7-8.png" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+  <link rel="apple-touch-startup-image" href="/asset/splash-iphone-6-7-8-plus.png" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)">
+  <link rel="apple-touch-startup-image" href="/asset/splash-iphone-x.png" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
+  
+  <!-- ===== END TAMBAHAN ===== -->
+  
+  <link rel="manifest" href="manifest.json" />
   <title>ADHIGANA PRAPTI — Portal & Mading</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-  <style>
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --c-bg:#070a10;--c-surface:#0d1018;--c-panel:#111520;
-      --c-border:rgba(255,255,255,.06);--c-text:#eef2ff;--c-muted:#5a6480;--c-dim:#8b95b0;
-      --c-cyan:#6ee7f7;--c-cyan2:#38c4d8;--c-red:#ff5f5f;--c-amber:#ffb340;
-      --c-green:#4ade80;--c-purple:#a78bfa;
-      --r-card:20px;--r-btn:14px;--r-input:13px;
-      --shadow-lg:0 32px 80px rgba(0,0,0,.55);
-    }
-    html{scroll-behavior:smooth}
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;overflow-x:hidden}
-    a{text-decoration:none;color:inherit}
-    .container{width:92%;max-width:1200px;margin:0 auto}
+  <!-- ... -->
+</head>
 
     /* NAV */
     nav{position:fixed;top:0;left:0;right:0;z-index:900;padding:14px 0;background:rgba(7,10,16,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--c-border)}
