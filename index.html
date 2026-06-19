@@ -1076,6 +1076,27 @@
       .package-header h3 { font-size: 20px; }
       .package-price { font-size: 16px; }
     }
+
+    /* ── iOS SAFE AREA ────────────────────────────────────────── */
+.ios-standalone {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.ios-standalone nav {
+  padding-top: env(safe-area-inset-top);
+}
+
+.ios-standalone footer {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@supports (padding: max(0px)) {
+  .container {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+}
   </style>
 </head>
 <body>
