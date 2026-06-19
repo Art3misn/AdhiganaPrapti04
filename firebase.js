@@ -24,7 +24,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ============================================================
-// FIREBASE CONFIG - PAKAI PUNYA KAMU
+// FIREBASE CONFIG
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyATh7MiV8xr4vHgF3AjqMhXc87LhCRF7N0",
@@ -206,10 +206,10 @@ async function deleteKas(kasId) {
 }
 
 // ============================================================
-// FUNGSI UNTUK NOTIFIKASI (PUSH KE FIRESTORE)
+// FUNGSI UNTUK NOTIFIKASI
 // ============================================================
 
-// Kirim notifikasi ke Firestore (untuk real-time antar user)
+// Kirim notifikasi ke Firestore
 async function sendNotification(title, body, type = "info", data = {}) {
   try {
     const docRef = await addDoc(collection(db, "notifications"), {
