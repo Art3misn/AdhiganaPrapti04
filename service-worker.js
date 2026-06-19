@@ -1,7 +1,10 @@
 // ============================================================
-// SERVICE WORKER - ADHIGANA PRAPTI v3 (FCM + Push + iOS)
+// SERVICE WORKER - ADHIGANA PRAPTI v3 (FCM + Push)
 // ============================================================
 
+// ═══════════════════════════════════════════════════════════════
+// FIREBASE IMPORT (untuk push notification)
+// ═══════════════════════════════════════════════════════════════
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 
@@ -10,13 +13,10 @@ const ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/asset/Adhigana prapti.png',
-  '/asset/icon-192x192.png',
-  '/asset/icon-512x512.png',
-  '/asset/icon-180x180.png'
+  '/asset/Adhigana prapti.png'
 ];
 
-// ── Firebase config di SW ────────────────────────────────────
+// ── Firebase config ──────────────────────────────────────────
 firebase.initializeApp({
   apiKey:            "AIzaSyATh7MiV8xr4vHgF3AjqMhXc87LhCRF7N0",
   authDomain:        "adhiganaprapti-e8f13.firebaseapp.com",
@@ -28,12 +28,14 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// ── Background push (tab tertutup / tidak aktif) ─────────────
+// ── Background push (tab tertutup / tidak aktif) ────────────
 messaging.onBackgroundMessage((payload) => {
   console.log('📨 Background message:', payload);
 
-  const { title, body, type } = payload.data || payload.notification || {};
-  const notifType = type || 'info';
+  const data = payload.data || payload.notification || {};
+  const title = data.title || 'ADHIGANA PRAPTI';
+  const body = data.body || 'Ada notifikasi baru!';
+  const type = data.type || 'info';
 
   const iconMap = {
     kas:     '💰',
@@ -43,15 +45,15 @@ messaging.onBackgroundMessage((payload) => {
   };
 
   self.registration.showNotification(
-    (iconMap[notifType] || '🔔') + ' ' + (title || 'ADHIGANA PRAPTI'),
+    (iconMap[type] || '🔔') + ' ' + title,
     {
-      body:               body || 'Ada update baru!',
-      icon:               '/asset/Adhigana prapti.png',
-      badge:              '/asset/Adhigana prapti.png',
-      vibrate:            notifType === 'kas' ? [200,100,200,100,200] : [200,100,200],
+      body: body,
+      icon: '/asset/Adhigana prapti.png',
+      badge: '/asset/Adhigana prapti.png',
+      vibrate: type === 'kas' ? [200,100,200,100,200] : [200,100,200],
       requireInteraction: true,
-      tag:                'adhigana-' + notifType + '-' + Date.now(),
-      data:               { url: '/', type: notifType }
+      tag: 'adhigana-' + type + '-' + Date.now(),
+      data: { url: '/', type: type }
     }
   );
 });
@@ -60,7 +62,7 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME)
-      .then(c => c.addAll(ASSETS).catch(() => console.warn('Some assets failed to cache')))
+      .then(c => c.addAll(ASSETS).catch(() => {}))
       .then(() => self.skipWaiting())
   );
 });
@@ -76,10 +78,7 @@ self.addEventListener('activate', (e) => {
 
 // ── FETCH ────────────────────────────────────────────────────
 self.addEventListener('fetch', (e) => {
-  // Skip non-GET requests
   if (e.request.method !== 'GET') return;
-  
-  // Skip Firebase/Google APIs
   if (e.request.url.includes('firestore') ||
       e.request.url.includes('googleapis') ||
       e.request.url.includes('gstatic') ||
@@ -100,35 +99,22 @@ self.addEventListener('fetch', (e) => {
   );
 });
 
-// ── NOTIFICATION CLICK ────────────────────────────────────────
+// ── NOTIFICATION CLICK ──────────────────────────────────────
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
   if (e.action === 'dismiss') return;
-  
   const url = e.notification.data?.url || '/';
-  
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
-      // Cari tab yang sudah terbuka
       for (const c of list) {
-        if (c.url.includes(self.location.origin) && 'focus' in c) {
-          return c.focus();
-        }
+        if (c.url.includes(self.location.origin) && 'focus' in c) return c.focus();
       }
-      // Buka tab baru
-      if (clients.openWindow) {
-        return clients.openWindow(url);
-      }
+      if (clients.openWindow) return clients.openWindow(url);
     })
   );
 });
 
-// ── MESSAGE ───────────────────────────────────────────────────
-self.addEventListener('message', (e) => {
-  if (e.data?.type === 'CHECK_READY') {
-    e.source?.postMessage({ type: 'SW_READY' });
-  }
-});// ── MESSAGE ───────────────────────────────────────────────────
+// ── MESSAGE ──────────────────────────────────────────────────
 self.addEventListener('message', (e) => {
   if (e.data?.type === 'CHECK_READY') {
     e.source?.postMessage({ type: 'SW_READY' });
