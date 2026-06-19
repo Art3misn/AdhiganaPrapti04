@@ -862,25 +862,39 @@
 
 <script type="module">
 // ============================================================
-// IMPORT DARI FIREBASE.JS
+// IMPORT FIREBASE
 // ============================================================
+import { initializeApp } from "firebase/app";
 import { 
-  db,
-  sendMading,
-  sendKas,
-  listenMading,
-  listenKas,
-  sendNotification,
-  serverTimestamp,
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  limit
-} from './firebase.js';
+  getFirestore, 
+  collection, 
+  doc, 
+  addDoc, 
+  deleteDoc, 
+  onSnapshot, 
+  query, 
+  orderBy, 
+  limit,
+  serverTimestamp 
+} from "firebase/firestore";
 
-console.log("🔥 Firebase Connected - Realtime Notifikasi Aktif");
+// ============================================================
+// FIREBASE CONFIG
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyATh7MiV8xr4vHgF3AjqMhXc87LhCRF7N0",
+  authDomain: "adhiganaprapti-e8f13.firebaseapp.com",
+  projectId: "adhiganaprapti-e8f13",
+  storageBucket: "adhiganaprapti-e8f13.firebasestorage.app",
+  messagingSenderId: "1011133018564",
+  appId: "1:1011133018564:web:57e9537b39c85a44593491",
+  measurementId: "G-DP6L1NQXR4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+console.log("🔥 Firebase Connected");
 
 // ============================================================
 // DOM ELEMENTS
@@ -948,7 +962,7 @@ function playNotifSound(type = 'default') {
 }
 
 // ============================================================
-// TOAST
+// TOAST NOTIFIKASI
 // ============================================================
 function showToast({ type = 'info', title = '', desc = '', amount = '', amountColor = '' }) {
   const iconMap = {
@@ -984,72 +998,126 @@ function showToast({ type = 'info', title = '', desc = '', amount = '', amountCo
 }
 
 // ============================================================
-// BROWSER NOTIFICATION
+// BROWSER NOTIFICATION (untuk HP)
 // ============================================================
 function showBrowserNotification(title, body) {
-  if (Notification.permission !== 'granted') return;
+  // Cek apakah notifikasi diizinkan
+  if (Notification.permission !== 'granted') {
+    console.log('⚠️ Notifikasi tidak diizinkan');
+    return;
+  }
+  
   try {
-    const n = new Notification(title, {
+    const options = {
       body: body,
-      icon: './asset/Adhigana prapti.png',
-      badge: './asset/Adhigana prapti.png',
+      icon: '/asset/Adhigana prapti.png',
+      badge: '/asset/Adhigana prapti.png',
       vibrate: [200, 100, 200],
-      requireInteraction: true
-    });
-    n.onclick = () => { window.focus(); n.close(); };
-  } catch(e) {}
+      requireInteraction: true,
+      tag: 'adhigana-notif',
+      data: {
+        url: '/'
+      }
+    };
+    
+    // Coba pakai Service Worker Registration jika ada
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification(title, options);
+      });
+    } else {
+      // Fallback ke Notification API biasa
+      const n = new Notification(title, options);
+      n.onclick = () => { window.focus(); n.close(); };
+    }
+  } catch(e) {
+    console.log('❌ Gagal tampilkan notifikasi:', e);
+  }
 }
 
 // ============================================================
-// 🔥 REALTIME LISTENER - MADING (dari firebase.js)
+// 🔥 REALTIME LISTENER - MADING
 // ============================================================
-listenMading((items) => {
-  // Cek jika ada item baru
-  items.forEach((item) => {
-    if (!knownNotifIds.has(item.id)) {
-      knownNotifIds.add(item.id);
-      if (!isFirstLoad) {
-        const judul = item.judul || 'Pengumuman Baru';
-        const isi = item.isi || '';
+const madingQuery = query(
+  collection(db, "mading"),
+  orderBy("tanggal", "desc"),
+  limit(20)
+);
+
+onSnapshot(madingQuery, (snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === 'added') {
+      const data = change.doc.data();
+      const notifId = change.doc.id;
+      
+      if (isFirstLoad) { 
+        knownNotifIds.add(notifId); 
+        return; 
+      }
+      
+      if (!knownNotifIds.has(notifId)) {
+        knownNotifIds.add(notifId);
+        const judul = data.judul || 'Pengumuman Baru';
+        const isi = data.isi || '';
         
         // 🔔 TRIGGER NOTIFIKASI
+        console.log('📨 Notifikasi Mading:', judul);
         playNotifSound('mading');
         showToast({ type: 'mading', title: `📰 ${judul}`, desc: isi.slice(0, 80) + (isi.length > 80 ? '...' : '') });
         showBrowserNotification(`📰 ${judul}`, isi.slice(0, 100));
         unreadCount++;
         updateBadge();
-        addNotifToDropdown({ id: item.id, type: 'mading', title: `📰 ${judul}`, body: isi.slice(0, 100) + (isi.length > 100 ? '...' : ''), timestamp: item.tanggal });
+        addNotifToDropdown({ id: notifId, type: 'mading', title: `📰 ${judul}`, body: isi.slice(0, 100) + (isi.length > 100 ? '...' : ''), timestamp: data.tanggal?.toDate?.() || new Date() });
       }
     }
   });
   isFirstLoad = false;
+}, (error) => {
+  console.log('❌ Firestore error (mading):', error);
 });
 
 // ============================================================
-// 🔥 REALTIME LISTENER - KAS (dari firebase.js)
+// 🔥 REALTIME LISTENER - KAS
 // ============================================================
-listenKas((items) => {
-  items.forEach((item) => {
-    if (!knownNotifIds.has(item.id)) {
-      knownNotifIds.add(item.id);
-      if (!isFirstLoad) {
-        const jenis = item.jenis || 'masuk';
-        const nominal = item.nominal || 0;
-        const keterangan = item.keterangan || 'Transaksi kas';
+const kasQuery = query(
+  collection(db, "kas"),
+  orderBy("tanggal", "desc"),
+  limit(20)
+);
+
+onSnapshot(kasQuery, (snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === 'added') {
+      const data = change.doc.data();
+      const notifId = change.doc.id;
+      
+      if (isFirstLoad) { 
+        knownNotifIds.add(notifId); 
+        return; 
+      }
+      
+      if (!knownNotifIds.has(notifId)) {
+        knownNotifIds.add(notifId);
+        const jenis = data.jenis || 'masuk';
+        const nominal = data.nominal || 0;
+        const keterangan = data.keterangan || 'Transaksi kas';
         const masuk = jenis === 'masuk';
         const title = masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar';
         const amount = (masuk ? '+' : '-') + 'Rp ' + nominal.toLocaleString('id-ID');
         
         // 🔔 TRIGGER NOTIFIKASI
+        console.log('📨 Notifikasi Kas:', title);
         playNotifSound('kas');
         showToast({ type: 'kas', title: title, desc: keterangan, amount: amount, amountColor: masuk ? 'green' : 'red' });
         showBrowserNotification(title, `${keterangan} - ${amount}`);
         unreadCount++;
         updateBadge();
-        addNotifToDropdown({ id: item.id, type: 'kas', title: title, body: `${keterangan} - ${amount}`, timestamp: item.tanggal });
+        addNotifToDropdown({ id: notifId, type: 'kas', title: title, body: `${keterangan} - ${amount}`, timestamp: data.tanggal?.toDate?.() || new Date() });
       }
     }
   });
+}, (error) => {
+  console.log('❌ Firestore error (kas):', error);
 });
 
 // ============================================================
@@ -1064,7 +1132,10 @@ function addNotifToDropdown(notif) {
 
 function renderDropdown() {
   const saved = JSON.parse(localStorage.getItem('ap_notifs') || '[]');
-  if (!saved.length) { notifList.innerHTML = `<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>`; return; }
+  if (!saved.length) { 
+    notifList.innerHTML = `<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>`; 
+    return; 
+  }
   const typeLabel = { kas: 'Kas', mading: 'Mading', absensi: 'Absensi', info: 'Info' };
   const iconMap = { kas: { icon: 'fa-coins', cls: 'kas' }, mading: { icon: 'fa-newspaper', cls: 'mading' }, absensi: { icon: 'fa-clipboard-check', cls: 'absensi' }, info: { icon: 'fa-circle-info', cls: 'info' } };
   notifList.innerHTML = saved.slice(0, 30).map(n => {
@@ -1104,6 +1175,7 @@ clearNotifBtn?.addEventListener('click', () => {
 // TEST NOTIFIKASI
 // ============================================================
 btnTestNotif?.addEventListener('click', () => {
+  console.log('🔔 Test notifikasi diklik');
   playNotifSound('kas');
   setTimeout(() => playNotifSound('mading'), 800);
   showToast({ type: 'info', title: '🔔 Tes Notifikasi', desc: 'Sistem notifikasi Adhigana Prapti berfungsi dengan baik!' });
@@ -1114,14 +1186,20 @@ btnTestNotif?.addEventListener('click', () => {
 // AKTIFKAN NOTIFIKASI
 // ============================================================
 document.getElementById('btnEnablePush')?.addEventListener('click', async () => {
+  console.log('🔔 Mengaktifkan notifikasi...');
   const perm = await Notification.requestPermission();
   const statusEl = document.getElementById('notifStatus');
   if (perm === 'granted') {
     statusEl.innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
     statusEl.style.color = 'var(--c-green)';
+    console.log('✅ Notifikasi diizinkan');
+    
+    // Coba kirim notifikasi test
+    showBrowserNotification('✅ Notifikasi Aktif', 'Kamu akan menerima update kas & mading!');
   } else {
     statusEl.innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
     statusEl.style.color = 'var(--c-amber)';
+    console.log('❌ Notifikasi ditolak');
   }
 });
 
@@ -1146,6 +1224,48 @@ document.getElementById('pwaBtnDismiss')?.addEventListener('click', () => {
   localStorage.setItem('pwa_dismissed', '1');
   pwaBanner?.classList.remove('show');
 });
+
+// ============================================================
+// REGISTRASI SERVICE WORKER
+// ============================================================
+if ('serviceWorker' in navigator) {
+  console.log('📦 Mendaftarkan Service Worker...');
+  navigator.serviceWorker.register('/service-worker.js', {
+    scope: '/'
+  })
+  .then(registration => {
+    console.log('✅ Service Worker registered:', registration);
+    
+    // Cek apakah SW sudah aktif
+    if (registration.active) {
+      console.log('✅ Service Worker active');
+    }
+    
+    // Kirim pesan ke SW
+    registration.active?.postMessage({ type: 'CHECK_READY' });
+  })
+  .catch(error => {
+    console.error('❌ Service Worker registration failed:', error);
+  });
+}
+
+// ============================================================
+// CEK STATUS NOTIFIKASI SAAT LOAD
+// ============================================================
+if (Notification.permission === 'granted') {
+  document.getElementById('notifStatus').innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
+  document.getElementById('notifStatus').style.color = 'var(--c-green)';
+  console.log('✅ Notification permission: granted');
+} else if (Notification.permission === 'denied') {
+  document.getElementById('notifStatus').innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
+  document.getElementById('notifStatus').style.color = 'var(--c-amber)';
+  console.log('❌ Notification permission: denied');
+} else {
+  console.log('⚠️ Notification permission: default (belum diminta)');
+}
+
+console.log('🔥 NOTIFIKASI REALTIME FIRESTORE AKTIF!');
+console.log('📌 Buka 2 tab/device, publish mading atau kas, notifikasi akan muncul di semua perangkat!');
 
 // ============================================================
 // HAMBURGER
@@ -1179,7 +1299,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ============================================================
-// DATA ANGGOTA (54 orang)
+// DATA ANGGOTA (54 orang) - DISINI LENGKAP
 // ============================================================
 const ALL_ANGGOTA = [
   { uid:'u001', nama:'M. Daffa Saeful Faiz', jabatan:'Ketua Umum' },
@@ -1324,7 +1444,6 @@ document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
   const hadir = Object.values(absDraft.records).filter(v=>v==='hadir').length;
   const izin  = Object.values(absDraft.records).filter(v=>v==='izin').length;
   const alfa  = Object.values(absDraft.records).filter(v=>v==='alfa').length;
-  // Notifikasi absensi
   playNotifSound('default');
   showToast({ type: 'absensi', title: '📋 Absensi Tersimpan', desc: `Hadir: ${hadir} · Izin: ${izin} · Alfa: ${alfa}` });
 });
@@ -1337,7 +1456,6 @@ document.getElementById('btnPublishMading')?.addEventListener('click', async () 
   const isi = document.getElementById('madingIsi')?.value?.trim();
   if (!judul || !isi) { alert('Judul dan isi wajib diisi!'); return; }
   
-  // Simpan ke local
   const arr = loadLS(SK.mading, []);
   arr.unshift({ judul, isi, tanggal: Date.now() });
   saveLS(SK.mading, arr);
@@ -1345,12 +1463,15 @@ document.getElementById('btnPublishMading')?.addEventListener('click', async () 
   document.getElementById('madingIsi').value = '';
   renderMadingListLocal(); renderMadingPubLocal(); refreshRingkasan();
 
-  // 🔥 SIMPAN KE FIRESTORE - TRIGGER NOTIFIKASI REALTIME
-  const result = await sendMading(judul, isi);
-  if (result.success) {
-    console.log("✅ Mading tersimpan di Firestore:", result.id);
-  } else {
-    console.log("❌ Gagal simpan ke Firestore:", result.error);
+  try {
+    await addDoc(collection(db, "mading"), {
+      judul: judul,
+      isi: isi,
+      tanggal: serverTimestamp()
+    });
+    console.log("✅ Mading tersimpan di Firestore");
+  } catch (error) {
+    console.log("❌ Gagal simpan ke Firestore:", error);
   }
 });
 
@@ -1363,7 +1484,6 @@ document.getElementById('btnTambahKas')?.addEventListener('click', async () => {
   const ket = document.getElementById('kasKeterangan')?.value?.trim();
   if (!jenis || !Number.isFinite(nominal) || nominal <= 0 || !ket) { alert('Isi semua field dengan benar!'); return; }
 
-  // Simpan ke local
   const arr = loadLS(SK.kas, []);
   arr.unshift({ jenis, nominal, keterangan: ket, tanggal: Date.now() });
   saveLS(SK.kas, arr);
@@ -1371,12 +1491,16 @@ document.getElementById('btnTambahKas')?.addEventListener('click', async () => {
   document.getElementById('kasKeterangan').value = '';
   renderKasListLocal(); refreshRingkasan();
 
-  // 🔥 SIMPAN KE FIRESTORE - TRIGGER NOTIFIKASI REALTIME
-  const result = await sendKas(jenis, nominal, ket);
-  if (result.success) {
-    console.log("✅ Kas tersimpan di Firestore:", result.id);
-  } else {
-    console.log("❌ Gagal simpan ke Firestore:", result.error);
+  try {
+    await addDoc(collection(db, "kas"), {
+      jenis: jenis,
+      nominal: nominal,
+      keterangan: ket,
+      tanggal: serverTimestamp()
+    });
+    console.log("✅ Kas tersimpan di Firestore");
+  } catch (error) {
+    console.log("❌ Gagal simpan ke Firestore:", error);
   }
 });
 
@@ -1602,57 +1726,9 @@ renderKasListLocal();
 refreshRingkasan();
 renderDropdown();
 
-// Cek status notifikasi
-if (Notification.permission === 'granted') {
-  document.getElementById('notifStatus').innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
-  document.getElementById('notifStatus').style.color = 'var(--c-green)';
-} else if (Notification.permission === 'denied') {
-  document.getElementById('notifStatus').innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
-  document.getElementById('notifStatus').style.color = 'var(--c-amber)';
-}
-
-console.log("🔥 NOTIFIKASI REALTIME FIRESTORE AKTIF!");
-console.log("📌 Buka 2 tab/device, publish mading atau kas, notifikasi akan muncul di semua perangkat!");
-</script>
-
-<!-- ══════════════════════════════════════════════════════
-     REGISTRASI SERVICE WORKER - DIPISAHKAN DARI MODULE
-══════════════════════════════════════════════════════ -->
-<script>
-// ============================================================
-// REGISTRASI SERVICE WORKER
-// ============================================================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    console.log('📦 Mendaftarkan Service Worker...');
-    navigator.serviceWorker.register('/service-worker.js', {
-      scope: '/'
-    })
-    .then(function(registration) {
-      console.log('✅ Service Worker registered successfully:', registration);
-      
-      // Cek update
-      registration.addEventListener('updatefound', function() {
-        const newWorker = registration.installing;
-        console.log('🔄 Service Worker update found:', newWorker);
-        newWorker.addEventListener('statechange', function() {
-          if (newWorker.state === 'activated') {
-            console.log('✅ New Service Worker activated');
-          }
-        });
-      });
-    })
-    .catch(function(error) {
-      console.error('❌ Service Worker registration failed:', error);
-    });
-  });
-}
-
-// ============================================================
-// CEK STATUS NOTIFIKASI
-// ============================================================
-console.log('📌 Notification permission:', Notification.permission);
-console.log('📌 PushManager support:', 'PushManager' in window);
+console.log('🔥 Aplikasi siap!');
+console.log('📌 Notifikasi akan muncul saat ada data baru di Firestore');
+console.log('📌 Buka 2 perangkat untuk test real-time');
 </script>
 </body>
 </html>
