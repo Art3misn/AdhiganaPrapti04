@@ -2,17 +2,32 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- META TAGS UNTUK iOS / PWA UNIVERSAL             -->
+  <!-- ════════════════════════════════════════════════ -->
+  <meta name="theme-color" content="#6ee7f7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Adhigana" />
+  
+  <!-- Icon untuk iOS (harus absolute URL) -->
+  <link rel="apple-touch-icon" href="/asset/Adhigana prapti.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/asset/Adhigana prapti.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/asset/Adhigana prapti.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/asset/Adhigana prapti.png" />
+  
+  <!-- Startup Screen untuk iOS -->
+  <link rel="apple-touch-startup-image" href="/asset/Adhigana prapti.png" />
+  
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="./manifest.json" />
+  
+  <!-- ════════════════════════════════════════════════ -->
+  
   <title>Karang Taruna Adhigana Prapti</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#6ee7f7">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
+  <!-- ... sisanya sama ... -->
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
