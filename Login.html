@@ -88,6 +88,170 @@
       cursor: pointer; font-family: inherit; transition: .2s;
     }
     .nav-logout:hover { background: rgba(255,95,95,.16); }
+
+    /* ── NOTIFICATION BELL ──────────────────────────────── */
+    .notif-bell {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--c-border);
+      background: rgba(255,255,255,.03);
+      cursor: pointer;
+      transition: .2s;
+      color: var(--c-dim);
+      margin-left: 4px;
+      flex-shrink: 0;
+    }
+    .notif-bell:hover {
+      background: rgba(255,255,255,.06);
+      color: var(--c-text);
+    }
+    .notif-bell .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--c-red);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      display: none;
+    }
+    .notif-bell .badge.show { display: flex; }
+    .notif-bell .badge.pulse {
+      animation: pulse 1s ease-in-out 3;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    /* ── NOTIFICATION DROPDOWN ──────────────────────────── */
+    .notif-dropdown {
+      display: none;
+      position: absolute;
+      top: 56px;
+      right: 0;
+      width: 380px;
+      max-height: 460px;
+      overflow-y: auto;
+      background: var(--c-panel);
+      border: 1px solid var(--c-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      padding: 12px 0;
+      z-index: 1000;
+    }
+    .notif-dropdown.open { display: block; }
+    .notif-dropdown .notif-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      cursor: pointer;
+      transition: .15s;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .notif-dropdown .notif-item:hover {
+      background: rgba(255,255,255,.04);
+    }
+    .notif-dropdown .notif-item:last-child {
+      border-bottom: none;
+    }
+    .notif-dropdown .notif-item .notif-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    .notif-dropdown .notif-item .notif-icon.order {
+      background: rgba(74,222,128,.12);
+      color: var(--c-green);
+    }
+    .notif-dropdown .notif-item .notif-icon.mading {
+      background: rgba(110,231,247,.12);
+      color: var(--c-cyan);
+    }
+    .notif-dropdown .notif-item .notif-icon.kas {
+      background: rgba(255,179,64,.12);
+      color: var(--c-amber);
+    }
+    .notif-dropdown .notif-item .notif-icon.absensi {
+      background: rgba(110,231,247,.08);
+      color: var(--c-cyan);
+    }
+    .notif-dropdown .notif-item .notif-icon.info {
+      background: rgba(110,231,247,.06);
+      color: var(--c-cyan);
+    }
+    .notif-dropdown .notif-item .notif-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .notif-dropdown .notif-item .notif-content .notif-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .notif-dropdown .notif-item .notif-content .notif-body {
+      font-size: 12px;
+      color: var(--c-dim);
+      line-height: 1.5;
+    }
+    .notif-dropdown .notif-item .notif-content .notif-time {
+      font-size: 10px;
+      color: var(--c-muted);
+      margin-top: 4px;
+    }
+    .notif-dropdown .notif-item.unread {
+      border-left: 3px solid var(--c-cyan);
+    }
+    .notif-dropdown .notif-empty {
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--c-muted);
+      font-size: 13px;
+    }
+    .notif-dropdown .notif-empty i {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 10px;
+      color: var(--c-muted);
+    }
+    .notif-dropdown .notif-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--c-border);
+      text-align: center;
+    }
+    .notif-dropdown .notif-footer button {
+      background: none;
+      border: none;
+      color: var(--c-cyan);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: .2s;
+    }
+    .notif-dropdown .notif-footer button:hover {
+      opacity: .7;
+    }
+
+    /* ── HAMBURGER ──────────────────────────────────────── */
     .hamburger { 
       display: none; 
       flex-direction: column; 
@@ -168,6 +332,25 @@
     }
     .mobile-menu .nav-logout.show {
       display: flex;
+    }
+    /* Mobile menu notif bell wrapper */
+    .mobile-menu .mob-notif-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--c-border);
+      margin-top: 4px;
+    }
+    .mobile-menu .mob-notif-row span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--c-dim);
+    }
+    .mobile-menu .mob-notif-row .notif-bell {
+      margin-left: 0;
     }
 
     /* ── BUTTONS ────────────────────────────────────────── */
@@ -280,153 +463,6 @@
     .mading-card p { color: rgba(238,242,255,.78); font-size: 13px; line-height: 1.75; white-space: pre-wrap; }
     .empty-state { padding: 40px 20px; text-align: center; color: var(--c-muted); font-size: 14px; }
     .empty-state i { font-size: 32px; margin-bottom: 10px; display: block; }
-
-    /* ── NOTIFICATION BELL ──────────────────────────────── */
-    .notif-bell {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--c-border);
-      background: rgba(255,255,255,.03);
-      cursor: pointer;
-      transition: .2s;
-      color: var(--c-dim);
-      margin-left: 4px;
-    }
-    .notif-bell:hover {
-      background: rgba(255,255,255,.06);
-      color: var(--c-text);
-    }
-    .notif-bell .badge {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      min-width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      background: var(--c-red);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 5px;
-      display: none;
-    }
-    .notif-bell .badge.show { display: flex; }
-    .notif-bell .badge.pulse {
-      animation: pulse 1s ease-in-out 3;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-    }
-
-    /* ── NOTIFICATION DROPDOWN ──────────────────────────── */
-    .notif-dropdown {
-      display: none;
-      position: absolute;
-      top: 56px;
-      right: 0;
-      width: 360px;
-      max-height: 420px;
-      overflow-y: auto;
-      background: var(--c-panel);
-      border: 1px solid var(--c-border);
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
-      padding: 12px 0;
-      z-index: 100;
-    }
-    .notif-dropdown.open { display: block; }
-    .notif-dropdown .notif-item {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-      cursor: pointer;
-      transition: .15s;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-    .notif-dropdown .notif-item:hover {
-      background: rgba(255,255,255,.04);
-    }
-    .notif-dropdown .notif-item:last-child {
-      border-bottom: none;
-    }
-    .notif-dropdown .notif-item .notif-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 14px;
-    }
-    .notif-dropdown .notif-item .notif-icon.order {
-      background: rgba(74,222,128,.12);
-      color: var(--c-green);
-    }
-    .notif-dropdown .notif-item .notif-icon.mading {
-      background: rgba(110,231,247,.12);
-      color: var(--c-cyan);
-    }
-    .notif-dropdown .notif-item .notif-icon.kas {
-      background: rgba(255,179,64,.12);
-      color: var(--c-amber);
-    }
-    .notif-dropdown .notif-item .notif-icon.absensi {
-      background: rgba(110,231,247,.08);
-      color: var(--c-cyan);
-    }
-    .notif-dropdown .notif-item .notif-content {
-      flex: 1;
-      min-width: 0;
-    }
-    .notif-dropdown .notif-item .notif-content .notif-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .notif-dropdown .notif-item .notif-content .notif-body {
-      font-size: 12px;
-      color: var(--c-dim);
-      line-height: 1.5;
-    }
-    .notif-dropdown .notif-item .notif-content .notif-time {
-      font-size: 10px;
-      color: var(--c-muted);
-      margin-top: 4px;
-    }
-    .notif-dropdown .notif-empty {
-      padding: 24px 16px;
-      text-align: center;
-      color: var(--c-muted);
-      font-size: 13px;
-    }
-    .notif-dropdown .notif-footer {
-      padding: 10px 16px;
-      border-top: 1px solid var(--c-border);
-      text-align: center;
-    }
-    .notif-dropdown .notif-footer button {
-      background: none;
-      border: none;
-      color: var(--c-cyan);
-      font-weight: 600;
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .notif-dropdown .notif-footer button:hover {
-      text-decoration: underline;
-    }
 
     /* ── LOGIN OVERLAY ───────────────────────────────────── */
     .login-overlay {
@@ -679,7 +715,23 @@
       .login-panel-right { padding: 40px 28px; }
       .notif-dropdown {
         width: calc(100vw - 32px);
-        right: -40px;
+        right: -10px;
+      }
+      .notif-dropdown .notif-item .notif-content .notif-title {
+        font-size: 12px;
+      }
+      .notif-dropdown .notif-item .notif-content .notif-body {
+        font-size: 11px;
+      }
+    }
+    @media (max-width: 480px) {
+      .notif-dropdown {
+        width: calc(100vw - 20px);
+        right: -5px;
+        max-height: 380px;
+      }
+      .notif-dropdown .notif-item {
+        padding: 10px 12px;
       }
     }
   </style>
@@ -701,6 +753,8 @@
     <div class="nav-links" id="navLinks">
       <a href="#" data-scroll="hero" class="active">Beranda</a>
       <a href="#" data-scroll="madingPublik">Mading</a>
+      
+      <!-- NOTIFICATION BELL - SELALU TAMPAK -->
       <div style="position:relative;display:inline-block;">
         <button class="notif-bell" id="notifBell">
           <i class="fa-regular fa-bell"></i>
@@ -708,13 +762,17 @@
         </button>
         <div class="notif-dropdown" id="notifDropdown">
           <div id="notifList">
-            <div class="notif-empty">Belum ada notifikasi</div>
+            <div class="notif-empty">
+              <i class="fa-regular fa-bell-slash"></i>
+              Belum ada notifikasi
+            </div>
           </div>
           <div class="notif-footer">
             <button id="clearNotifBtn">Tandai semua sudah dibaca</button>
           </div>
         </div>
       </div>
+
       <button class="nav-cta" id="btnNavLogin"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
       <button class="nav-logout" id="btnNavLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</button>
     </div>
@@ -732,6 +790,18 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#" data-scroll="hero" class="active">Beranda</a>
   <a href="#" data-scroll="madingPublik">Mading</a>
+  
+  <!-- Mobile notification row -->
+  <div class="mob-notif-row">
+    <span><i class="fa-regular fa-bell"></i> Notifikasi</span>
+    <div style="position:relative;display:inline-block;">
+      <button class="notif-bell" id="mobNotifBell">
+        <i class="fa-regular fa-bell"></i>
+        <span class="badge" id="mobNotifBadge">0</span>
+      </button>
+    </div>
+  </div>
+
   <button class="nav-cta" id="mobileBtnLogin"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
   <button class="nav-logout" id="mobileBtnLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</button>
 </div>
@@ -1092,7 +1162,7 @@ const ALL_ANGGOTA = [
 // ────────────────────────────────────────────────────────
 // UTILS
 // ────────────────────────────────────────────────────────
-const SK = { absensi:'ap_abs_v2', mading:'ap_mad_v2', kas:'ap_kas_v2' };
+const SK = { absensi:'ap_abs_v2', mading:'ap_mad_v2', kas:'ap_kas_v2', notif:'ap_notif_v2' };
 
 const loadLS = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const saveLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
@@ -1101,13 +1171,11 @@ const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 const fmtRp = n => 'Rp ' + (Number(n)||0).toLocaleString('id-ID');
 const fmtDate = ts => new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
 const fmtDT   = ts => new Date(ts).toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-const fmtTime = ts => new Date(ts).toLocaleString('id-ID',{hour:'2-digit',minute:'2-digit'});
 
 // ────────────────────────────────────────────────────────
-// NOTIFICATION SYSTEM
+// NOTIFICATION SYSTEM (Tersedia untuk semua pengguna)
 // ────────────────────────────────────────────────────────
-const NOTIF_KEY = 'ap_notifications_v2';
-let notifications = loadLS(NOTIF_KEY, []);
+let notifications = loadLS(SK.notif, []);
 let unreadCount = notifications.filter(n => !n.read).length;
 
 function addNotification(title, body, type = 'info', data = {}) {
@@ -1121,9 +1189,8 @@ function addNotification(title, body, type = 'info', data = {}) {
     read: false
   };
   notifications.unshift(notif);
-  // Simpan hanya 50 notif terbaru
   if (notifications.length > 50) notifications = notifications.slice(0, 50);
-  saveLS(NOTIF_KEY, notifications);
+  saveLS(SK.notif, notifications);
   updateNotifUI();
   playNotifSound();
 
@@ -1139,37 +1206,52 @@ function addNotification(title, body, type = 'info', data = {}) {
     new Notification(title, {
       body: body,
       icon: './asset/Adhigana prapti.png',
-      tag: 'notif_' + notif.id,
-      data: { notifId: notif.id }
+      tag: 'notif_' + notif.id
     });
   }
 
-  // Coba kirim ke Firebase jika terhubung
-  pushToFirebase(notif);
+  // Kirim ke Firestore jika pengguna login
+  if (sessionStorage.getItem('userLoggedIn') === 'true') {
+    pushToFirebase(notif);
+  }
   return notif;
 }
 
 function updateNotifUI() {
   unreadCount = notifications.filter(n => !n.read).length;
-  const badge = document.getElementById('notifBadge');
-  if (badge) {
-    badge.textContent = unreadCount;
-    badge.classList.toggle('show', unreadCount > 0);
-    if (unreadCount > 0) {
-      badge.classList.add('pulse');
-      setTimeout(() => badge.classList.remove('pulse'), 3000);
+  
+  // Update kedua badge (desktop & mobile)
+  const badges = [
+    document.getElementById('notifBadge'),
+    document.getElementById('mobNotifBadge')
+  ];
+  badges.forEach(badge => {
+    if (badge) {
+      badge.textContent = unreadCount;
+      badge.classList.toggle('show', unreadCount > 0);
+      if (unreadCount > 0) {
+        badge.classList.add('pulse');
+        setTimeout(() => badge.classList.remove('pulse'), 3000);
+      }
     }
-  }
+  });
   renderNotifDropdown();
 }
 
 function renderNotifDropdown() {
   const container = document.getElementById('notifList');
   if (!container) return;
+  
   if (!notifications.length) {
-    container.innerHTML = '<div class="notif-empty">Belum ada notifikasi</div>';
+    container.innerHTML = `
+      <div class="notif-empty">
+        <i class="fa-regular fa-bell-slash"></i>
+        Belum ada notifikasi
+      </div>
+    `;
     return;
   }
+  
   const typeMap = {
     'order': { icon: 'fa-box', cls: 'order' },
     'mading': { icon: 'fa-newspaper', cls: 'mading' },
@@ -1177,11 +1259,12 @@ function renderNotifDropdown() {
     'absensi': { icon: 'fa-clipboard-check', cls: 'absensi' },
     'info': { icon: 'fa-circle-info', cls: 'info' }
   };
+  
   container.innerHTML = notifications.slice(0, 20).map(n => {
     const t = typeMap[n.type] || typeMap.info;
     const isUnread = !n.read;
     return `
-      <div class="notif-item" data-id="${n.id}" style="${isUnread ? 'border-left:3px solid var(--c-cyan);' : ''}">
+      <div class="notif-item ${isUnread ? 'unread' : ''}" data-id="${n.id}">
         <div class="notif-icon ${t.cls}">
           <i class="fa-solid ${t.icon}"></i>
         </div>
@@ -1201,7 +1284,7 @@ function renderNotifDropdown() {
       const notif = notifications.find(n => n.id === id);
       if (notif && !notif.read) {
         notif.read = true;
-        saveLS(NOTIF_KEY, notifications);
+        saveLS(SK.notif, notifications);
         updateNotifUI();
       }
     });
@@ -1215,27 +1298,43 @@ function playNotifSound() {
   } catch {}
 }
 
-// ── NOTIFICATION BELL ──────────────────────────────────
-const bell = document.getElementById('notifBell');
-const dropdown = document.getElementById('notifDropdown');
+// ── NOTIFICATION BELL TOGGLE ──────────────────────────
+function setupBell(bellId, dropdownId) {
+  const bell = document.getElementById(bellId);
+  const dropdown = document.getElementById(dropdownId);
+  if (!bell || !dropdown) return;
+  
+  bell.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+  });
+}
 
-bell.addEventListener('click', (e) => {
+setupBell('notifBell', 'notifDropdown');
+
+// Mobile bell juga arahkan ke dropdown yang sama
+document.getElementById('mobNotifBell')?.addEventListener('click', (e) => {
   e.stopPropagation();
-  dropdown.classList.toggle('open');
+  const dropdown = document.getElementById('notifDropdown');
+  if (dropdown) dropdown.classList.toggle('open');
 });
 
+// Tutup dropdown saat klik di luar
 document.addEventListener('click', () => {
-  dropdown.classList.remove('open');
+  const dropdown = document.getElementById('notifDropdown');
+  if (dropdown) dropdown.classList.remove('open');
 });
 
+// Tandai semua sudah dibaca
 document.getElementById('clearNotifBtn')?.addEventListener('click', () => {
   notifications.forEach(n => n.read = true);
-  saveLS(NOTIF_KEY, notifications);
+  saveLS(SK.notif, notifications);
   updateNotifUI();
-  dropdown.classList.remove('open');
+  const dropdown = document.getElementById('notifDropdown');
+  if (dropdown) dropdown.classList.remove('open');
 });
 
-// ── PUSH TO FIREBASE ──────────────────────────────────
+// ── PUSH KE FIRESTORE ──────────────────────────────────
 let firebaseReady = false;
 let firebaseDb = null;
 let firebaseAuth = null;
@@ -1243,7 +1342,6 @@ let firebaseAuth = null;
 async function pushToFirebase(notif) {
   try {
     if (!firebaseReady) {
-      // Coba import firebase
       const fbMod = await import('./firebase.js').catch(() => null);
       if (fbMod && fbMod.db) {
         firebaseDb = fbMod.db;
@@ -1255,7 +1353,6 @@ async function pushToFirebase(notif) {
     }
     if (!firebaseDb) return;
 
-    // Coba import Firestore functions
     const { collection, addDoc, serverTimestamp } = await import(
       'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
     );
@@ -1263,10 +1360,10 @@ async function pushToFirebase(notif) {
     await addDoc(collection(firebaseDb, 'notifications'), {
       ...notif,
       serverTimestamp: serverTimestamp(),
-      pushTo: 'all' // atau bisa target ke user tertentu
+      pushTo: 'all'
     });
   } catch (err) {
-    // Silent fail - notifikasi tetap tersimpan di local
+    // Silent fail
   }
 }
 
@@ -1275,6 +1372,7 @@ async function startFirestoreListener() {
   try {
     const fbMod = await import('./firebase.js').catch(() => null);
     if (!fbMod?.db) return;
+    
     const { collection, query, orderBy, limit, onSnapshot } = await import(
       'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
     );
@@ -1284,10 +1382,8 @@ async function startFirestoreListener() {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           const data = change.doc.data();
-          // Cek apakah notif ini sudah ada di local
           const exists = notifications.some(n => n.id === data.id);
           if (!exists && data.id) {
-            // Notif baru dari Firestore
             const notif = {
               id: data.id,
               title: data.title || 'Notifikasi Baru',
@@ -1299,11 +1395,10 @@ async function startFirestoreListener() {
             };
             notifications.unshift(notif);
             if (notifications.length > 50) notifications = notifications.slice(0, 50);
-            saveLS(NOTIF_KEY, notifications);
+            saveLS(SK.notif, notifications);
             updateNotifUI();
             playNotifSound();
 
-            // Tampilkan notifikasi browser
             if (Notification.permission === 'granted') {
               new Notification(notif.title, {
                 body: notif.body,
@@ -1314,32 +1409,9 @@ async function startFirestoreListener() {
         }
       });
     });
-    console.log('✅ Firestore listener aktif untuk notifikasi');
   } catch (err) {
-    console.log('Firestore listener tidak aktif (firebase.js belum dikonfigurasi)');
+    // Firestore tidak aktif
   }
-}
-
-// ────────────────────────────────────────────────────────
-// FIRESTORE TRIGGER FUNCTIONS (dipanggil saat action)
-// ────────────────────────────────────────────────────────
-async function triggerOrderNotification(orderData) {
-  const title = '📦 Order Masuk!';
-  const body = `Order baru dari ${orderData.nama || 'pelanggan'} - ${orderData.item || 'item'}`;
-  addNotification(title, body, 'order', orderData);
-  // Coba push ke Firestore
-  try {
-    const fbMod = await import('./firebase.js').catch(() => null);
-    if (!fbMod?.db) return;
-    const { collection, addDoc, serverTimestamp } = await import(
-      'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
-    );
-    await addDoc(collection(fbMod.db, 'orders'), {
-      ...orderData,
-      timestamp: serverTimestamp(),
-      status: 'pending'
-    });
-  } catch {}
 }
 
 // ────────────────────────────────────────────────────────
@@ -1438,7 +1510,6 @@ function hideDashboard() {
   renderMadingPub();
 }
 
-// Logout function
 function handleLogout() {
   sessionStorage.clear();
   hideDashboard();
@@ -1450,7 +1521,7 @@ btnNavLogout.addEventListener('click', handleLogout);
 btnNavLogoutMobile.addEventListener('click', handleLogout);
 
 // ────────────────────────────────────────────────────────
-// FIREBASE LOGIN (with demo fallback)
+// FIREBASE LOGIN
 // ────────────────────────────────────────────────────────
 loginForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -1489,12 +1560,10 @@ loginForm.addEventListener('submit', async e => {
       sessionStorage.setItem('userNama',  data.nama || 'Pengguna');
       sessionStorage.setItem('userRole',  data.role || 'anggota');
 
-      // Firebase siap
       firebaseDb = fbMod.db;
       firebaseAuth = fbMod.auth;
       firebaseReady = true;
     } else {
-      // Demo fallback
       sessionStorage.setItem('userEmail', email);
       sessionStorage.setItem('userNama',  email.split('@')[0]);
       sessionStorage.setItem('userRole',  email.toLowerCase().includes('admin') ? 'admin' : 'pengurus');
@@ -1503,7 +1572,6 @@ loginForm.addEventListener('submit', async e => {
     sessionStorage.setItem('userLoggedIn', 'true');
     closeModal();
     showDashboard();
-    // Start listener setelah login
     if (firebaseReady) startFirestoreListener();
   } catch (err) {
     const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found'
@@ -1522,7 +1590,6 @@ loginForm.addEventListener('submit', async e => {
 // auto-restore session
 if (sessionStorage.getItem('userLoggedIn') === 'true') {
   showDashboard();
-  // Coba start listener
   setTimeout(startFirestoreListener, 1000);
 }
 
@@ -1611,7 +1678,6 @@ document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
   const hadir = Object.values(absDraft.records).filter(v => v === 'hadir').length;
   const msg = `✅ Absensi tersimpan! Hadir: ${hadir} dari ${ALL_ANGGOTA.length} anggota.`;
   alert(msg);
-  // 🔔 Notifikasi perubahan absensi
   addNotification('📋 Absensi Tersimpan', `Hadir: ${hadir} dari ${ALL_ANGGOTA.length} anggota`, 'absensi');
 });
 
@@ -1682,7 +1748,6 @@ document.getElementById('btnPublishMading')?.addEventListener('click', () => {
   document.getElementById('madingIsi').value   = '';
   renderMadingList(); renderMadingPub(); refreshRingkasan();
   alert('✅ Pengumuman berhasil dipublish!');
-  // 🔔 Notifikasi mading baru
   addNotification('📰 Pengumuman Baru', `"${judul}" - ${isi.slice(0, 50)}${isi.length > 50 ? '...' : ''}`, 'mading');
 });
 
@@ -1753,7 +1818,6 @@ document.getElementById('btnTambahKas')?.addEventListener('click', () => {
   document.getElementById('kasNominal').value = '';
   document.getElementById('kasKeterangan').value = '';
   renderKasList(); refreshRingkasan();
-  // 🔔 Notifikasi transaksi kas
   const typeLabel = jenis === 'masuk' ? 'Pemasukan' : 'Pengeluaran';
   addNotification('💰 Transaksi Kas', `${typeLabel}: ${fmtRp(nominal)} - ${ket}`, 'kas');
 });
@@ -1780,7 +1844,6 @@ async function enablePush() {
     const token = await getToken(messaging, { vapidKey: VAPID_KEY });
     if (token) {
       localStorage.setItem('fcm_token', token);
-      // Simpan token ke Firestore
       try {
         const fbMod = await import('./firebase.js');
         if (fbMod.db) {
@@ -1799,7 +1862,6 @@ async function enablePush() {
     } else alert('Gagal mendapatkan token FCM.');
   } catch (err) {
     alert('FCM belum siap. Pastikan firebase.js sudah dikonfigurasi.');
-    console.warn('FCM error:', err);
   }
 }
 
@@ -1810,7 +1872,6 @@ document.getElementById('btnEnablePush')?.addEventListener('click', async () => 
 });
 
 document.getElementById('btnTestNotif')?.addEventListener('click', () => {
-  // 🔔 Test notifikasi
   addNotification('🔔 Tes Notifikasi', 'Notifikasi dari portal Adhigana Prapti berfungsi dengan baik!', 'info');
   if (Notification.permission === 'granted') {
     new Notification('Tes Notifikasi', {
@@ -1821,10 +1882,31 @@ document.getElementById('btnTestNotif')?.addEventListener('click', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// DEMO: SIMULASI ORDER MASUK (untuk testing notif)
+// SIMULASI ORDER MASUK (untuk testing)
 // ────────────────────────────────────────────────────────
-// Ini bisa dipanggil dari mana saja, misalnya dari halaman order
-// triggerOrderNotification({ nama: 'Budi Santoso', item: 'Paket Gold', total: 750000 });
+function triggerOrderNotification(orderData) {
+  const title = '📦 Order Masuk!';
+  const body = `Order dari ${orderData.nama || 'pelanggan'} - ${orderData.item || 'item'} (${fmtRp(orderData.total || 0)})`;
+  addNotification(title, body, 'order', orderData);
+  
+  // Simpan ke Firestore orders jika login
+  if (sessionStorage.getItem('userLoggedIn') === 'true') {
+    (async () => {
+      try {
+        const fbMod = await import('./firebase.js').catch(() => null);
+        if (!fbMod?.db) return;
+        const { collection, addDoc, serverTimestamp } = await import(
+          'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
+        );
+        await addDoc(collection(fbMod.db, 'orders'), {
+          ...orderData,
+          timestamp: serverTimestamp(),
+          status: 'pending'
+        });
+      } catch {}
+    })();
+  }
+}
 
 // ────────────────────────────────────────────────────────
 // INIT
