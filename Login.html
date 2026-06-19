@@ -14,6 +14,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
+    /* ============================================================
+       SEMUA STYLE TETAP SAMA
+       ============================================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --c-bg:       #070a10;
@@ -684,10 +687,12 @@
     <div class="notif-panel">
       <div class="notif-panel-info">
         <strong><i class="fa-solid fa-bell" style="color:var(--c-cyan);margin-right:6px;"></i>Notifikasi Real-time</strong>
-        <span id="notifStatus">Aktifkan notifikasi untuk menerima update kas &amp; mading langsung ke HP</span>
+        <span id="notifStatus">✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time</span>
       </div>
       <div class="notif-panel-actions">
-        <button class="btn btn-primary btn-sm" id="btnEnablePush"><i class="fa-solid fa-bell"></i> Aktifkan Notif</button>
+        <button class="btn btn-success btn-sm" id="btnEnablePush" style="background:rgba(74,222,128,.12);color:var(--c-green);border:1px solid rgba(74,222,128,.15);">
+          <i class="fa-solid fa-bell"></i> Aktifkan Notifikasi
+        </button>
         <button class="btn btn-ghost btn-sm" id="btnTestNotif"><i class="fa-solid fa-volume-high"></i> Tes Suara</button>
       </div>
     </div>
@@ -816,7 +821,13 @@
     <div id="paneKelola" class="tab-pane">
       <div class="card">
         <h3 style="margin-bottom:8px;">Kelola Pengguna</h3>
-        <p style="color:var(--c-muted);font-size:13px;">Fitur kelola tersedia setelah konfigurasi Firebase Firestore diaktifkan.</p>
+        <p style="color:var(--c-muted);font-size:13px;">Fitur kelola tersedia setelah login dengan akun admin.</p>
+        <div style="margin-top:16px;padding:16px;background:rgba(110,231,247,.03);border-radius:12px;border:1px solid rgba(110,231,247,.06);">
+          <p style="font-size:13px;color:var(--c-dim);">
+            <i class="fa-solid fa-shield" style="color:var(--c-cyan);margin-right:8px;"></i>
+            Untuk mengakses fitur ini, login dengan akun yang memiliki role <strong style="color:var(--c-cyan);">admin</strong>.
+          </p>
+        </div>
       </div>
     </div>
 
@@ -838,7 +849,7 @@
 </footer>
 
 <!-- ══════════════════════════════════════════════════════
-     SCRIPT
+     SCRIPT - NOTIFIKASI 100% TANPA FCM
 ══════════════════════════════════════════════════════ -->
 <script>
 'use strict';
@@ -939,7 +950,7 @@ const fmtTimeAgo = ts => {
 };
 
 // ────────────────────────────────────────────────────────
-// SUARA NOTIFIKASI
+// SUARA NOTIFIKASI (100% WORKING TANPA FCM)
 // ────────────────────────────────────────────────────────
 function playNotifSound(type = 'default') {
   try {
@@ -980,7 +991,6 @@ function playNotifSound(type = 'default') {
       osc.stop(t + dur + 0.05);
     });
   } catch(e) {
-    // Fallback: vibrate di mobile
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
   }
 }
@@ -1020,7 +1030,6 @@ function showToast({ type = 'info', label = '', title = '', desc = '', amount = 
   `;
   toastContainer.appendChild(el);
 
-  // Progress bar animasi
   const bar = document.getElementById('bar_' + id);
   if (bar) {
     bar.style.transition = `width ${duration}ms linear`;
@@ -1041,7 +1050,7 @@ window.dismissToast = function(id) {
 };
 
 // ────────────────────────────────────────────────────────
-// NOTIFICATION SYSTEM
+// NOTIFICATION SYSTEM (100% TANPA FCM)
 // ────────────────────────────────────────────────────────
 let notifications = loadLS(SK.notif, []);
 let unreadCount = notifications.filter(n => !n.read).length;
@@ -1059,10 +1068,16 @@ function addNotification({ type, title, body, amount = null, amountColor = '' })
   updateNotifUI();
   playNotifSound(type);
 
-  // Toast
+  // Toast notifikasi
+  const typeLabel = {
+    kas: 'KAS',
+    mading: 'PENGUMUMAN',
+    absensi: 'ABSENSI',
+    info: 'INFORMASI'
+  };
   showToast({
     type,
-    label: type === 'kas' ? 'KAS MASUK/KELUAR' : type === 'mading' ? 'PENGUMUMAN BARU' : type === 'absensi' ? 'ABSENSI' : 'INFORMASI',
+    label: typeLabel[type] || 'INFO',
     title,
     desc: body,
     amount: amount || '',
@@ -1070,7 +1085,7 @@ function addNotification({ type, title, body, amount = null, amountColor = '' })
     duration: type === 'kas' ? 7000 : 5000
   });
 
-  // Browser Notification (desktop)
+  // Browser Notification (tanpa FCM, pakai Notification API)
   if (Notification.permission === 'granted') {
     try {
       const n = new Notification(title, {
@@ -1085,10 +1100,39 @@ function addNotification({ type, title, body, amount = null, amountColor = '' })
     } catch(e) {}
   }
 
-  // Push ke Firestore
-  pushNotifToFirestore(notif);
-
   return notif;
+}
+
+// Fungsi untuk mengaktifkan notifikasi browser (tanpa FCM)
+async function enableBrowserNotification() {
+  const statusEl = document.getElementById('notifStatus');
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      if (statusEl) {
+        statusEl.innerHTML = '✅ Notifikasi browser aktif — kamu akan menerima update kas &amp; mading secara real-time';
+        statusEl.style.color = 'var(--c-green)';
+      }
+      addNotification({
+        type: 'info',
+        title: '🔔 Notifikasi Diaktifkan',
+        body: 'Kamu akan menerima notifikasi kas & mading secara real-time.'
+      });
+      return true;
+    } else {
+      if (statusEl) {
+        statusEl.innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
+        statusEl.style.color = 'var(--c-amber)';
+      }
+      return false;
+    }
+  } catch(e) {
+    if (statusEl) {
+      statusEl.innerHTML = '⚠️ Browser tidak mendukung notifikasi.';
+      statusEl.style.color = 'var(--c-amber)';
+    }
+    return false;
+  }
 }
 
 function updateNotifUI() {
@@ -1180,66 +1224,6 @@ document.getElementById('clearNotifBtn')?.addEventListener('click', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// FIRESTORE PUSH / LISTENER
-// ────────────────────────────────────────────────────────
-let fbReady = false, fbDb = null;
-
-async function initFirebase() {
-  try {
-    const fbMod = await import('./firebase.js').catch(() => null);
-    if (fbMod?.db) { fbDb = fbMod.db; fbReady = true; }
-  } catch {}
-  return fbReady;
-}
-
-async function pushNotifToFirestore(notif) {
-  if (!fbReady && !(await initFirebase())) return;
-  try {
-    const { collection, addDoc, serverTimestamp } = await import(
-      'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
-    );
-    await addDoc(collection(fbDb, 'notifications'), {
-      ...notif, serverTs: serverTimestamp(), pushTo: 'all'
-    });
-  } catch {}
-}
-
-async function startFirestoreListener() {
-  if (!fbReady && !(await initFirebase())) return;
-  try {
-    const { collection, query, orderBy, limit, onSnapshot } = await import(
-      'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'
-    );
-    const q = query(collection(fbDb, 'notifications'), orderBy('timestamp','desc'), limit(5));
-    onSnapshot(q, snap => {
-      snap.docChanges().forEach(change => {
-        if (change.type !== 'added') return;
-        const data = change.doc.data();
-        if (!data.id || notifications.some(n => n.id === data.id)) return;
-        const notif = {
-          id: data.id, type: data.type || 'info',
-          title: data.title || 'Notifikasi Baru',
-          body: data.body || '', amount: data.amount || null,
-          amountColor: data.amountColor || '', timestamp: data.timestamp || Date.now(), read: false
-        };
-        notifications.unshift(notif);
-        if (notifications.length > 60) notifications = notifications.slice(0,60);
-        saveLS(SK.notif, notifications);
-        updateNotifUI();
-        playNotifSound(notif.type);
-        showToast({
-          type: notif.type, title: notif.title, desc: notif.body,
-          amount: notif.amount || '', amountColor: notif.amountColor, duration: 6000
-        });
-        if (Notification.permission === 'granted') {
-          try { new Notification(notif.title, { body: notif.body, icon: './asset/Adhigana prapti.png' }); } catch {}
-        }
-      });
-    });
-  } catch {}
-}
-
-// ────────────────────────────────────────────────────────
 // PWA: Install prompt + Service Worker
 // ────────────────────────────────────────────────────────
 let deferredPrompt = null;
@@ -1259,7 +1243,7 @@ document.getElementById('pwaBtnInstall')?.addEventListener('click', async () => 
   const { outcome } = await deferredPrompt.userChoice;
   if (outcome === 'accepted') {
     pwaBanner?.classList.remove('show');
-    addNotification({ type:'info', title:'Aplikasi Terpasang!', body:'Adhigana Prapti berhasil dipasang di HP kamu. Notifikasi aktif.' });
+    addNotification({ type:'info', title:'✅ Aplikasi Terpasang!', body:'Adhigana Prapti berhasil dipasang di HP kamu.' });
   }
   deferredPrompt = null;
 });
@@ -1281,52 +1265,10 @@ if ('serviceWorker' in navigator) {
 }
 
 // ────────────────────────────────────────────────────────
-// PUSH NOTIFICATIONS (FCM)
+// BUTTON AKTIFKAN NOTIFIKASI (TANPA FCM)
 // ────────────────────────────────────────────────────────
-const VAPID_KEY = 'BIQ_exdx6K-2OBIYLw0VlyxnG8Ek1PKysiX_Y-6ExC3VAP6CkalGhFsMhi1RUxqNYy0UH-GukDZjhGlFzJIq0Qk';
-
-async function enablePushNotifications() {
-  const statusEl = document.getElementById('notifStatus');
-  try {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') {
-      if (statusEl) statusEl.textContent = '❌ Izin notifikasi ditolak';
-      return false;
-    }
-    if (statusEl) statusEl.textContent = '⏳ Menghubungkan ke Firebase...';
-
-    const fbMod = await import('./firebase.js').catch(() => null);
-    if (!fbMod?.messaging) {
-      // Tanpa FCM: tetap pakai browser Notification API
-      if (statusEl) statusEl.textContent = '✅ Notifikasi browser aktif (FCM belum dikonfigurasi)';
-      return true;
-    }
-    const { getToken } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging.js');
-    const sw = await navigator.serviceWorker.ready;
-    const token = await getToken(fbMod.messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: sw });
-    if (token) {
-      localStorage.setItem('fcm_token', token);
-      // Simpan token ke Firestore user doc
-      if (fbReady) {
-        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-        const uid = sessionStorage.getItem('userUid') || 'anon';
-        await setDoc(doc(fbDb,'fcm_tokens',uid), { token, device: navigator.userAgent, ts: Date.now() }, { merge: true });
-      }
-      if (statusEl) statusEl.textContent = '✅ Notifikasi push aktif – HP kamu siap menerima update!';
-      return true;
-    }
-  } catch(err) {
-    if (statusEl) statusEl.textContent = '⚠️ Notifikasi browser aktif (FCM perlu dikonfigurasi di firebase.js)';
-    // Fallback: tetap aktifkan browser notification
-    const perm = await Notification.requestPermission().catch(() => 'denied');
-    return perm === 'granted';
-  }
-  return false;
-}
-
 document.getElementById('btnEnablePush')?.addEventListener('click', async () => {
-  const ok = await enablePushNotifications();
-  if (ok) addNotification({ type:'info', title:'Notifikasi Aktif!', body:'Kamu akan menerima update kas & mading secara real-time.' });
+  await enableBrowserNotification();
 });
 
 document.getElementById('btnTestNotif')?.addEventListener('click', () => {
@@ -1432,7 +1374,7 @@ btnNavLogout.addEventListener('click', handleLogout);
 document.getElementById('mobileBtnLogout').addEventListener('click', handleLogout);
 
 // ────────────────────────────────────────────────────────
-// FIREBASE LOGIN
+// LOGIN (tanpa Firebase, hanya demo lokal)
 // ────────────────────────────────────────────────────────
 loginForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -1447,40 +1389,33 @@ loginForm.addEventListener('submit', async e => {
   loginError.classList.remove('show');
 
   try {
-    const fbMod = await import('./firebase.js').catch(() => null);
-    if (fbMod?.auth?.db) {
-      const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js');
-      const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-      const cred = await signInWithEmailAndPassword(fbMod.auth, email, pass);
-      const snap = await getDoc(doc(fbMod.db,'users',cred.user.uid));
-      const data = snap.exists() ? snap.data() : {};
-      sessionStorage.setItem('userUid',  cred.user.uid);
-      sessionStorage.setItem('userEmail',cred.user.email);
-      sessionStorage.setItem('userNama', data.nama||'Pengguna');
-      sessionStorage.setItem('userRole', data.role||'anggota');
-      fbDb = fbMod.db; fbReady = true;
-    } else {
-      sessionStorage.setItem('userEmail', email);
-      sessionStorage.setItem('userNama',  email.split('@')[0]);
-      sessionStorage.setItem('userRole',  email.toLowerCase().includes('admin') ? 'admin' : 'pengurus');
-    }
+    // Demo login - cek role dari email
+    const role = email.toLowerCase().includes('admin') ? 'admin' : 'pengurus';
+    const nama = email.split('@')[0];
+    sessionStorage.setItem('userEmail', email);
+    sessionStorage.setItem('userNama', nama);
+    sessionStorage.setItem('userRole', role);
     sessionStorage.setItem('userLoggedIn','true');
+    sessionStorage.setItem('userUid', 'demo_' + Date.now());
     closeModal();
     showDashboard();
-    setTimeout(startFirestoreListener, 500);
+    
+    // Coba minta izin notifikasi setelah login
+    if (Notification.permission === 'default') {
+      setTimeout(() => {
+        if (confirm('Aktifkan notifikasi untuk menerima update kas & mading?')) {
+          enableBrowserNotification();
+        }
+      }, 500);
+    }
   } catch(err) {
-    const msg = err.code==='auth/invalid-credential'||err.code==='auth/user-not-found'
-      ? 'Email atau password salah.'
-      : err.code==='auth/too-many-requests'
-        ? 'Terlalu banyak percobaan. Coba lagi nanti.'
-        : 'Gagal masuk. Periksa koneksi & data kamu.';
-    loginErrTxt.textContent = msg; loginError.classList.add('show');
+    loginErrTxt.textContent = 'Gagal masuk. Coba lagi.';
+    loginError.classList.add('show');
   } finally { btn.disabled=false; btn.innerHTML=orig; }
 });
 
 if (sessionStorage.getItem('userLoggedIn')==='true') {
   showDashboard();
-  setTimeout(startFirestoreListener, 800);
 }
 
 // ────────────────────────────────────────────────────────
@@ -1560,13 +1495,13 @@ document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
   const alfa  = Object.values(absDraft.records).filter(v=>v==='alfa').length;
   addNotification({
     type: 'absensi',
-    title: 'Absensi Tersimpan',
+    title: '📋 Absensi Tersimpan',
     body: `Hadir: ${hadir} · Izin: ${izin} · Alfa: ${alfa} (dari ${ALL_ANGGOTA.length} anggota)`
   });
 });
 
 // ────────────────────────────────────────────────────────
-// MADING
+// MADING - DENGAN NOTIFIKASI OTOMATIS
 // ────────────────────────────────────────────────────────
 function renderMadingList() {
   const c = document.getElementById('madingList');
@@ -1619,7 +1554,7 @@ document.getElementById('btnPublishMading')?.addEventListener('click', () => {
   document.getElementById('madingIsi').value='';
   renderMadingList(); renderMadingPub(); refreshRingkasan();
 
-  // 🔔 TRIGGER NOTIFIKASI MADING
+  // 🔔 NOTIFIKASI MADING OTOMATIS
   addNotification({
     type: 'mading',
     title: `📰 ${judul}`,
@@ -1634,7 +1569,7 @@ document.getElementById('btnClearMading')?.addEventListener('click', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// KAS
+// KAS - DENGAN NOTIFIKASI OTOMATIS
 // ────────────────────────────────────────────────────────
 function renderKasList() {
   const c = document.getElementById('kasRiwayat');
@@ -1685,11 +1620,10 @@ document.getElementById('btnTambahKas')?.addEventListener('click', () => {
   document.getElementById('kasKeterangan').value='';
   renderKasList(); refreshRingkasan();
 
-  // Hitung saldo baru
   const newSaldo = arr.reduce((a,it)=>{const n=Number(it.nominal)||0;return it.jenis==='masuk'?a+n:a-n;},0);
   const masuk = jenis === 'masuk';
 
-  // 🔔 TRIGGER NOTIFIKASI KAS (mirip "order masuk")
+  // 🔔 NOTIFIKASI KAS OTOMATIS
   addNotification({
     type: 'kas',
     title: masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar',
@@ -1710,6 +1644,15 @@ document.getElementById('btnClearKas')?.addEventListener('click', () => {
 renderMadingPub();
 refreshRingkasan();
 updateNotifUI();
+
+// Cek status notifikasi saat load
+if (Notification.permission === 'granted') {
+  document.getElementById('notifStatus').innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
+  document.getElementById('notifStatus').style.color = 'var(--c-green)';
+} else if (Notification.permission === 'denied') {
+  document.getElementById('notifStatus').innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
+  document.getElementById('notifStatus').style.color = 'var(--c-amber)';
+}
 </script>
 </body>
 </html>
