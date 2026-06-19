@@ -1146,9 +1146,6 @@ document.getElementById('pwaBtnDismiss')?.addEventListener('click', () => {
   localStorage.setItem('pwa_dismissed', '1');
   pwaBanner?.classList.remove('show');
 });
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
-}
 
 // ============================================================
 // HAMBURGER
@@ -1616,6 +1613,46 @@ if (Notification.permission === 'granted') {
 
 console.log("🔥 NOTIFIKASI REALTIME FIRESTORE AKTIF!");
 console.log("📌 Buka 2 tab/device, publish mading atau kas, notifikasi akan muncul di semua perangkat!");
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     REGISTRASI SERVICE WORKER - DIPISAHKAN DARI MODULE
+══════════════════════════════════════════════════════ -->
+<script>
+// ============================================================
+// REGISTRASI SERVICE WORKER
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    console.log('📦 Mendaftarkan Service Worker...');
+    navigator.serviceWorker.register('/service-worker.js', {
+      scope: '/'
+    })
+    .then(function(registration) {
+      console.log('✅ Service Worker registered successfully:', registration);
+      
+      // Cek update
+      registration.addEventListener('updatefound', function() {
+        const newWorker = registration.installing;
+        console.log('🔄 Service Worker update found:', newWorker);
+        newWorker.addEventListener('statechange', function() {
+          if (newWorker.state === 'activated') {
+            console.log('✅ New Service Worker activated');
+          }
+        });
+      });
+    })
+    .catch(function(error) {
+      console.error('❌ Service Worker registration failed:', error);
+    });
+  });
+}
+
+// ============================================================
+// CEK STATUS NOTIFIKASI
+// ============================================================
+console.log('📌 Notification permission:', Notification.permission);
+console.log('📌 PushManager support:', 'PushManager' in window);
 </script>
 </body>
 </html>
