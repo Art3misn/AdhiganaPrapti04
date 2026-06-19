@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
     /* ============================================================
-       SEMUA STYLE TETAP SAMA
+       SEMUA STYLE TETAP SAMA SEPERTI SEBELUMNYA
        ============================================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -849,7 +849,7 @@
 </footer>
 
 <!-- ══════════════════════════════════════════════════════
-     SCRIPT - NOTIFIKASI 100% TANPA FCM
+     SCRIPT - NOTIFIKASI SEPERTI SEBLAK (MADING + KAS)
 ══════════════════════════════════════════════════════ -->
 <script>
 'use strict';
@@ -950,16 +950,18 @@ const fmtTimeAgo = ts => {
 };
 
 // ────────────────────────────────────────────────────────
-// SUARA NOTIFIKASI (100% WORKING TANPA FCM)
+// SUARA NOTIFIKASI - SEPERTI SEBLAK
 // ────────────────────────────────────────────────────────
 function playNotifSound(type = 'default') {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Pattern suara yang lebih nyaring seperti di seblak
     const patterns = {
       kas: [
         { freq: 880, dur: 0.08, delay: 0 },
         { freq: 1100, dur: 0.08, delay: 0.1 },
-        { freq: 1320, dur: 0.12, delay: 0.2 },
+        { freq: 1320, dur: 0.15, delay: 0.2 },
       ],
       mading: [
         { freq: 660, dur: 0.1, delay: 0 },
@@ -968,21 +970,35 @@ function playNotifSound(type = 'default') {
       ],
       absensi: [
         { freq: 440, dur: 0.1, delay: 0 },
-        { freq: 550, dur: 0.1, delay: 0.12 },
+        { freq: 550, dur: 0.12, delay: 0.12 },
       ],
       default: [
         { freq: 760, dur: 0.1, delay: 0 },
         { freq: 960, dur: 0.12, delay: 0.13 },
+        { freq: 1200, dur: 0.15, delay: 0.26 },
       ]
     };
+    
     const notes = patterns[type] || patterns.default;
+    
+    // Gain untuk volume lebih besar
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.4;
+    masterGain.connect(ctx.destination);
+    
     notes.forEach(({ freq, dur, delay }) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
-      gain.connect(ctx.destination);
+      gain.connect(masterGain);
       osc.frequency.value = freq;
       osc.type = 'sine';
+      
+      // Tambahkan sedikit variasi untuk suara lebih kaya
+      if (type === 'kas' || type === 'mading') {
+        osc.type = 'square';
+      }
+      
       const t = ctx.currentTime + delay;
       gain.gain.setValueAtTime(0, t);
       gain.gain.linearRampToValueAtTime(0.3, t + 0.01);
@@ -991,12 +1007,13 @@ function playNotifSound(type = 'default') {
       osc.stop(t + dur + 0.05);
     });
   } catch(e) {
-    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    // Fallback: vibrate di mobile
+    if (navigator.vibrate) navigator.vibrate(type === 'kas' ? [150, 50, 150] : [100, 50, 100]);
   }
 }
 
 // ────────────────────────────────────────────────────────
-// TOAST SYSTEM
+// TOAST SYSTEM - SEPERTI SEBLAK
 // ────────────────────────────────────────────────────────
 const toastContainer = document.getElementById('toastContainer');
 
@@ -1050,7 +1067,7 @@ window.dismissToast = function(id) {
 };
 
 // ────────────────────────────────────────────────────────
-// NOTIFICATION SYSTEM (100% TANPA FCM)
+// NOTIFICATION SYSTEM - SEPERTI SEBLAK
 // ────────────────────────────────────────────────────────
 let notifications = loadLS(SK.notif, []);
 let unreadCount = notifications.filter(n => !n.read).length;
@@ -1066,15 +1083,21 @@ function addNotification({ type, title, body, amount = null, amountColor = '' })
   if (notifications.length > 60) notifications = notifications.slice(0, 60);
   saveLS(SK.notif, notifications);
   updateNotifUI();
+  
+  // 🔔 PUTAR SUARA - SEPERTI SEBLAK
   playNotifSound(type);
 
   // Toast notifikasi
   const typeLabel = {
-    kas: 'KAS',
-    mading: 'PENGUMUMAN',
-    absensi: 'ABSENSI',
-    info: 'INFORMASI'
+    kas: '💰 KAS',
+    mading: '📰 MADING',
+    absensi: '📋 ABSENSI',
+    info: 'ℹ️ INFO'
   };
+  
+  // Toast dengan durasi lebih lama untuk kas (seperti di seblak)
+  const toastDuration = type === 'kas' ? 7000 : 5000;
+  
   showToast({
     type,
     label: typeLabel[type] || 'INFO',
@@ -1082,18 +1105,24 @@ function addNotification({ type, title, body, amount = null, amountColor = '' })
     desc: body,
     amount: amount || '',
     amountColor,
-    duration: type === 'kas' ? 7000 : 5000
+    duration: toastDuration
   });
 
-  // Browser Notification (tanpa FCM, pakai Notification API)
+  // Browser Notification (seperti di seblak)
   if (Notification.permission === 'granted') {
     try {
-      const n = new Notification(title, {
+      const iconMap = {
+        kas: '💰',
+        mading: '📰',
+        absensi: '📋',
+        info: 'ℹ️'
+      };
+      const n = new Notification(`${iconMap[type] || '🔔'} ${title}`, {
         body: amount ? body + '\n' + amount : body,
         icon: './asset/Adhigana prapti.png',
         badge: './asset/Adhigana prapti.png',
         tag: 'ap_' + type,
-        vibrate: [200, 100, 200],
+        vibrate: type === 'kas' ? [200, 100, 200, 100, 200] : [100, 50, 100],
         requireInteraction: type === 'kas'
       });
       n.onclick = () => { window.focus(); n.close(); };
@@ -1110,13 +1139,13 @@ async function enableBrowserNotification() {
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
       if (statusEl) {
-        statusEl.innerHTML = '✅ Notifikasi browser aktif — kamu akan menerima update kas &amp; mading secara real-time';
+        statusEl.innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
         statusEl.style.color = 'var(--c-green)';
       }
       addNotification({
         type: 'info',
         title: '🔔 Notifikasi Diaktifkan',
-        body: 'Kamu akan menerima notifikasi kas & mading secara real-time.'
+        body: 'Kamu akan menerima notifikasi kas &amp; mading secara real-time.'
       });
       return true;
     } else {
@@ -1265,15 +1294,16 @@ if ('serviceWorker' in navigator) {
 }
 
 // ────────────────────────────────────────────────────────
-// BUTTON AKTIFKAN NOTIFIKASI (TANPA FCM)
+// BUTTON AKTIFKAN NOTIFIKASI
 // ────────────────────────────────────────────────────────
 document.getElementById('btnEnablePush')?.addEventListener('click', async () => {
   await enableBrowserNotification();
 });
 
 document.getElementById('btnTestNotif')?.addEventListener('click', () => {
+  // Tes suara seperti di seblak
   playNotifSound('kas');
-  setTimeout(() => playNotifSound('mading'), 600);
+  setTimeout(() => playNotifSound('mading'), 800);
   addNotification({
     type: 'info',
     title: '🔔 Tes Notifikasi',
@@ -1389,7 +1419,6 @@ loginForm.addEventListener('submit', async e => {
   loginError.classList.remove('show');
 
   try {
-    // Demo login - cek role dari email
     const role = email.toLowerCase().includes('admin') ? 'admin' : 'pengurus';
     const nama = email.split('@')[0];
     sessionStorage.setItem('userEmail', email);
@@ -1400,7 +1429,6 @@ loginForm.addEventListener('submit', async e => {
     closeModal();
     showDashboard();
     
-    // Coba minta izin notifikasi setelah login
     if (Notification.permission === 'default') {
       setTimeout(() => {
         if (confirm('Aktifkan notifikasi untuk menerima update kas & mading?')) {
@@ -1501,7 +1529,7 @@ document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// MADING - DENGAN NOTIFIKASI OTOMATIS
+// MADING - DENGAN NOTIFIKASI OTOMATIS (SEPERTI SEBLAK)
 // ────────────────────────────────────────────────────────
 function renderMadingList() {
   const c = document.getElementById('madingList');
@@ -1554,7 +1582,7 @@ document.getElementById('btnPublishMading')?.addEventListener('click', () => {
   document.getElementById('madingIsi').value='';
   renderMadingList(); renderMadingPub(); refreshRingkasan();
 
-  // 🔔 NOTIFIKASI MADING OTOMATIS
+  // 🔔 NOTIFIKASI MADING - SEPERTI SEBLAK
   addNotification({
     type: 'mading',
     title: `📰 ${judul}`,
@@ -1569,7 +1597,7 @@ document.getElementById('btnClearMading')?.addEventListener('click', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// KAS - DENGAN NOTIFIKASI OTOMATIS
+// KAS - DENGAN NOTIFIKASI OTOMATIS (SEPERTI SEBLAK)
 // ────────────────────────────────────────────────────────
 function renderKasList() {
   const c = document.getElementById('kasRiwayat');
@@ -1623,7 +1651,7 @@ document.getElementById('btnTambahKas')?.addEventListener('click', () => {
   const newSaldo = arr.reduce((a,it)=>{const n=Number(it.nominal)||0;return it.jenis==='masuk'?a+n:a-n;},0);
   const masuk = jenis === 'masuk';
 
-  // 🔔 NOTIFIKASI KAS OTOMATIS
+  // 🔔 NOTIFIKASI KAS - SEPERTI SEBLAK
   addNotification({
     type: 'kas',
     title: masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar',
