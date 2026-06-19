@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
     /* ============================================================
-       SEMUA STYLE TETAP SAMA SEPERTI SEBELUMNYA
+       SEMUA STYLE TETAP SAMA
        ============================================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -849,114 +849,64 @@
 </footer>
 
 <!-- ══════════════════════════════════════════════════════
-     SCRIPT - NOTIFIKASI SEPERTI SEBLAK (MADING + KAS)
+     SCRIPT - REALTIME FIRESTORE
 ══════════════════════════════════════════════════════ -->
-<script>
-'use strict';
+<script type="importmap">
+{
+  "imports": {
+    "firebase/app": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+  }
+}
+</script>
 
-// ────────────────────────────────────────────────────────
-// HAMBURGER
-// ────────────────────────────────────────────────────────
-const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
+<script type="module">
+// ============================================================
+// IMPORT DARI FIREBASE.JS
+// ============================================================
+import { 
+  db,
+  sendMading,
+  sendKas,
+  listenMading,
+  listenKas,
+  sendNotification,
+  serverTimestamp,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit
+} from './firebase.js';
 
-hamburger.addEventListener('click', () => {
-  hamburger.classList.toggle('active');
-  mobileMenu.classList.toggle('open');
-});
-document.querySelectorAll('.mobile-menu a, .mobile-menu button').forEach(el => {
-  el.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    mobileMenu.classList.remove('open');
-  });
-});
+console.log("🔥 Firebase Connected - Realtime Notifikasi Aktif");
 
-// ────────────────────────────────────────────────────────
-// DATA ANGGOTA (54 orang)
-// ────────────────────────────────────────────────────────
-const ALL_ANGGOTA = [
-  { uid:'u001', nama:'M. Daffa Saeful Faiz',            jabatan:'Ketua Umum' },
-  { uid:'u002', nama:'Yasna Nur Azka Zakiyah',           jabatan:'Sekretaris Umum' },
-  { uid:'u003', nama:'Putri Nur Apriani',                jabatan:'Bendahara Umum' },
-  { uid:'u004', nama:'Rafi Keny Akhdan',                 jabatan:'Ketua Pelaksana' },
-  { uid:'u005', nama:'Kaysa Hasnah Mumtaaza',            jabatan:'Sekretaris Pelaksana' },
-  { uid:'u006', nama:'Naya Salsabila',                   jabatan:'Bendahara Pelaksana' },
-  { uid:'u007', nama:'Rayhan Nur Pajri',                 jabatan:'Koord. Div. Lapangan' },
-  { uid:'u008', nama:'M. Haikal Abil Fida',              jabatan:'Div. Koordinasi Lapangan' },
-  { uid:'u009', nama:'Ardiansyah Pramadani',             jabatan:'Div. Koordinasi Lapangan' },
-  { uid:'u010', nama:'Fahmi Maulana',                    jabatan:'Div. Koordinasi Lapangan' },
-  { uid:'u011', nama:'Daffa Yusuf Afandy',               jabatan:'Div. Koordinasi Lapangan' },
-  { uid:'u012', nama:'M. Faiq Ahsan',                    jabatan:'Koord. Div. Acara' },
-  { uid:'u013', nama:'M. Zidan Ziyadul Haq',             jabatan:'Div. Acara' },
-  { uid:'u014', nama:'Arfan Najmi',                      jabatan:'Div. Acara' },
-  { uid:'u015', nama:'M. Badrul Zaman',                  jabatan:'Div. Acara' },
-  { uid:'u016', nama:'Mutia Zahran',                     jabatan:'Div. Acara' },
-  { uid:'u017', nama:'Raifa Putri Ramadhani',            jabatan:'Div. Acara' },
-  { uid:'u018', nama:'Panji Jatmika',                    jabatan:'Koord. Div. Pubdok' },
-  { uid:'u019', nama:'Fachri Akbar',                     jabatan:'Div. Publikasi & Dokumentasi' },
-  { uid:'u020', nama:'Muhamad Darul Tahqiq',             jabatan:'Div. Publikasi & Dokumentasi' },
-  { uid:'u021', nama:'Rhicelle Apriliana',               jabatan:'Div. Publikasi & Dokumentasi' },
-  { uid:'u022', nama:'Riska Maulida Fitri',              jabatan:'Div. Publikasi & Dokumentasi' },
-  { uid:'u023', nama:'Agisna Maulida Noer',              jabatan:'Div. Publikasi & Dokumentasi' },
-  { uid:'u024', nama:'Anggita Nurfadillah',              jabatan:'Div. Publikasi & Dokumentasi' },
-  { uid:'u025', nama:'M. Alfin Saputra',                 jabatan:'Koord. Div. Humas' },
-  { uid:'u026', nama:'M. Huda Kasya Islami',             jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u027', nama:'M. Irham Ghifarul Khilmi',         jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u028', nama:'Almas Dara Saputri Wiwaha',        jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u029', nama:'Zulfa Hamidah',                    jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u030', nama:'Windi Meliana',                    jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u031', nama:'Arum Rohimah',                     jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u032', nama:'Alvyra Mutiara Andira',            jabatan:'Div. Hubungan Masyarakat' },
-  { uid:'u033', nama:'Zahran Saputra Wiwaha',            jabatan:'Koord. Div. Konsumsi' },
-  { uid:'u034', nama:'Gema Darma Wijana',                jabatan:'Div. Konsumsi' },
-  { uid:'u035', nama:'Raihan Muzhafar Yusuf',            jabatan:'Div. Konsumsi' },
-  { uid:'u036', nama:'Ari Pratama Putra',                jabatan:'Div. Konsumsi' },
-  { uid:'u037', nama:'Aurel Pricila Ananta',             jabatan:'Div. Konsumsi' },
-  { uid:'u038', nama:'Vina Siti Aminah',                 jabatan:'Div. Konsumsi' },
-  { uid:'u039', nama:'April Amelia Putri',               jabatan:'Div. Konsumsi' },
-  { uid:'u040', nama:'Dinda Aulia',                      jabatan:'Div. Konsumsi' },
-  { uid:'u041', nama:'Agnia Ilma Triana Putri Hidayat',  jabatan:'Div. Konsumsi' },
-  { uid:'u042', nama:'M. Abdul Azis',                    jabatan:'Koord. Div. Dekorasi & Logistik' },
-  { uid:'u043', nama:'Romi Zayyinul Aripin',             jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u044', nama:'Rojab Mulyana',                    jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u045', nama:'Irfan Naufal Amrulloh',            jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u046', nama:'Fadlan Nurullah',                  jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u047', nama:'Arya Maulana',                     jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u048', nama:'Danil Mauluda',                    jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u049', nama:'Fabin Alfarizi Rizal Riyansah',    jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u050', nama:'Rai Nepal Ibrahim',                jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u051', nama:'Robby Muharram',                   jabatan:'Div. Dekorasi & Logistik' },
-  { uid:'u052', nama:'Rama Pratama Adila',               jabatan:'Koord. Div. Kebersihan' },
-  { uid:'u053', nama:'Arfik Ramdhani',                   jabatan:'Div. Kebersihan' },
-  { uid:'u054', nama:'M. Fariz Saeful Ammar',            jabatan:'Div. Kebersihan' },
-];
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+const notifBell = document.getElementById('notifBell');
+const notifDropdown = document.getElementById('notifDropdown');
+const notifList = document.getElementById('notifList');
+const notifBadge = document.getElementById('notifBadge');
+const mobNotifBadge = document.getElementById('mobNotifBadge');
+const clearNotifBtn = document.getElementById('clearNotifBtn');
+const btnTestNotif = document.getElementById('btnTestNotif');
+const toastContainer = document.getElementById('toastContainer');
 
-// ────────────────────────────────────────────────────────
-// UTILS
-// ────────────────────────────────────────────────────────
-const SK = { absensi:'ap_abs_v2', mading:'ap_mad_v2', kas:'ap_kas_v2', notif:'ap_notif_v3' };
-const loadLS = (k,d) => { try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;} };
-const saveLS = (k,v) => { try{localStorage.setItem(k,JSON.stringify(v));}catch{} };
-const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-const fmtRp = n => 'Rp ' + (Number(n)||0).toLocaleString('id-ID');
-const fmtDate = ts => new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-const fmtDT   = ts => new Date(ts).toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-const fmtTimeAgo = ts => {
-  const d = Date.now() - ts;
-  if (d < 60000) return 'Baru saja';
-  if (d < 3600000) return Math.floor(d/60000) + ' menit lalu';
-  if (d < 86400000) return Math.floor(d/3600000) + ' jam lalu';
-  return fmtDate(ts);
-};
+// ============================================================
+// STATE
+// ============================================================
+let knownNotifIds = new Set();
+let isFirstLoad = true;
+let unreadCount = 0;
 
-// ────────────────────────────────────────────────────────
-// SUARA NOTIFIKASI - SEPERTI SEBLAK
-// ────────────────────────────────────────────────────────
+// ============================================================
+// SUARA NOTIFIKASI
+// ============================================================
 function playNotifSound(type = 'default') {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Pattern suara yang lebih nyaring seperti di seblak
     const patterns = {
       kas: [
         { freq: 880, dur: 0.08, delay: 0 },
@@ -968,24 +918,15 @@ function playNotifSound(type = 'default') {
         { freq: 880, dur: 0.1, delay: 0.12 },
         { freq: 1100, dur: 0.15, delay: 0.24 },
       ],
-      absensi: [
-        { freq: 440, dur: 0.1, delay: 0 },
-        { freq: 550, dur: 0.12, delay: 0.12 },
-      ],
       default: [
         { freq: 760, dur: 0.1, delay: 0 },
         { freq: 960, dur: 0.12, delay: 0.13 },
-        { freq: 1200, dur: 0.15, delay: 0.26 },
       ]
     };
-    
     const notes = patterns[type] || patterns.default;
-    
-    // Gain untuk volume lebih besar
     const masterGain = ctx.createGain();
     masterGain.gain.value = 0.4;
     masterGain.connect(ctx.destination);
-    
     notes.forEach(({ freq, dur, delay }) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -993,12 +934,7 @@ function playNotifSound(type = 'default') {
       gain.connect(masterGain);
       osc.frequency.value = freq;
       osc.type = 'sine';
-      
-      // Tambahkan sedikit variasi untuk suara lebih kaya
-      if (type === 'kas' || type === 'mading') {
-        osc.type = 'square';
-      }
-      
+      if (type === 'kas' || type === 'mading') osc.type = 'square';
       const t = ctx.currentTime + delay;
       gain.gain.setValueAtTime(0, t);
       gain.gain.linearRampToValueAtTime(0.3, t + 0.01);
@@ -1007,344 +943,237 @@ function playNotifSound(type = 'default') {
       osc.stop(t + dur + 0.05);
     });
   } catch(e) {
-    // Fallback: vibrate di mobile
     if (navigator.vibrate) navigator.vibrate(type === 'kas' ? [150, 50, 150] : [100, 50, 100]);
   }
 }
 
-// ────────────────────────────────────────────────────────
-// TOAST SYSTEM - SEPERTI SEBLAK
-// ────────────────────────────────────────────────────────
-const toastContainer = document.getElementById('toastContainer');
-
-function showToast({ type = 'info', label = '', title = '', desc = '', amount = '', amountColor = '', duration = 5000 }) {
+// ============================================================
+// TOAST
+// ============================================================
+function showToast({ type = 'info', title = '', desc = '', amount = '', amountColor = '' }) {
   const iconMap = {
-    kas:     { icon: 'fa-coins',          cls: 'kas' },
-    mading:  { icon: 'fa-newspaper',      cls: 'mading' },
-    absensi: { icon: 'fa-clipboard-check',cls: 'absensi' },
-    info:    { icon: 'fa-circle-info',    cls: 'info' },
+    kas: { icon: 'fa-coins', cls: 'kas' },
+    mading: { icon: 'fa-newspaper', cls: 'mading' },
+    absensi: { icon: 'fa-clipboard-check', cls: 'absensi' },
+    info: { icon: 'fa-circle-info', cls: 'info' },
   };
   const t = iconMap[type] || iconMap.info;
   const id = 'toast_' + Date.now();
-
   const el = document.createElement('div');
   el.className = 'toast';
   el.id = id;
   el.innerHTML = `
     <div class="toast-accent ${t.cls}"></div>
-    <button class="toast-close" onclick="dismissToast('${id}')"><i class="fa-solid fa-xmark"></i></button>
+    <button class="toast-close" onclick="this.closest('.toast').remove()"><i class="fa-solid fa-xmark"></i></button>
     <div class="toast-body">
       <div class="toast-icon ${t.cls}"><i class="fa-solid ${t.icon}"></i></div>
       <div class="toast-text">
-        ${label ? `<div class="toast-label">${esc(label)}</div>` : ''}
-        <div class="toast-title">${esc(title)}</div>
-        ${desc ? `<div class="toast-desc">${esc(desc)}</div>` : ''}
-        ${amount ? `<div class="toast-val ${amountColor}">${esc(amount)}</div>` : ''}
-        <div class="toast-time">${fmtDT(Date.now())}</div>
+        <div class="toast-label">${type.toUpperCase()}</div>
+        <div class="toast-title">${title}</div>
+        ${desc ? `<div class="toast-desc">${desc}</div>` : ''}
+        ${amount ? `<div class="toast-val ${amountColor}">${amount}</div>` : ''}
+        <div class="toast-time">${new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})}</div>
       </div>
     </div>
-    <div class="toast-progress"><div class="toast-progress-bar ${t.cls}" id="bar_${id}" style="width:100%"></div></div>
+    <div class="toast-progress"><div class="toast-progress-bar ${t.cls}" style="width:100%;transition:width 5s linear;" id="bar_${id}"></div></div>
   `;
   toastContainer.appendChild(el);
-
   const bar = document.getElementById('bar_' + id);
-  if (bar) {
-    bar.style.transition = `width ${duration}ms linear`;
-    requestAnimationFrame(() => { bar.style.width = '0%'; });
-  }
-
-  const timer = setTimeout(() => dismissToast(id), duration);
-  el._timer = timer;
-  return id;
+  if (bar) requestAnimationFrame(() => { bar.style.width = '0%'; });
+  setTimeout(() => { const t = document.getElementById(id); if (t) t.remove(); }, 5000);
 }
 
-window.dismissToast = function(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  clearTimeout(el._timer);
-  el.classList.add('hiding');
-  setTimeout(() => el.remove(), 300);
-};
-
-// ────────────────────────────────────────────────────────
-// NOTIFICATION SYSTEM - SEPERTI SEBLAK
-// ────────────────────────────────────────────────────────
-let notifications = loadLS(SK.notif, []);
-let unreadCount = notifications.filter(n => !n.read).length;
-
-function addNotification({ type, title, body, amount = null, amountColor = '' }) {
-  const notif = {
-    id: Date.now() + '_' + Math.random().toString(36).slice(2,6),
-    type, title, body, amount, amountColor,
-    timestamp: Date.now(),
-    read: false
-  };
-  notifications.unshift(notif);
-  if (notifications.length > 60) notifications = notifications.slice(0, 60);
-  saveLS(SK.notif, notifications);
-  updateNotifUI();
-  
-  // 🔔 PUTAR SUARA - SEPERTI SEBLAK
-  playNotifSound(type);
-
-  // Toast notifikasi
-  const typeLabel = {
-    kas: '💰 KAS',
-    mading: '📰 MADING',
-    absensi: '📋 ABSENSI',
-    info: 'ℹ️ INFO'
-  };
-  
-  // Toast dengan durasi lebih lama untuk kas (seperti di seblak)
-  const toastDuration = type === 'kas' ? 7000 : 5000;
-  
-  showToast({
-    type,
-    label: typeLabel[type] || 'INFO',
-    title,
-    desc: body,
-    amount: amount || '',
-    amountColor,
-    duration: toastDuration
-  });
-
-  // Browser Notification (seperti di seblak)
-  if (Notification.permission === 'granted') {
-    try {
-      const iconMap = {
-        kas: '💰',
-        mading: '📰',
-        absensi: '📋',
-        info: 'ℹ️'
-      };
-      const n = new Notification(`${iconMap[type] || '🔔'} ${title}`, {
-        body: amount ? body + '\n' + amount : body,
-        icon: './asset/Adhigana prapti.png',
-        badge: './asset/Adhigana prapti.png',
-        tag: 'ap_' + type,
-        vibrate: type === 'kas' ? [200, 100, 200, 100, 200] : [100, 50, 100],
-        requireInteraction: type === 'kas'
-      });
-      n.onclick = () => { window.focus(); n.close(); };
-    } catch(e) {}
-  }
-
-  return notif;
-}
-
-// Fungsi untuk mengaktifkan notifikasi browser (tanpa FCM)
-async function enableBrowserNotification() {
-  const statusEl = document.getElementById('notifStatus');
+// ============================================================
+// BROWSER NOTIFICATION
+// ============================================================
+function showBrowserNotification(title, body) {
+  if (Notification.permission !== 'granted') return;
   try {
-    const perm = await Notification.requestPermission();
-    if (perm === 'granted') {
-      if (statusEl) {
-        statusEl.innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
-        statusEl.style.color = 'var(--c-green)';
-      }
-      addNotification({
-        type: 'info',
-        title: '🔔 Notifikasi Diaktifkan',
-        body: 'Kamu akan menerima notifikasi kas &amp; mading secara real-time.'
-      });
-      return true;
-    } else {
-      if (statusEl) {
-        statusEl.innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
-        statusEl.style.color = 'var(--c-amber)';
-      }
-      return false;
-    }
-  } catch(e) {
-    if (statusEl) {
-      statusEl.innerHTML = '⚠️ Browser tidak mendukung notifikasi.';
-      statusEl.style.color = 'var(--c-amber)';
-    }
-    return false;
-  }
-}
-
-function updateNotifUI() {
-  unreadCount = notifications.filter(n => !n.read).length;
-  ['notifBadge','mobNotifBadge'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = unreadCount > 99 ? '99+' : unreadCount;
-    el.classList.toggle('show', unreadCount > 0);
-    if (unreadCount > 0) {
-      el.classList.add('pulse');
-      setTimeout(() => el.classList.remove('pulse'), 2400);
-    }
-  });
-  renderNotifDropdown();
-}
-
-function renderNotifDropdown() {
-  const container = document.getElementById('notifList');
-  if (!container) return;
-
-  if (!notifications.length) {
-    container.innerHTML = '<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>';
-    return;
-  }
-
-  const iconMap = {
-    kas:     { icon: 'fa-coins',           cls: 'kas' },
-    mading:  { icon: 'fa-newspaper',       cls: 'mading' },
-    absensi: { icon: 'fa-clipboard-check', cls: 'absensi' },
-    info:    { icon: 'fa-circle-info',     cls: 'info' },
-  };
-
-  const typeLabel = {
-    kas: 'Kas', mading: 'Mading', absensi: 'Absensi', info: 'Info'
-  };
-
-  container.innerHTML = notifications.slice(0, 30).map(n => {
-    const t = iconMap[n.type] || iconMap.info;
-    const unreadCls = !n.read ? `unread unread-${n.type}` : '';
-    return `
-      <div class="notif-item ${unreadCls}" data-id="${n.id}">
-        <div class="notif-icon-wrap ${t.cls}"><i class="fa-solid ${t.icon}"></i></div>
-        <div class="notif-content">
-          <div class="notif-meta">
-            <span class="notif-type-tag ${t.cls}">${typeLabel[n.type] || 'Info'}</span>
-            ${!n.read ? '<span class="notif-dot"></span>' : ''}
-          </div>
-          <div class="notif-title-text">${esc(n.title)}</div>
-          <div class="notif-body-text">${esc(n.body)}</div>
-          ${n.amount ? `<div class="notif-amount ${n.amountColor}">${esc(n.amount)}</div>` : ''}
-          <div class="notif-time">${fmtTimeAgo(n.timestamp)}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  container.querySelectorAll('.notif-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const found = notifications.find(n => n.id === el.dataset.id);
-      if (found && !found.read) {
-        found.read = true;
-        saveLS(SK.notif, notifications);
-        updateNotifUI();
-      }
+    const n = new Notification(title, {
+      body: body,
+      icon: './asset/Adhigana prapti.png',
+      badge: './asset/Adhigana prapti.png',
+      vibrate: [200, 100, 200],
+      requireInteraction: true
     });
-  });
+    n.onclick = () => { window.focus(); n.close(); };
+  } catch(e) {}
 }
 
-// Bell toggle
-const notifBell = document.getElementById('notifBell');
-const notifDropdown = document.getElementById('notifDropdown');
-notifBell?.addEventListener('click', e => {
-  e.stopPropagation();
-  notifDropdown?.classList.toggle('open');
+// ============================================================
+// 🔥 REALTIME LISTENER - MADING (dari firebase.js)
+// ============================================================
+listenMading((items) => {
+  // Cek jika ada item baru
+  items.forEach((item) => {
+    if (!knownNotifIds.has(item.id)) {
+      knownNotifIds.add(item.id);
+      if (!isFirstLoad) {
+        const judul = item.judul || 'Pengumuman Baru';
+        const isi = item.isi || '';
+        
+        // 🔔 TRIGGER NOTIFIKASI
+        playNotifSound('mading');
+        showToast({ type: 'mading', title: `📰 ${judul}`, desc: isi.slice(0, 80) + (isi.length > 80 ? '...' : '') });
+        showBrowserNotification(`📰 ${judul}`, isi.slice(0, 100));
+        unreadCount++;
+        updateBadge();
+        addNotifToDropdown({ id: item.id, type: 'mading', title: `📰 ${judul}`, body: isi.slice(0, 100) + (isi.length > 100 ? '...' : ''), timestamp: item.tanggal });
+      }
+    }
+  });
+  isFirstLoad = false;
 });
-document.getElementById('mobNotifBell')?.addEventListener('click', e => {
-  e.stopPropagation();
-  notifDropdown?.classList.toggle('open');
-});
-document.addEventListener('click', () => notifDropdown?.classList.remove('open'));
-notifDropdown?.addEventListener('click', e => e.stopPropagation());
 
-document.getElementById('clearNotifBtn')?.addEventListener('click', () => {
-  notifications.forEach(n => n.read = true);
-  saveLS(SK.notif, notifications);
-  updateNotifUI();
+// ============================================================
+// 🔥 REALTIME LISTENER - KAS (dari firebase.js)
+// ============================================================
+listenKas((items) => {
+  items.forEach((item) => {
+    if (!knownNotifIds.has(item.id)) {
+      knownNotifIds.add(item.id);
+      if (!isFirstLoad) {
+        const jenis = item.jenis || 'masuk';
+        const nominal = item.nominal || 0;
+        const keterangan = item.keterangan || 'Transaksi kas';
+        const masuk = jenis === 'masuk';
+        const title = masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar';
+        const amount = (masuk ? '+' : '-') + 'Rp ' + nominal.toLocaleString('id-ID');
+        
+        // 🔔 TRIGGER NOTIFIKASI
+        playNotifSound('kas');
+        showToast({ type: 'kas', title: title, desc: keterangan, amount: amount, amountColor: masuk ? 'green' : 'red' });
+        showBrowserNotification(title, `${keterangan} - ${amount}`);
+        unreadCount++;
+        updateBadge();
+        addNotifToDropdown({ id: item.id, type: 'kas', title: title, body: `${keterangan} - ${amount}`, timestamp: item.tanggal });
+      }
+    }
+  });
+});
+
+// ============================================================
+// NOTIFIKASI DROPDOWN
+// ============================================================
+function addNotifToDropdown(notif) {
+  const saved = JSON.parse(localStorage.getItem('ap_notifs') || '[]');
+  const exists = saved.some(n => n.id === notif.id);
+  if (!exists) { saved.unshift(notif); if (saved.length > 50) saved.pop(); localStorage.setItem('ap_notifs', JSON.stringify(saved)); }
+  renderDropdown();
+}
+
+function renderDropdown() {
+  const saved = JSON.parse(localStorage.getItem('ap_notifs') || '[]');
+  if (!saved.length) { notifList.innerHTML = `<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>`; return; }
+  const typeLabel = { kas: 'Kas', mading: 'Mading', absensi: 'Absensi', info: 'Info' };
+  const iconMap = { kas: { icon: 'fa-coins', cls: 'kas' }, mading: { icon: 'fa-newspaper', cls: 'mading' }, absensi: { icon: 'fa-clipboard-check', cls: 'absensi' }, info: { icon: 'fa-circle-info', cls: 'info' } };
+  notifList.innerHTML = saved.slice(0, 30).map(n => {
+    const t = iconMap[n.type] || iconMap.info;
+    const time = n.timestamp ? new Date(n.timestamp).toLocaleString('id-ID', {hour:'2-digit',minute:'2-digit'}) : '';
+    return `<div class="notif-item" data-id="${n.id}"><div class="notif-icon-wrap ${t.cls}"><i class="fa-solid ${t.icon}"></i></div><div class="notif-content"><div class="notif-meta"><span class="notif-type-tag ${t.cls}">${typeLabel[n.type] || 'Info'}</span></div><div class="notif-title-text">${n.title}</div><div class="notif-body-text">${n.body}</div><div class="notif-time">${time}</div></div></div>`;
+  }).join('');
+}
+
+function updateBadge() {
+  const badge = document.getElementById('notifBadge');
+  const mobBadge = document.getElementById('mobNotifBadge');
+  const count = unreadCount > 99 ? '99+' : unreadCount;
+  if (badge) { badge.textContent = count; badge.classList.toggle('show', unreadCount > 0); if (unreadCount > 0) badge.classList.add('pulse'); }
+  if (mobBadge) { mobBadge.textContent = count; mobBadge.classList.toggle('show', unreadCount > 0); }
+}
+
+// ============================================================
+// BELL TOGGLE
+// ============================================================
+notifBell?.addEventListener('click', e => { e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
+document.getElementById('mobNotifBell')?.addEventListener('click', e => { e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
+document.addEventListener('click', () => notifDropdown?.classList.remove('open'));
+
+// ============================================================
+// CLEAR NOTIFIKASI
+// ============================================================
+clearNotifBtn?.addEventListener('click', () => {
+  localStorage.setItem('ap_notifs', '[]');
+  unreadCount = 0;
+  updateBadge();
+  renderDropdown();
   notifDropdown?.classList.remove('open');
 });
 
-// ────────────────────────────────────────────────────────
-// PWA: Install prompt + Service Worker
-// ────────────────────────────────────────────────────────
-let deferredPrompt = null;
-const pwaBanner = document.getElementById('pwaBanner');
+// ============================================================
+// TEST NOTIFIKASI
+// ============================================================
+btnTestNotif?.addEventListener('click', () => {
+  playNotifSound('kas');
+  setTimeout(() => playNotifSound('mading'), 800);
+  showToast({ type: 'info', title: '🔔 Tes Notifikasi', desc: 'Sistem notifikasi Adhigana Prapti berfungsi dengan baik!' });
+  showBrowserNotification('🔔 Tes Notifikasi', 'Sistem notifikasi berfungsi!');
+});
 
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  if (!localStorage.getItem('pwa_dismissed')) {
-    setTimeout(() => pwaBanner?.classList.add('show'), 2000);
+// ============================================================
+// AKTIFKAN NOTIFIKASI
+// ============================================================
+document.getElementById('btnEnablePush')?.addEventListener('click', async () => {
+  const perm = await Notification.requestPermission();
+  const statusEl = document.getElementById('notifStatus');
+  if (perm === 'granted') {
+    statusEl.innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
+    statusEl.style.color = 'var(--c-green)';
+  } else {
+    statusEl.innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
+    statusEl.style.color = 'var(--c-amber)';
   }
 });
 
+// ============================================================
+// PWA INSTALL
+// ============================================================
+let deferredPrompt = null;
+const pwaBanner = document.getElementById('pwaBanner');
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('pwa_dismissed')) setTimeout(() => pwaBanner?.classList.add('show'), 2000);
+});
 document.getElementById('pwaBtnInstall')?.addEventListener('click', async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    pwaBanner?.classList.remove('show');
-    addNotification({ type:'info', title:'✅ Aplikasi Terpasang!', body:'Adhigana Prapti berhasil dipasang di HP kamu.' });
-  }
+  if (outcome === 'accepted') pwaBanner?.classList.remove('show');
   deferredPrompt = null;
 });
-
 document.getElementById('pwaBtnDismiss')?.addEventListener('click', () => {
   localStorage.setItem('pwa_dismissed', '1');
   pwaBanner?.classList.remove('show');
 });
-
-window.addEventListener('appinstalled', () => {
-  pwaBanner?.classList.remove('show');
-});
-
-// Register Service Worker
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
 
-// ────────────────────────────────────────────────────────
-// BUTTON AKTIFKAN NOTIFIKASI
-// ────────────────────────────────────────────────────────
-document.getElementById('btnEnablePush')?.addEventListener('click', async () => {
-  await enableBrowserNotification();
+// ============================================================
+// HAMBURGER
+// ============================================================
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-menu a, .mobile-menu button').forEach(el => {
+  el.addEventListener('click', () => { hamburger.classList.remove('active'); mobileMenu.classList.remove('open'); });
 });
-
-document.getElementById('btnTestNotif')?.addEventListener('click', () => {
-  // Tes suara seperti di seblak
-  playNotifSound('kas');
-  setTimeout(() => playNotifSound('mading'), 800);
-  addNotification({
-    type: 'info',
-    title: '🔔 Tes Notifikasi',
-    body: 'Sistem notifikasi Adhigana Prapti berfungsi dengan baik!',
-  });
-});
-
-// ────────────────────────────────────────────────────────
-// LOGIN MODAL
-// ────────────────────────────────────────────────────────
-const overlay     = document.getElementById('loginOverlay');
-const loginForm   = document.getElementById('loginForm');
-const loginError  = document.getElementById('loginError');
-const loginErrTxt = document.getElementById('loginErrorText');
-const btnNavLogin = document.getElementById('btnNavLogin');
-const btnNavLogout= document.getElementById('btnNavLogout');
-const heroBtnLogin= document.getElementById('heroBtnLogin');
-
-const openModal  = () => { overlay.classList.add('open'); loginError.classList.remove('show'); document.getElementById('loginEmail').value=''; document.getElementById('loginPassword').value=''; setTimeout(()=>document.getElementById('loginEmail').focus(),50); };
-const closeModal = () => overlay.classList.remove('open');
-
-btnNavLogin.addEventListener('click', openModal);
-document.getElementById('mobileBtnLogin').addEventListener('click', openModal);
-heroBtnLogin.addEventListener('click', openModal);
-document.getElementById('btnModalClose').addEventListener('click', closeModal);
-overlay.addEventListener('click', e => { if(e.target===overlay) closeModal(); });
 
 document.querySelectorAll('[data-scroll]').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
-    document.getElementById(a.dataset.scroll)?.scrollIntoView({ behavior:'smooth' });
+    document.getElementById(a.dataset.scroll)?.scrollIntoView({ behavior: 'smooth' });
   });
 });
 
-// ────────────────────────────────────────────────────────
+// ============================================================
 // TABS
-// ────────────────────────────────────────────────────────
+// ============================================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     const key = btn.dataset.tab;
     const pane = document.getElementById('pane' + key[0].toUpperCase() + key.slice(1));
@@ -1352,103 +1181,80 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ────────────────────────────────────────────────────────
-// DASHBOARD SHOW / HIDE
-// ────────────────────────────────────────────────────────
-const heroSection  = document.getElementById('hero');
-const madingPubSec = document.getElementById('madingPublik');
-const dashboardSec = document.getElementById('portalDashboard');
+// ============================================================
+// DATA ANGGOTA (54 orang)
+// ============================================================
+const ALL_ANGGOTA = [
+  { uid:'u001', nama:'M. Daffa Saeful Faiz', jabatan:'Ketua Umum' },
+  { uid:'u002', nama:'Yasna Nur Azka Zakiyah', jabatan:'Sekretaris Umum' },
+  { uid:'u003', nama:'Putri Nur Apriani', jabatan:'Bendahara Umum' },
+  { uid:'u004', nama:'Rafi Keny Akhdan', jabatan:'Ketua Pelaksana' },
+  { uid:'u005', nama:'Kaysa Hasnah Mumtaaza', jabatan:'Sekretaris Pelaksana' },
+  { uid:'u006', nama:'Naya Salsabila', jabatan:'Bendahara Pelaksana' },
+  { uid:'u007', nama:'Rayhan Nur Pajri', jabatan:'Koord. Div. Lapangan' },
+  { uid:'u008', nama:'M. Haikal Abil Fida', jabatan:'Div. Koordinasi Lapangan' },
+  { uid:'u009', nama:'Ardiansyah Pramadani', jabatan:'Div. Koordinasi Lapangan' },
+  { uid:'u010', nama:'Fahmi Maulana', jabatan:'Div. Koordinasi Lapangan' },
+  { uid:'u011', nama:'Daffa Yusuf Afandy', jabatan:'Div. Koordinasi Lapangan' },
+  { uid:'u012', nama:'M. Faiq Ahsan', jabatan:'Koord. Div. Acara' },
+  { uid:'u013', nama:'M. Zidan Ziyadul Haq', jabatan:'Div. Acara' },
+  { uid:'u014', nama:'Arfan Najmi', jabatan:'Div. Acara' },
+  { uid:'u015', nama:'M. Badrul Zaman', jabatan:'Div. Acara' },
+  { uid:'u016', nama:'Mutia Zahran', jabatan:'Div. Acara' },
+  { uid:'u017', nama:'Raifa Putri Ramadhani', jabatan:'Div. Acara' },
+  { uid:'u018', nama:'Panji Jatmika', jabatan:'Koord. Div. Pubdok' },
+  { uid:'u019', nama:'Fachri Akbar', jabatan:'Div. Publikasi & Dokumentasi' },
+  { uid:'u020', nama:'Muhamad Darul Tahqiq', jabatan:'Div. Publikasi & Dokumentasi' },
+  { uid:'u021', nama:'Rhicelle Apriliana', jabatan:'Div. Publikasi & Dokumentasi' },
+  { uid:'u022', nama:'Riska Maulida Fitri', jabatan:'Div. Publikasi & Dokumentasi' },
+  { uid:'u023', nama:'Agisna Maulida Noer', jabatan:'Div. Publikasi & Dokumentasi' },
+  { uid:'u024', nama:'Anggita Nurfadillah', jabatan:'Div. Publikasi & Dokumentasi' },
+  { uid:'u025', nama:'M. Alfin Saputra', jabatan:'Koord. Div. Humas' },
+  { uid:'u026', nama:'M. Huda Kasya Islami', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u027', nama:'M. Irham Ghifarul Khilmi', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u028', nama:'Almas Dara Saputri Wiwaha', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u029', nama:'Zulfa Hamidah', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u030', nama:'Windi Meliana', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u031', nama:'Arum Rohimah', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u032', nama:'Alvyra Mutiara Andira', jabatan:'Div. Hubungan Masyarakat' },
+  { uid:'u033', nama:'Zahran Saputra Wiwaha', jabatan:'Koord. Div. Konsumsi' },
+  { uid:'u034', nama:'Gema Darma Wijana', jabatan:'Div. Konsumsi' },
+  { uid:'u035', nama:'Raihan Muzhafar Yusuf', jabatan:'Div. Konsumsi' },
+  { uid:'u036', nama:'Ari Pratama Putra', jabatan:'Div. Konsumsi' },
+  { uid:'u037', nama:'Aurel Pricila Ananta', jabatan:'Div. Konsumsi' },
+  { uid:'u038', nama:'Vina Siti Aminah', jabatan:'Div. Konsumsi' },
+  { uid:'u039', nama:'April Amelia Putri', jabatan:'Div. Konsumsi' },
+  { uid:'u040', nama:'Dinda Aulia', jabatan:'Div. Konsumsi' },
+  { uid:'u041', nama:'Agnia Ilma Triana Putri Hidayat', jabatan:'Div. Konsumsi' },
+  { uid:'u042', nama:'M. Abdul Azis', jabatan:'Koord. Div. Dekorasi & Logistik' },
+  { uid:'u043', nama:'Romi Zayyinul Aripin', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u044', nama:'Rojab Mulyana', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u045', nama:'Irfan Naufal Amrulloh', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u046', nama:'Fadlan Nurullah', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u047', nama:'Arya Maulana', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u048', nama:'Danil Mauluda', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u049', nama:'Fabin Alfarizi Rizal Riyansah', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u050', nama:'Rai Nepal Ibrahim', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u051', nama:'Robby Muharram', jabatan:'Div. Dekorasi & Logistik' },
+  { uid:'u052', nama:'Rama Pratama Adila', jabatan:'Koord. Div. Kebersihan' },
+  { uid:'u053', nama:'Arfik Ramdhani', jabatan:'Div. Kebersihan' },
+  { uid:'u054', nama:'M. Fariz Saeful Ammar', jabatan:'Div. Kebersihan' },
+];
 
-function showDashboard() {
-  heroSection.style.display  = 'none';
-  madingPubSec.style.display = 'none';
-  dashboardSec.classList.add('open');
-  btnNavLogin.style.display  = 'none';
-  btnNavLogout.style.display = 'inline-flex';
-  document.getElementById('mobileBtnLogin').style.display = 'none';
-  const ml = document.getElementById('mobileBtnLogout');
-  ml.style.display = 'flex';
-  ml.classList.add('show');
+// ============================================================
+// UTILS
+// ============================================================
+const SK = { absensi:'ap_abs_v2', mading:'ap_mad_v2', kas:'ap_kas_v2' };
+const loadLS = (k,d) => { try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;} };
+const saveLS = (k,v) => { try{localStorage.setItem(k,JSON.stringify(v));}catch{} };
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+const fmtRp = n => 'Rp ' + (Number(n)||0).toLocaleString('id-ID');
+const fmtDate = ts => new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+const fmtDT = ts => new Date(ts).toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-  const nama = sessionStorage.getItem('userNama') || 'Pengguna';
-  const role = sessionStorage.getItem('userRole') || 'anggota';
-  document.getElementById('dashUserInfo').textContent = nama + ' · ' + role;
-  const badge = document.getElementById('dashRoleBadge');
-  badge.textContent = role;
-  badge.className = 'role-badge' + (role==='admin'?' admin':role==='pengurus'?' pengurus':'');
-  document.querySelectorAll('.tab-btn.admin-only').forEach(el => el.classList.toggle('show', role==='admin'));
-
-  initAbsensi(); renderMadingList(); renderKasList(); refreshRingkasan(); updateNotifUI();
-}
-
-function hideDashboard() {
-  heroSection.style.display  = 'flex';
-  madingPubSec.style.display = 'block';
-  dashboardSec.classList.remove('open');
-  btnNavLogin.style.display  = 'inline-flex';
-  btnNavLogout.style.display = 'none';
-  document.getElementById('mobileBtnLogin').style.display = 'inline-flex';
-  const ml = document.getElementById('mobileBtnLogout');
-  ml.style.display = 'none'; ml.classList.remove('show');
-  renderMadingPub();
-}
-
-function handleLogout() {
-  sessionStorage.clear();
-  hideDashboard();
-  hamburger.classList.remove('active');
-  mobileMenu.classList.remove('open');
-}
-
-btnNavLogout.addEventListener('click', handleLogout);
-document.getElementById('mobileBtnLogout').addEventListener('click', handleLogout);
-
-// ────────────────────────────────────────────────────────
-// LOGIN (tanpa Firebase, hanya demo lokal)
-// ────────────────────────────────────────────────────────
-loginForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass  = document.getElementById('loginPassword').value.trim();
-  if (!email || !pass) { loginErrTxt.textContent='Harap isi email dan password.'; loginError.classList.add('show'); return; }
-
-  const btn = document.getElementById('loginSubmit');
-  btn.disabled = true;
-  const orig = btn.innerHTML;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-  loginError.classList.remove('show');
-
-  try {
-    const role = email.toLowerCase().includes('admin') ? 'admin' : 'pengurus';
-    const nama = email.split('@')[0];
-    sessionStorage.setItem('userEmail', email);
-    sessionStorage.setItem('userNama', nama);
-    sessionStorage.setItem('userRole', role);
-    sessionStorage.setItem('userLoggedIn','true');
-    sessionStorage.setItem('userUid', 'demo_' + Date.now());
-    closeModal();
-    showDashboard();
-    
-    if (Notification.permission === 'default') {
-      setTimeout(() => {
-        if (confirm('Aktifkan notifikasi untuk menerima update kas & mading?')) {
-          enableBrowserNotification();
-        }
-      }, 500);
-    }
-  } catch(err) {
-    loginErrTxt.textContent = 'Gagal masuk. Coba lagi.';
-    loginError.classList.add('show');
-  } finally { btn.disabled=false; btn.innerHTML=orig; }
-});
-
-if (sessionStorage.getItem('userLoggedIn')==='true') {
-  showDashboard();
-}
-
-// ────────────────────────────────────────────────────────
+// ============================================================
 // RINGKASAN
-// ────────────────────────────────────────────────────────
+// ============================================================
 function refreshRingkasan() {
   const abs = loadLS(SK.absensi, { records:{} });
   const hadir = Object.values(abs.records||{}).filter(v=>v==='hadir').length;
@@ -1462,9 +1268,9 @@ function refreshRingkasan() {
   document.getElementById('rSaldo').textContent = fmtRp(saldo);
 }
 
-// ────────────────────────────────────────────────────────
+// ============================================================
 // ABSENSI
-// ────────────────────────────────────────────────────────
+// ============================================================
 let absDraft = { records:{} };
 
 function initAbsensi() {
@@ -1521,26 +1327,75 @@ document.getElementById('btnSimpanAbsensi')?.addEventListener('click', () => {
   const hadir = Object.values(absDraft.records).filter(v=>v==='hadir').length;
   const izin  = Object.values(absDraft.records).filter(v=>v==='izin').length;
   const alfa  = Object.values(absDraft.records).filter(v=>v==='alfa').length;
-  addNotification({
-    type: 'absensi',
-    title: '📋 Absensi Tersimpan',
-    body: `Hadir: ${hadir} · Izin: ${izin} · Alfa: ${alfa} (dari ${ALL_ANGGOTA.length} anggota)`
-  });
+  // Notifikasi absensi
+  playNotifSound('default');
+  showToast({ type: 'absensi', title: '📋 Absensi Tersimpan', desc: `Hadir: ${hadir} · Izin: ${izin} · Alfa: ${alfa}` });
 });
 
-// ────────────────────────────────────────────────────────
-// MADING - DENGAN NOTIFIKASI OTOMATIS (SEPERTI SEBLAK)
-// ────────────────────────────────────────────────────────
-function renderMadingList() {
+// ============================================================
+// SIMPAN KE FIRESTORE - Publish Mading
+// ============================================================
+document.getElementById('btnPublishMading')?.addEventListener('click', async () => {
+  const judul = document.getElementById('madingJudul')?.value?.trim();
+  const isi = document.getElementById('madingIsi')?.value?.trim();
+  if (!judul || !isi) { alert('Judul dan isi wajib diisi!'); return; }
+  
+  // Simpan ke local
+  const arr = loadLS(SK.mading, []);
+  arr.unshift({ judul, isi, tanggal: Date.now() });
+  saveLS(SK.mading, arr);
+  document.getElementById('madingJudul').value = '';
+  document.getElementById('madingIsi').value = '';
+  renderMadingListLocal(); renderMadingPubLocal(); refreshRingkasan();
+
+  // 🔥 SIMPAN KE FIRESTORE - TRIGGER NOTIFIKASI REALTIME
+  const result = await sendMading(judul, isi);
+  if (result.success) {
+    console.log("✅ Mading tersimpan di Firestore:", result.id);
+  } else {
+    console.log("❌ Gagal simpan ke Firestore:", result.error);
+  }
+});
+
+// ============================================================
+// SIMPAN KE FIRESTORE - Tambah Kas
+// ============================================================
+document.getElementById('btnTambahKas')?.addEventListener('click', async () => {
+  const jenis = document.getElementById('kasJenis')?.value;
+  const nominal = Number(document.getElementById('kasNominal')?.value);
+  const ket = document.getElementById('kasKeterangan')?.value?.trim();
+  if (!jenis || !Number.isFinite(nominal) || nominal <= 0 || !ket) { alert('Isi semua field dengan benar!'); return; }
+
+  // Simpan ke local
+  const arr = loadLS(SK.kas, []);
+  arr.unshift({ jenis, nominal, keterangan: ket, tanggal: Date.now() });
+  saveLS(SK.kas, arr);
+  document.getElementById('kasNominal').value = '';
+  document.getElementById('kasKeterangan').value = '';
+  renderKasListLocal(); refreshRingkasan();
+
+  // 🔥 SIMPAN KE FIRESTORE - TRIGGER NOTIFIKASI REALTIME
+  const result = await sendKas(jenis, nominal, ket);
+  if (result.success) {
+    console.log("✅ Kas tersimpan di Firestore:", result.id);
+  } else {
+    console.log("❌ Gagal simpan ke Firestore:", result.error);
+  }
+});
+
+// ============================================================
+// FUNGSI RENDER LOCAL
+// ============================================================
+function renderMadingListLocal() {
   const c = document.getElementById('madingList');
   if (!c) return;
-  const items = loadLS(SK.mading,[]);
-  if (!items.length) { c.innerHTML='<div style="color:var(--c-muted);font-size:13px;">Belum ada pengumuman.</div>'; return; }
+  const items = loadLS(SK.mading, []);
+  if (!items.length) { c.innerHTML = '<div style="color:var(--c-muted);font-size:13px;">Belum ada pengumuman.</div>'; return; }
   c.innerHTML = '';
   items.forEach((it, idx) => {
     const d = document.createElement('div');
-    d.style.cssText='padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02);';
-    d.innerHTML=`
+    d.style.cssText = 'padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02);';
+    d.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
         <div style="flex:1;min-width:0;">
           <div style="color:var(--c-cyan);font-weight:700;font-size:14px;margin-bottom:4px;">${esc(it.judul)}</div>
@@ -1551,129 +1406,206 @@ function renderMadingList() {
       </div>
     `;
     d.querySelector('[data-del]').addEventListener('click', () => {
-      const arr=loadLS(SK.mading,[]); arr.splice(idx,1); saveLS(SK.mading,arr);
-      renderMadingList(); renderMadingPub(); refreshRingkasan();
+      const arr = loadLS(SK.mading, []);
+      arr.splice(idx, 1);
+      saveLS(SK.mading, arr);
+      renderMadingListLocal(); renderMadingPubLocal(); refreshRingkasan();
     });
     c.appendChild(d);
   });
 }
 
-function renderMadingPub() {
+function renderMadingPubLocal() {
   const c = document.getElementById('madingPubGrid');
   if (!c) return;
-  const items = loadLS(SK.mading,[]);
-  if (!items.length) { c.innerHTML='<div class="empty-state"><i class="fa-solid fa-newspaper"></i>Belum ada pengumuman.</div>'; return; }
-  c.innerHTML='';
+  const items = loadLS(SK.mading, []);
+  if (!items.length) { c.innerHTML = '<div class="empty-state"><i class="fa-solid fa-newspaper"></i>Belum ada pengumuman.</div>'; return; }
+  c.innerHTML = '';
   items.forEach(it => {
-    const card=document.createElement('div'); card.className='mading-card';
-    card.innerHTML=`<h3>${esc(it.judul)}</h3><div class="mdate"><i class="fa-regular fa-calendar"></i> ${fmtDate(it.tanggal)}</div><p>${esc(it.isi)}</p>`;
+    const card = document.createElement('div');
+    card.className = 'mading-card';
+    card.innerHTML = `<h3>${esc(it.judul)}</h3><div class="mdate"><i class="fa-regular fa-calendar"></i> ${fmtDate(it.tanggal)}</div><p>${esc(it.isi)}</p>`;
     c.appendChild(card);
   });
 }
 
-document.getElementById('btnPublishMading')?.addEventListener('click', () => {
-  const judul = document.getElementById('madingJudul')?.value?.trim();
-  const isi   = document.getElementById('madingIsi')?.value?.trim();
-  if (!judul||!isi) { alert('Judul dan isi wajib diisi!'); return; }
-  const arr = loadLS(SK.mading,[]);
-  arr.unshift({ judul, isi, tanggal:Date.now() });
-  saveLS(SK.mading, arr);
-  document.getElementById('madingJudul').value='';
-  document.getElementById('madingIsi').value='';
-  renderMadingList(); renderMadingPub(); refreshRingkasan();
-
-  // 🔔 NOTIFIKASI MADING - SEPERTI SEBLAK
-  addNotification({
-    type: 'mading',
-    title: `📰 ${judul}`,
-    body: isi.slice(0,100) + (isi.length>100?'...':''),
-  });
-});
-
-document.getElementById('btnClearMading')?.addEventListener('click', () => {
-  if (!confirm('Hapus SEMUA pengumuman?')) return;
-  saveLS(SK.mading,[]);
-  renderMadingList(); renderMadingPub(); refreshRingkasan();
-});
-
-// ────────────────────────────────────────────────────────
-// KAS - DENGAN NOTIFIKASI OTOMATIS (SEPERTI SEBLAK)
-// ────────────────────────────────────────────────────────
-function renderKasList() {
+function renderKasListLocal() {
   const c = document.getElementById('kasRiwayat');
   if (!c) return;
-  const items = loadLS(SK.kas,[]);
-  const saldo = items.reduce((a,it) => { const n=Number(it.nominal)||0; return it.jenis==='masuk'?a+n:a-n; }, 0);
-  const info  = document.getElementById('kasSaldoInfo');
-  if (info) info.innerHTML=`Saldo: <strong style="color:${saldo>=0?'var(--c-cyan)':'var(--c-red)'}">${fmtRp(saldo)}</strong>`;
-  if (!items.length) { c.innerHTML='<div style="color:var(--c-muted);font-size:13px;">Belum ada transaksi.</div>'; return; }
-  c.innerHTML='';
-  items.forEach((it,idx) => {
-    const masuk = it.jenis==='masuk';
-    const d=document.createElement('div');
-    d.style.cssText='padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02);';
-    d.innerHTML=`
+  const items = loadLS(SK.kas, []);
+  const saldo = items.reduce((a, it) => { const n = Number(it.nominal) || 0; return it.jenis === 'masuk' ? a + n : a - n; }, 0);
+  const info = document.getElementById('kasSaldoInfo');
+  if (info) info.innerHTML = `Saldo: <strong style="color:${saldo >= 0 ? 'var(--c-cyan)' : 'var(--c-red)'}">${fmtRp(saldo)}</strong>`;
+  if (!items.length) { c.innerHTML = '<div style="color:var(--c-muted);font-size:13px;">Belum ada transaksi.</div>'; return; }
+  c.innerHTML = '';
+  items.forEach((it, idx) => {
+    const masuk = it.jenis === 'masuk';
+    const d = document.createElement('div');
+    d.style.cssText = 'padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02);';
+    d.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
         <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;font-size:13px;margin-bottom:4px;${masuk?'color:var(--c-green)':'color:var(--c-red)'}">
-            ${masuk?'<i class="fa-solid fa-arrow-up"></i> Pemasukan':'<i class="fa-solid fa-arrow-down"></i> Pengeluaran'}
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px;${masuk ? 'color:var(--c-green)' : 'color:var(--c-red)'}">
+            ${masuk ? '<i class="fa-solid fa-arrow-up"></i> Pemasukan' : '<i class="fa-solid fa-arrow-down"></i> Pengeluaran'}
           </div>
           <div style="color:var(--c-muted);font-size:11px;margin-bottom:6px;">${fmtDT(it.tanggal)}</div>
           <div style="color:rgba(238,242,255,.82);font-size:13px;">${esc(it.keterangan)}</div>
         </div>
         <div style="text-align:right;flex-shrink:0;">
-          <div style="font-weight:800;font-size:16px;${masuk?'color:var(--c-green)':'color:var(--c-red)'}">${fmtRp(it.nominal)}</div>
+          <div style="font-weight:800;font-size:16px;${masuk ? 'color:var(--c-green)' : 'color:var(--c-red)'}">${fmtRp(it.nominal)}</div>
           <button data-del="${idx}" class="btn btn-danger btn-sm" style="margin-top:8px;"><i class="fa-solid fa-trash"></i> Hapus</button>
         </div>
       </div>
     `;
     d.querySelector('[data-del]').addEventListener('click', () => {
-      const arr=loadLS(SK.kas,[]); arr.splice(idx,1); saveLS(SK.kas,arr);
-      renderKasList(); refreshRingkasan();
+      const arr = loadLS(SK.kas, []);
+      arr.splice(idx, 1);
+      saveLS(SK.kas, arr);
+      renderKasListLocal(); refreshRingkasan();
     });
     c.appendChild(d);
   });
 }
 
-document.getElementById('btnTambahKas')?.addEventListener('click', () => {
-  const jenis   = document.getElementById('kasJenis')?.value;
-  const nominal = Number(document.getElementById('kasNominal')?.value);
-  const ket     = document.getElementById('kasKeterangan')?.value?.trim();
-  if (!jenis||!Number.isFinite(nominal)||nominal<=0||!ket) { alert('Isi semua field dengan benar!'); return; }
+// ============================================================
+// LOGIN
+// ============================================================
+const overlay = document.getElementById('loginOverlay');
+const loginForm = document.getElementById('loginForm');
+const loginError = document.getElementById('loginError');
+const loginErrTxt = document.getElementById('loginErrorText');
+const btnNavLogin = document.getElementById('btnNavLogin');
+const btnNavLogout = document.getElementById('btnNavLogout');
+const heroBtnLogin = document.getElementById('heroBtnLogin');
+const mobileBtnLogin = document.getElementById('mobileBtnLogin');
+const mobileBtnLogout = document.getElementById('mobileBtnLogout');
+const btnModalClose = document.getElementById('btnModalClose');
 
-  const arr = loadLS(SK.kas,[]);
-  arr.unshift({ jenis, nominal, keterangan:ket, tanggal:Date.now() });
-  saveLS(SK.kas, arr);
-  document.getElementById('kasNominal').value='';
-  document.getElementById('kasKeterangan').value='';
-  renderKasList(); refreshRingkasan();
+function openModal() {
+  overlay.classList.add('open');
+  loginError.classList.remove('show');
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  setTimeout(() => document.getElementById('loginEmail').focus(), 50);
+}
 
-  const newSaldo = arr.reduce((a,it)=>{const n=Number(it.nominal)||0;return it.jenis==='masuk'?a+n:a-n;},0);
-  const masuk = jenis === 'masuk';
+function closeModal() {
+  overlay.classList.remove('open');
+}
 
-  // 🔔 NOTIFIKASI KAS - SEPERTI SEBLAK
-  addNotification({
-    type: 'kas',
-    title: masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar',
-    body: `${esc(ket)} · Saldo baru: ${fmtRp(newSaldo)}`,
-    amount: (masuk ? '+' : '-') + fmtRp(nominal),
-    amountColor: masuk ? 'kas-masuk' : 'kas-keluar',
+btnNavLogin.addEventListener('click', openModal);
+mobileBtnLogin.addEventListener('click', openModal);
+heroBtnLogin.addEventListener('click', openModal);
+btnModalClose.addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value.trim();
+  if (!email || !pass) {
+    loginErrTxt.textContent = 'Harap isi email dan password.';
+    loginError.classList.add('show');
+    return;
+  }
+  const btn = document.getElementById('loginSubmit');
+  btn.disabled = true;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+  loginError.classList.remove('show');
+  try {
+    const role = email.toLowerCase().includes('admin') ? 'admin' : 'pengurus';
+    const nama = email.split('@')[0];
+    sessionStorage.setItem('userEmail', email);
+    sessionStorage.setItem('userNama', nama);
+    sessionStorage.setItem('userRole', role);
+    sessionStorage.setItem('userLoggedIn', 'true');
+    closeModal();
+    showDashboard();
+    if (Notification.permission === 'default') {
+      setTimeout(() => {
+        if (confirm('Aktifkan notifikasi untuk menerima update kas & mading?')) {
+          Notification.requestPermission();
+        }
+      }, 500);
+    }
+  } catch(err) {
+    loginErrTxt.textContent = 'Gagal masuk. Coba lagi.';
+    loginError.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = orig;
+  }
+});
+
+// ============================================================
+// DASHBOARD SHOW / HIDE
+// ============================================================
+const heroSection = document.getElementById('hero');
+const madingPubSec = document.getElementById('madingPublik');
+const dashboardSec = document.getElementById('portalDashboard');
+
+function showDashboard() {
+  heroSection.style.display = 'none';
+  madingPubSec.style.display = 'none';
+  dashboardSec.classList.add('open');
+  btnNavLogin.style.display = 'none';
+  btnNavLogout.style.display = 'inline-flex';
+  mobileBtnLogin.style.display = 'none';
+  mobileBtnLogout.style.display = 'flex';
+  mobileBtnLogout.classList.add('show');
+  const nama = sessionStorage.getItem('userNama') || 'Pengguna';
+  const role = sessionStorage.getItem('userRole') || 'anggota';
+  document.getElementById('dashUserInfo').textContent = nama + ' · ' + role;
+  const badge = document.getElementById('dashRoleBadge');
+  badge.textContent = role;
+  badge.className = 'role-badge' + (role === 'admin' ? ' admin' : role === 'pengurus' ? ' pengurus' : '');
+  document.querySelectorAll('.tab-btn.admin-only').forEach(el => {
+    el.classList.toggle('show', role === 'admin');
   });
-});
+  initAbsensi();
+  renderMadingListLocal();
+  renderKasListLocal();
+  refreshRingkasan();
+  renderDropdown();
+}
 
-document.getElementById('btnClearKas')?.addEventListener('click', () => {
-  if (!confirm('Hapus SEMUA riwayat transaksi kas?')) return;
-  saveLS(SK.kas,[]); renderKasList(); refreshRingkasan();
-});
+function hideDashboard() {
+  heroSection.style.display = 'flex';
+  madingPubSec.style.display = 'block';
+  dashboardSec.classList.remove('open');
+  btnNavLogin.style.display = 'inline-flex';
+  btnNavLogout.style.display = 'none';
+  mobileBtnLogin.style.display = 'inline-flex';
+  mobileBtnLogout.style.display = 'none';
+  mobileBtnLogout.classList.remove('show');
+  renderMadingPubLocal();
+}
 
-// ────────────────────────────────────────────────────────
+function handleLogout() {
+  sessionStorage.clear();
+  hideDashboard();
+  hamburger.classList.remove('active');
+  mobileMenu.classList.remove('open');
+}
+
+btnNavLogout.addEventListener('click', handleLogout);
+mobileBtnLogout.addEventListener('click', handleLogout);
+
+if (sessionStorage.getItem('userLoggedIn') === 'true') {
+  showDashboard();
+}
+
+// ============================================================
 // INIT
-// ────────────────────────────────────────────────────────
-renderMadingPub();
+// ============================================================
+renderMadingPubLocal();
+renderMadingListLocal();
+renderKasListLocal();
 refreshRingkasan();
-updateNotifUI();
+renderDropdown();
 
-// Cek status notifikasi saat load
+// Cek status notifikasi
 if (Notification.permission === 'granted') {
   document.getElementById('notifStatus').innerHTML = '✅ Notifikasi aktif — kamu akan menerima update kas &amp; mading secara real-time';
   document.getElementById('notifStatus').style.color = 'var(--c-green)';
@@ -1681,6 +1613,9 @@ if (Notification.permission === 'granted') {
   document.getElementById('notifStatus').innerHTML = '⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.';
   document.getElementById('notifStatus').style.color = 'var(--c-amber)';
 }
+
+console.log("🔥 NOTIFIKASI REALTIME FIRESTORE AKTIF!");
+console.log("📌 Buka 2 tab/device, publish mading atau kas, notifikasi akan muncul di semua perangkat!");
 </script>
 </body>
 </html>
