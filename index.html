@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070a10" />
   
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- META UNTUK iOS / PWA UNIVERSAL                        -->
-  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- META UNTUK iOS / PWA UNIVERSAL -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Adhigana" />
@@ -665,6 +663,20 @@
     @media (max-width: 1024px) { .sponsorship-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 768px) { .sponsorship-grid { grid-template-columns: 1fr; gap: 24px; } .sponsorship-card { padding: 24px 18px; } .support-cta { flex-direction: column; text-align: center; padding: 30px 20px; } .support-cta-buttons { justify-content: center; } .support-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .support-grid { grid-template-columns: 1fr; } .support-cta-buttons { flex-direction: column; } .support-cta-buttons .btn { width: 100%; justify-content: center; } .package-header h3 { font-size: 20px; } .package-price { font-size: 16px; } }
+
+    /* ── ABSENSI STYLE ── */
+    .absensi-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .absensi-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .absensi-container::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.08);
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
@@ -1094,6 +1106,7 @@
         <i class="fa-solid fa-star"></i> Sponsor Silver
       </div>
       <div class="sponsor-grid silver-grid">
+        <!-- 50 Sponsor Silver -->
         <div class="sponsor-card silver"><img src="/indomie.png" alt="Sponsor Silver 1"></div>
         <div class="sponsor-card silver"><img src="asset/sponsor12.png" alt="Sponsor Silver 2"></div>
         <div class="sponsor-card silver"><img src="asset/sponsor13.png" alt="Sponsor Silver 3"></div>
@@ -1565,6 +1578,51 @@ const ALL_ANGGOTA = [
 ];
 
 // ═══════════════════════════════════════════════════════════
+// FUNGSI UTILS
+// ═══════════════════════════════════════════════════════════
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// ═══════════════════════════════════════════════════════════
+// HAMBURGER SIDEBAR - PERBAIKAN
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  var ham = document.getElementById('hamburger');
+  var sb  = document.getElementById('mobileSidebar');
+  var ov  = document.getElementById('sidebarOverlay');
+  var cls = document.getElementById('sidebarClose');
+  
+  if (ham) {
+    ham.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sb.classList.add('open');
+      ov.classList.add('open');
+    });
+  }
+  
+  if (cls) {
+    cls.addEventListener('click', function() {
+      sb.classList.remove('open');
+      ov.classList.remove('open');
+    });
+  }
+  
+  if (ov) {
+    ov.addEventListener('click', function() {
+      sb.classList.remove('open');
+      ov.classList.remove('open');
+    });
+  }
+  
+  // Tutup sidebar saat klik link di dalamnya
+  document.querySelectorAll('.mob-links a, .mob-links button').forEach(function(el) {
+    el.addEventListener('click', function() {
+      sb.classList.remove('open');
+      ov.classList.remove('open');
+    });
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
 // REAL-TIME STATS (Hadir, Mading, Kas)
 // ═══════════════════════════════════════════════════════════
 
@@ -1599,16 +1657,158 @@ db.collection('kas').onSnapshot(snap => {
 });
 
 // ═══════════════════════════════════════════════════════════
+// ABSENSI - PERBAIKAN (Mulai dari Nol)
+// ═══════════════════════════════════════════════════════════
+
+let absDraft = {};
+
+// Inisialisasi absensi
+function initAbsensi() {
+  ALL_ANGGOTA.forEach(function(a) {
+    if (!absDraft[a.uid]) absDraft[a.uid] = 'alfa';
+  });
+  renderAbsensi('');
+}
+
+// Render form absensi
+function renderAbsensi(q) {
+  var container = document.getElementById('absensiList');
+  if (!container) return;
+  
+  var fil = q ? q.toLowerCase() : '';
+  var list = fil ? ALL_ANGGOTA.filter(function(a) {
+    return a.nama.toLowerCase().includes(fil) || a.jabatan.toLowerCase().includes(fil);
+  }) : ALL_ANGGOTA;
+  
+  if (!list.length) {
+    container.innerHTML = '<div style="color:var(--c-muted);font-size:13px;padding:10px;">Tidak ditemukan.</div>';
+    return;
+  }
+  
+  container.innerHTML = '';
+  list.forEach(function(a) {
+    var st = absDraft[a.uid] || 'alfa';
+    var row = document.createElement('div');
+    row.className = 'abs-row';
+    row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--c-border);border-radius:14px;background:rgba(255,255,255,.015);margin-bottom:6px;';
+    row.innerHTML = `
+      <div class="abs-name"><strong>${esc(a.nama)}</strong><small>${esc(a.jabatan)}</small></div>
+      <div class="abs-btns" style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="abs-btn ${st==='hadir'?'sel-hadir':''}" data-uid="${a.uid}" data-s="hadir">Hadir</button>
+        <button class="abs-btn ${st==='izin'?'sel-izin':''}" data-uid="${a.uid}" data-s="izin">Izin</button>
+        <button class="abs-btn ${st==='alfa'?'sel-alfa':''}" data-uid="${a.uid}" data-s="alfa">Alfa</button>
+      </div>
+    `;
+    row.querySelectorAll('.abs-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        absDraft[this.dataset.uid] = this.dataset.s;
+        var searchVal = document.getElementById('absSearch') ? document.getElementById('absSearch').value : '';
+        renderAbsensi(searchVal);
+      });
+    });
+    container.appendChild(row);
+  });
+}
+
+// Event listener absensi
+document.addEventListener('DOMContentLoaded', function() {
+  var searchInput = document.getElementById('absSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      renderAbsensi(e.target.value);
+    });
+  }
+  
+  var btnHadirSemua = document.getElementById('btnHadirSemua');
+  if (btnHadirSemua) {
+    btnHadirSemua.addEventListener('click', function() {
+      ALL_ANGGOTA.forEach(function(a) { absDraft[a.uid] = 'hadir'; });
+      var searchVal = document.getElementById('absSearch') ? document.getElementById('absSearch').value : '';
+      renderAbsensi(searchVal);
+    });
+  }
+  
+  var btnResetAbsensi = document.getElementById('btnResetAbsensi');
+  if (btnResetAbsensi) {
+    btnResetAbsensi.addEventListener('click', function() {
+      ALL_ANGGOTA.forEach(function(a) { absDraft[a.uid] = 'alfa'; });
+      var searchVal = document.getElementById('absSearch') ? document.getElementById('absSearch').value : '';
+      renderAbsensi(searchVal);
+    });
+  }
+  
+  var btnSimpanAbsensi = document.getElementById('btnSimpanAbsensi');
+  if (btnSimpanAbsensi) {
+    btnSimpanAbsensi.addEventListener('click', async function() {
+      var btn = document.getElementById('btnSimpanAbsensi');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+      try {
+        var today = new Date().toISOString().split('T')[0];
+        await db.collection('absensi').add({
+          records: absDraft,
+          tanggal: today,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          dicatat_oleh: 'admin'
+        });
+        var vals = Object.values(absDraft);
+        var h = vals.filter(function(v) { return v === 'hadir'; }).length;
+        var i = vals.filter(function(v) { return v === 'izin'; }).length;
+        var a = vals.filter(function(v) { return v === 'alfa'; }).length;
+        showToast('📋 Absensi Tersimpan! Hadir: '+h+' · Izin: '+i+' · Alfa: '+a, 'success');
+      } catch(err) {
+        showToast('❌ Gagal Simpan: '+err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan ke Firestore';
+      }
+    });
+  }
+  
+  // Inisialisasi absensi
+  initAbsensi();
+});
+
+// ═══════════════════════════════════════════════════════════
+// MADING - TAMPILKAN DI HALAMAN PUBLIK
+// ═══════════════════════════════════════════════════════════
+
+db.collection('mading').orderBy('tanggal','desc').limit(20)
+  .onSnapshot(function(snap) {
+    var container = document.getElementById('madingPubGrid');
+    if (!container) return;
+    
+    if (snap.empty) {
+      container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-newspaper"></i>Belum ada pengumuman.</div>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    snap.forEach(function(doc) {
+      var data = doc.data();
+      var card = document.createElement('div');
+      card.className = 'mading-card';
+      var tanggal = data.tanggal ? data.tanggal.toDate().toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'}) : '-';
+      card.innerHTML = `
+        <h3>${esc(data.judul || '')}</h3>
+        <div class="mdate"><i class="fa-regular fa-calendar"></i> ${tanggal}</div>
+        <p>${esc(data.isi || '')}</p>
+      `;
+      container.appendChild(card);
+    });
+  });
+
+// ═══════════════════════════════════════════════════════════
 // PWA INSTALL - UNIVERSAL (iOS, Android, Desktop)
 // ═══════════════════════════════════════════════════════════
 
 // ── DETEKSI iOS ──
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
 
 // ── BEFOREINSTALLPROMPT (Android/Chrome/Edge) ──
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
   document.getElementById('pwaInstallTop').style.display = 'inline-flex';
@@ -1620,7 +1820,7 @@ function installPWA() {
   if (deferredPrompt) {
     // Android/Chrome
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
+    deferredPrompt.userChoice.then(function() {
       deferredPrompt = null;
       document.getElementById('pwaInstallTop').style.display = 'none';
       document.getElementById('pwaInstallMobile').style.display = 'none';
@@ -1640,18 +1840,17 @@ document.getElementById('pwaBtnInstall').addEventListener('click', installPWA);
 // ── iOS Standalone Detection ──
 if (window.navigator.standalone === true) {
   document.body.classList.add('ios-standalone');
-  console.log('📱 iOS Standalone mode active');
 }
 
 // ── App Installed Event ──
-window.addEventListener('appinstalled', () => {
+window.addEventListener('appinstalled', function() {
   document.getElementById('pwaInstallTop').style.display = 'none';
   document.getElementById('pwaInstallMobile').style.display = 'none';
   document.getElementById('pwaBanner').classList.remove('show');
 });
 
 // ── PWA Banner Dismiss ──
-document.getElementById('pwaBtnDismiss').addEventListener('click', () => {
+document.getElementById('pwaBtnDismiss').addEventListener('click', function() {
   localStorage.setItem('pwa_dismissed','1');
   document.getElementById('pwaBanner').classList.remove('show');
 });
@@ -1662,34 +1861,10 @@ document.getElementById('pwaBtnDismiss').addEventListener('click', () => {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-      .then(reg => console.log('✅ SW registered:', reg.scope))
-      .catch(err => console.warn('⚠️ SW error:', err));
+      .then(function(reg) { console.log('✅ SW registered:', reg.scope); })
+      .catch(function(err) { console.warn('⚠️ SW error:', err); });
   });
 }
-
-// ═══════════════════════════════════════════════════════════
-// HAMBURGER & SIDEBAR
-// ═══════════════════════════════════════════════════════════
-(function() {
-  var ham = document.getElementById('hamburger');
-  var sb  = document.getElementById('mobileSidebar');
-  var ov  = document.getElementById('sidebarOverlay');
-  var cls = document.getElementById('sidebarClose');
-  function open()  { sb.classList.add('open'); ov.classList.add('open'); }
-  function close() { sb.classList.remove('open'); ov.classList.remove('open'); }
-  if (ham) ham.addEventListener('click', open);
-  if (cls) cls.addEventListener('click', close);
-  if (ov)  ov.addEventListener('click', close);
-  document.querySelectorAll('.mob-links a, .mob-links button').forEach(function(el) {
-    el.addEventListener('click', close);
-  });
-})();
-
-// ── MARQUEE DUPLICATE ──
-['mq1','mq2','mq3'].forEach(function(id) {
-  var el = document.getElementById(id);
-  if (el) el.innerHTML += el.innerHTML;
-});
 
 // ── GALERI MODAL ──
 (function() {
@@ -1702,6 +1877,12 @@ if ('serviceWorker' in navigator) {
   if (cls)   cls.addEventListener('click', function() { modal.classList.remove('open'); });
   if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
 })();
+
+// ── MARQUEE DUPLICATE ──
+['mq1','mq2','mq3'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) el.innerHTML += el.innerHTML;
+});
 
 // ── TOAST ──
 function showToast(msg, type) {
