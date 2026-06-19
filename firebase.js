@@ -48,7 +48,6 @@ console.log("🔥 Firebase Connected - Portal Adhigana Prapti");
 // FUNGSI UNTUK MADING
 // ============================================================
 
-// Kirim Mading ke Firestore
 async function sendMading(judul, isi) {
   try {
     const docRef = await addDoc(collection(db, "mading"), {
@@ -63,14 +62,9 @@ async function sendMading(judul, isi) {
   }
 }
 
-// Dapatkan semua Mading
 async function getMading() {
   try {
-    const q = query(
-      collection(db, "mading"),
-      orderBy("tanggal", "desc"),
-      limit(20)
-    );
+    const q = query(collection(db, "mading"), orderBy("tanggal", "desc"), limit(20));
     const snapshot = await getDocs(q);
     const items = [];
     snapshot.forEach((doc) => {
@@ -87,15 +81,9 @@ async function getMading() {
   }
 }
 
-// Dengarkan Mading real-time
 function listenMading(callback) {
   try {
-    const q = query(
-      collection(db, "mading"),
-      orderBy("tanggal", "desc"),
-      limit(20)
-    );
-    
+    const q = query(collection(db, "mading"), orderBy("tanggal", "desc"), limit(20));
     return onSnapshot(q, (snapshot) => {
       const items = [];
       snapshot.forEach((doc) => {
@@ -114,7 +102,6 @@ function listenMading(callback) {
   }
 }
 
-// Hapus Mading
 async function deleteMading(madingId) {
   try {
     await deleteDoc(doc(db, "mading", madingId));
@@ -128,7 +115,6 @@ async function deleteMading(madingId) {
 // FUNGSI UNTUK KAS
 // ============================================================
 
-// Kirim transaksi Kas ke Firestore
 async function sendKas(jenis, nominal, keterangan) {
   try {
     const docRef = await addDoc(collection(db, "kas"), {
@@ -144,14 +130,9 @@ async function sendKas(jenis, nominal, keterangan) {
   }
 }
 
-// Dapatkan semua transaksi Kas
 async function getKas() {
   try {
-    const q = query(
-      collection(db, "kas"),
-      orderBy("tanggal", "desc"),
-      limit(50)
-    );
+    const q = query(collection(db, "kas"), orderBy("tanggal", "desc"), limit(50));
     const snapshot = await getDocs(q);
     const items = [];
     snapshot.forEach((doc) => {
@@ -168,15 +149,9 @@ async function getKas() {
   }
 }
 
-// Dengarkan Kas real-time
 function listenKas(callback) {
   try {
-    const q = query(
-      collection(db, "kas"),
-      orderBy("tanggal", "desc"),
-      limit(50)
-    );
-    
+    const q = query(collection(db, "kas"), orderBy("tanggal", "desc"), limit(50));
     return onSnapshot(q, (snapshot) => {
       const items = [];
       snapshot.forEach((doc) => {
@@ -195,7 +170,6 @@ function listenKas(callback) {
   }
 }
 
-// Hapus transaksi Kas
 async function deleteKas(kasId) {
   try {
     await deleteDoc(doc(db, "kas", kasId));
@@ -209,7 +183,6 @@ async function deleteKas(kasId) {
 // FUNGSI UNTUK NOTIFIKASI
 // ============================================================
 
-// Kirim notifikasi ke Firestore
 async function sendNotification(title, body, type = "info", data = {}) {
   try {
     const docRef = await addDoc(collection(db, "notifications"), {
@@ -228,15 +201,9 @@ async function sendNotification(title, body, type = "info", data = {}) {
   }
 }
 
-// Dengarkan notifikasi real-time
 function listenNotifications(callback) {
   try {
-    const q = query(
-      collection(db, "notifications"),
-      orderBy("timestamp", "desc"),
-      limit(20)
-    );
-    
+    const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"), limit(20));
     return onSnapshot(q, (snapshot) => {
       const items = [];
       snapshot.forEach((doc) => {
@@ -259,7 +226,6 @@ function listenNotifications(callback) {
 // FUNGSI UNTUK ABSENSI
 // ============================================================
 
-// Simpan absensi ke Firestore
 async function saveAbsensi(records) {
   try {
     const data = {
@@ -274,7 +240,6 @@ async function saveAbsensi(records) {
   }
 }
 
-// Dapatkan absensi hari ini
 async function getAbsensiToday() {
   try {
     const today = new Date().toISOString().split('T')[0];
@@ -300,30 +265,19 @@ async function getAbsensiToday() {
 // ============================================================
 
 export {
-  // Firestore instance
   db,
-  
-  // Mading
   sendMading,
   getMading,
   listenMading,
   deleteMading,
-  
-  // Kas
   sendKas,
   getKas,
   listenKas,
   deleteKas,
-  
-  // Notifikasi
   sendNotification,
   listenNotifications,
-  
-  // Absensi
   saveAbsensi,
   getAbsensiToday,
-  
-  // Utils
   serverTimestamp,
   collection,
   doc,
