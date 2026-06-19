@@ -88,15 +88,21 @@
     }
     .nav-links a:hover { color: var(--text); background: rgba(255,255,255,.04); }
     .nav-portal-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 8px 17px; border-radius: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 17px;
+      border-radius: 11px;
       background: linear-gradient(135deg, var(--cyan), var(--cyan2));
-      color: #05151a; font-weight: 700; font-size: 13px;
+      color: #05151a;
+      font-weight: 700;
+      font-size: 13px;
       margin-left: 8px;
       transition: opacity .2s, transform .15s;
       border: none;
       cursor: pointer;
       font-family: inherit;
+      text-decoration: none;
     }
     .nav-portal-btn:hover { opacity: .88; transform: scale(1.02); }
     .pwa-install-btn {
@@ -145,13 +151,21 @@
     }
     .mob-links a:hover { background: rgba(110,231,247,.08); color: var(--cyan); border-color: rgba(110,231,247,.15); }
     .mob-portal {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 14px; border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 14px;
       background: linear-gradient(135deg, var(--cyan), var(--cyan2));
-      color: #05151a; font-weight: 700; font-size: 14px;
+      color: #05151a;
+      font-weight: 700;
+      font-size: 14px;
       border: none;
       cursor: pointer;
       font-family: inherit;
+      width: 100%;
+      text-decoration: none;
     }
     .sidebar-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.65);
@@ -702,9 +716,9 @@
       <a href="#galeri">Galeri</a>
       <a href="#berita">Berita</a>
       <a href="#kontak">Kontak</a>
-      <a href="/Login.html" class="mob-portal" id="mobileBtnLogin">
-      <i class="fa-solid fa-right-to-bracket"></i> Masuk Portal
-    </a>
+      <a href="/Login.html" class="nav-portal-btn" id="btnNavLogin">
+        <i class="fa-solid fa-right-to-bracket"></i> Masuk Portal
+      </a>
       <button id="pwaInstallTop" class="pwa-install-btn" type="button"><i class="fa-solid fa-download"></i> Install App</button>
     </div>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
@@ -1633,28 +1647,28 @@ document.addEventListener('DOMContentLoaded', function() {
 // ── HADIR (Absensi Hari Ini) ──
 const today = new Date().toISOString().split('T')[0];
 db.collection('absensi').where('tanggal','==',today).orderBy('timestamp','desc').limit(1)
-  .onSnapshot(snap => {
-    let hadir = 0;
-    snap.forEach(doc => {
-      const data = doc.data();
+  .onSnapshot(function(snap) {
+    var hadir = 0;
+    snap.forEach(function(doc) {
+      var data = doc.data();
       if (data.records) {
-        hadir = Object.values(data.records).filter(v => v === 'hadir').length;
+        hadir = Object.values(data.records).filter(function(v) { return v === 'hadir'; }).length;
       }
     });
     document.getElementById('statHadir').textContent = hadir;
   });
 
-// ── MADING ──
-db.collection('mading').onSnapshot(snap => {
+// ── MADING ── (Mulai dari 0)
+db.collection('mading').onSnapshot(function(snap) {
   document.getElementById('statMading').textContent = snap.size;
 });
 
 // ── KAS ──
-db.collection('kas').onSnapshot(snap => {
-  let saldo = 0;
-  snap.forEach(doc => {
-    const data = doc.data();
-    const n = Number(data.nominal) || 0;
+db.collection('kas').onSnapshot(function(snap) {
+  var saldo = 0;
+  snap.forEach(function(doc) {
+    var data = doc.data();
+    var n = Number(data.nominal) || 0;
     saldo += data.jenis === 'masuk' ? n : -n;
   });
   document.getElementById('statKas').textContent = 'Rp ' + saldo.toLocaleString('id-ID');
@@ -1664,7 +1678,7 @@ db.collection('kas').onSnapshot(snap => {
 // ABSENSI - PERBAIKAN (Mulai dari Nol)
 // ═══════════════════════════════════════════════════════════
 
-let absDraft = {};
+var absDraft = {};
 
 // Inisialisasi absensi
 function initAbsensi() {
@@ -1774,7 +1788,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ═══════════════════════════════════════════════════════════
-// MADING - TAMPILKAN DI HALAMAN PUBLIK
+// MADING - TAMPILKAN DI HALAMAN PUBLIK (Mulai dari 0)
 // ═══════════════════════════════════════════════════════════
 
 db.collection('mading').orderBy('tanggal','desc').limit(20)
