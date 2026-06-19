@@ -1,167 +1,114 @@
 // ============================================================
-// SERVICE WORKER — ADHIGANA PRAPTI
+// SERVICE WORKER - ADHIGANA PRAPTI
 // ============================================================
 
-const VERSION = "1.0.1";
-const CACHE_NAME = `adhigana-cache-v${VERSION}`;
-
-// ============================================================
-// FILE YANG DI-CACHE (minimal untuk offline)
-// ============================================================
-const FILES = [
-  "./",
-  "./index.html",
-  "./Login.html",
-  "./manifest.json",
-  "./style.css",
-  "./service-worker.js",
-  "./firebase.js",
-  "./asset/Adhigana prapti.png",
+const CACHE_NAME = 'adhigana-v1';
+const ASSETS = [
+  '/',
+  '/index.html',
+  '/firebase.js',
+  '/manifest.json',
+  '/asset/Adhigana prapti.png'
 ];
 
 // ============================================================
-// INSTALL — simpan file ke cache
+// INSTALL - CACHE ASSETS
 // ============================================================
-self.addEventListener("install", (event) => {
-  console.log("[SW] Installing...");
-  self.skipWaiting();
-
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log("[SW] Caching files...");
-        return cache.addAll(FILES);
+        console.log('✅ Service Worker: Caching assets');
+        return cache.addAll(ASSETS);
       })
-      .then(() => {
-        console.log("[SW] All files cached!");
-      })
-      .catch((err) => {
-        console.error("[SW] Cache failed:", err);
-      })
+      .then(() => self.skipWaiting())
   );
 });
 
 // ============================================================
-// ACTIVATE — bersihkan cache lama
+// ACTIVATE - CLEAN OLD CACHES
 // ============================================================
-self.addEventListener("activate", (event) => {
-  console.log("[SW] Activating...");
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => {
-            console.log("[SW] Deleting old cache:", key);
-            return caches.delete(key);
-          })
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            console.log('🗑️ Service Worker: Removing old cache', cache);
+            return caches.delete(cache);
+          }
+        })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  return self.clients.claim();
 });
 
 // ============================================================
-// FETCH — Network First, fallback ke cache
+// FETCH - SERVE FROM CACHE OR NETWORK
 // ============================================================
-self.addEventListener("fetch", (event) => {
-  const request = event.request;
-
+self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
-  if (request.method !== "GET") return;
-
-  // Skip chrome-extension, blob, data, etc.
-  if (!request.url.startsWith("http")) return;
-
-  // Skip Firebase endpoints (biar selalu fresh)
-  if (request.url.includes("firebase") || 
-      request.url.includes("googleapis") ||
-      request.url.includes("gstatic.com")) {
+  if (event.request.method !== 'GET') {
     return;
   }
 
   event.respondWith(
-    (async () => {
-      const cache = await caches.open(CACHE_NAME);
-
-      try {
-        // Try network first
-        console.log("[SW] Fetching:", request.url);
-        const response = await fetch(request);
-
-        // Cache successful responses
-        if (response && response.status === 200) {
-          const cloned = response.clone();
-          cache.put(request, cloned).catch(() => {});
-          console.log("[SW] Cached:", request.url);
-        }
-
-        return response;
-      } catch (error) {
-        // Network failed — try cache
-        console.log("[SW] Network failed, trying cache:", request.url);
-        const cached = await cache.match(request);
-
+    caches.match(event.request)
+      .then((cached) => {
         if (cached) {
-          console.log("[SW] Serving from cache:", request.url);
           return cached;
         }
-
-        // If request is HTML and not in cache, return index.html
-        if (request.headers.get("accept")?.includes("text/html")) {
-          console.log("[SW] Serving fallback index.html");
-          return cache.match("/index.html") || cache.match("./index.html");
-        }
-
-        // If request is image and not in cache, return placeholder
-        if (request.url.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i)) {
-          console.log("[SW] Serving fallback image");
-          return new Response(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#1a1e28" width="200" height="200"/><text x="50%" y="50%" text-anchor="middle" fill="#8899aa" font-size="16" dy=".3em">🔵</text></svg>',
-            { headers: { "Content-Type": "image/svg+xml" } }
-          );
-        }
-
-        // Jika semua gagal, return error
-        return new Response("Offline - content unavailable", { 
-          status: 503, 
-          statusText: "Service Unavailable" 
-        });
-      }
-    })()
+        return fetch(event.request)
+          .then((response) => {
+            // Cache new responses
+            if (response && response.status === 200) {
+              const cloned = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, cloned);
+              });
+            }
+            return response;
+          })
+          .catch(() => {
+            // Fallback if offline
+            return new Response('Offline - Silakan coba lagi nanti', {
+              status: 503,
+              statusText: 'Service Unavailable'
+            });
+          });
+      })
   );
 });
 
 // ============================================================
-// PUSH NOTIFICATION (untuk FCM)
+// PUSH NOTIFICATION - 🔥 INI PENTING UNTUK NOTIFIKASI!
 // ============================================================
-self.addEventListener("push", function(event) {
-  console.log("[SW] Push notification received", event);
+self.addEventListener('push', (event) => {
+  console.log('📨 Service Worker: Push event received', event);
 
   let data = {
-    title: "ADHIGANA PRAPTI",
-    body: "Ada pengumuman baru!",
-    icon: "./asset/Adhigana prapti.png",
-    badge: "./asset/Adhigana prapti.png",
-    tag: "mading-update",
-    data: {
-      url: "./Login.html"
-    }
+    title: 'ADHIGANA PRAPTI',
+    body: 'Ada notifikasi baru!',
+    icon: '/asset/Adhigana prapti.png',
+    badge: '/asset/Adhigana prapti.png',
+    vibrate: [200, 100, 200],
+    requireInteraction: true,
+    tag: 'adhigana-notif'
   };
 
   if (event.data) {
     try {
       const payload = event.data.json();
-      data = {
-        title: payload.notification?.title || payload.title || data.title,
-        body: payload.notification?.body || payload.body || data.body,
-        icon: payload.notification?.icon || payload.icon || data.icon,
-        badge: payload.notification?.badge || payload.badge || data.badge,
-        tag: payload.notification?.tag || payload.tag || data.tag,
-        data: payload.data || data.data,
-      };
+      data.title = payload.title || data.title;
+      data.body = payload.body || data.body;
+      data.tag = payload.tag || data.tag;
+      data.url = payload.url || '/';
+      data.icon = payload.icon || data.icon;
+      data.badge = payload.badge || data.badge;
+      data.vibrate = payload.vibrate || data.vibrate;
+      data.requireInteraction = payload.requireInteraction !== undefined ? payload.requireInteraction : data.requireInteraction;
     } catch (e) {
-      console.log("[SW] Push payload not JSON, using text:", event.data.text());
+      // Jika bukan JSON, gunakan teks biasa
       data.body = event.data.text() || data.body;
     }
   }
@@ -171,73 +118,55 @@ self.addEventListener("push", function(event) {
       body: data.body,
       icon: data.icon,
       badge: data.badge,
+      vibrate: data.vibrate,
+      requireInteraction: data.requireInteraction,
       tag: data.tag,
-      renotify: true,
-      vibrate: [200, 100, 200],
-      data: data.data,
-      actions: [
-        {
-          action: "open",
-          title: "Buka Aplikasi"
-        }
-      ]
+      data: {
+        url: data.url,
+        timestamp: Date.now()
+      }
     })
   );
 });
 
 // ============================================================
-// NOTIFICATION CLICK — navigasi ke halaman
+// NOTIFICATION CLICK
 // ============================================================
-self.addEventListener("notificationclick", function(event) {
-  console.log("[SW] Notification clicked", event);
+self.addEventListener('notificationclick', (event) => {
+  console.log('🔔 Service Worker: Notification clicked', event);
 
   event.notification.close();
 
-  const url = event.notification.data?.url || "./Login.html";
-  const action = event.action;
+  const url = event.notification.data?.url || '/';
 
   event.waitUntil(
-    (async () => {
-      const clients = await self.clients.matchAll({
-        type: "window",
-        includeUncontrolled: true
-      });
-
-      // Cek apakah sudah ada tab yang terbuka
-      for (const client of clients) {
-        if (client.url === url && "focus" in client) {
-          await client.focus();
-          return;
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Cek apakah ada tab yang sudah terbuka
+        for (const client of clientList) {
+          if (client.url === url && 'focus' in client) {
+            return client.focus();
+          }
         }
-      }
-
-      // Buka tab baru
-      if (self.clients.openWindow) {
-        await self.clients.openWindow(url);
-      }
-    })()
+        // Jika tidak ada, buka tab baru
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
   );
 });
 
 // ============================================================
-// MESSAGE — untuk komunikasi dari halaman utama
+// MESSAGE - HANDLE MESSAGES FROM CLIENT
 // ============================================================
-self.addEventListener("message", (event) => {
-  console.log("[SW] Message received:", event.data);
-
-  if (event.data?.type === "SKIP_WAITING") {
+self.addEventListener('message', (event) => {
+  console.log('📨 Service Worker: Message received', event.data);
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-
-  if (event.data?.type === "CLEAR_CACHE") {
-    caches.delete(CACHE_NAME).then(() => {
-      console.log("[SW] Cache cleared");
-      event.ports[0]?.postMessage({ success: true });
-    });
+  
+  if (event.data && event.data.type === 'CHECK_READY') {
+    event.ports[0].postMessage({ status: 'READY' });
   }
 });
-
-// ============================================================
-// LOG - Service Worker siap
-// ============================================================
-console.log(`[SW] Service Worker v${VERSION} loaded`);
