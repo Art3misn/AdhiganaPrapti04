@@ -366,6 +366,23 @@
       .ringkas-detail .detail-box{max-height:140px}
     }
     @media(max-width:480px){.notif-dropdown{width:calc(100vw - 20px);right:-5px;max-height:380px}.toast{width:100%}}
+    /* Toggle Password */
+#togglePasswordBtn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--c-muted) !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  padding: 5px !important;
+  transition: color 0.2s !important;
+  z-index: 2 !important;
+}
+#togglePasswordBtn:hover {
+  color: var(--c-cyan) !important;
+}
+#togglePasswordBtn.active {
+  color: var(--c-cyan) !important;
+}
   </style>
 </head>
 <body>
@@ -469,12 +486,15 @@
         </div>
       </div>
       <div class="form-field">
-        <label>Kata Sandi</label>
-        <div class="input-wrap">
-          <i class="fa-regular fa-lock"></i>
-          <input class="field-inp" id="loginPassword" type="password" placeholder="••••••••"/>
-        </div>
-      </div>
+  <label>Kata Sandi</label>
+  <div class="input-wrap" style="position:relative;">
+    <i class="fa-regular fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--c-muted);z-index:2;"></i>
+    <input class="field-inp" id="loginPassword" type="password" placeholder="••••••••" style="padding-right:50px;"/>
+    <button type="button" id="togglePasswordBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--c-muted);cursor:pointer;font-size:18px;padding:5px;z-index:2;transition:color 0.2s;">
+      <i class="fa-regular fa-eye" id="eyeIcon"></i>
+    </button>
+  </div>
+</div>
       <button class="login-submit" id="loginSubmit">
         <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Portal
       </button>
@@ -1529,6 +1549,90 @@ document.getElementById('pwaBtnDismiss')?.addEventListener('click',()=>{ localSt
 renderDropdown();
 updateBadge();
 console.log('🔥 Portal Adhigana Prapti v3 — FCM Push + Firebase Auth + Firestore siap!');
+  // ═══════════════════════════════════════════════════════════
+// TOGGLE PASSWORD - Lihat Password Sebentar
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  const passwordInput = document.getElementById('loginPassword');
+  const eyeIcon = document.getElementById('eyeIcon');
+  let timeoutId = null;
+
+  if (!toggleBtn || !passwordInput || !eyeIcon) return;
+
+  // Fungsi untuk toggle password
+  function togglePasswordVisibility(show) {
+    if (show) {
+      passwordInput.type = 'text';
+      eyeIcon.className = 'fa-regular fa-eye-slash';
+      toggleBtn.classList.add('active');
+      
+      // Auto-hide setelah 3 detik
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(function() {
+        passwordInput.type = 'password';
+        eyeIcon.className = 'fa-regular fa-eye';
+        toggleBtn.classList.remove('active');
+        timeoutId = null;
+      }, 3000); // 3 detik
+    } else {
+      passwordInput.type = 'password';
+      eyeIcon.className = 'fa-regular fa-eye';
+      toggleBtn.classList.remove('active');
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    }
+  }
+
+  // Event: Klik & Tahan (mousedown)
+  toggleBtn.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    togglePasswordVisibility(true);
+  });
+
+  // Event: Lepas mouse (mouseup)
+  toggleBtn.addEventListener('mouseup', function(e) {
+    e.preventDefault();
+    // Biarkan timeout berjalan, tidak langsung sembunyikan
+  });
+
+  // Event: Mouse keluar dari tombol
+  toggleBtn.addEventListener('mouseleave', function() {
+    // Jika password sedang terlihat, sembunyikan
+    if (passwordInput.type === 'text') {
+      togglePasswordVisibility(false);
+    }
+  });
+
+  // Untuk touch device
+  toggleBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    togglePasswordVisibility(true);
+  });
+
+  toggleBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    // Biarkan timeout berjalan
+  });
+
+  // Reset saat modal ditutup
+  const loginOverlay = document.getElementById('loginOverlay');
+  if (loginOverlay) {
+    const observer = new MutationObserver(function() {
+      if (!loginOverlay.classList.contains('open')) {
+        // Modal ditutup, reset password
+        if (passwordInput.type === 'text') {
+          togglePasswordVisibility(false);
+        }
+      }
+    });
+    observer.observe(loginOverlay, { attributes: true, attributeFilter: ['class'] });
+  }
+});
 </script>
 </body>
 </html>
