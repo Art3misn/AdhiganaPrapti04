@@ -366,22 +366,77 @@
       .ringkas-detail .detail-box{max-height:140px}
     }
     @media(max-width:480px){.notif-dropdown{width:calc(100vw - 20px);right:-5px;max-height:380px}.toast{width:100%}}
-    /* Toggle Password */
+    /* ========================================
+   TOGGLE PASSWORD - TOMBOL LIHAT PASSWORD
+   ======================================== */
+
+/* Container input password */
+.input-wrap {
+  position: relative;
+}
+
+/* Input password dengan padding kanan untuk tombol */
+.field-inp#loginPassword {
+  padding-right: 50px !important;
+}
+
+/* Tombol toggle password - lebih rapi dengan border */
 #togglePasswordBtn {
-  background: transparent !important;
-  border: none !important;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
   color: var(--c-muted) !important;
   cursor: pointer !important;
-  font-size: 18px !important;
-  padding: 5px !important;
-  transition: color 0.2s !important;
+  font-size: 17px !important;
+  padding: 6px 10px !important;
+  transition: all 0.2s ease !important;
   z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
 }
+
+/* Hover effect */
 #togglePasswordBtn:hover {
+  background: rgba(110, 231, 247, 0.1) !important;
+  border-color: rgba(110, 231, 247, 0.2) !important;
   color: var(--c-cyan) !important;
 }
+
+/* Saat password terlihat (aktif) */
 #togglePasswordBtn.active {
+  background: rgba(110, 231, 247, 0.12) !important;
+  border-color: rgba(110, 231, 247, 0.3) !important;
   color: var(--c-cyan) !important;
+}
+
+/* Icon di dalam tombol */
+#togglePasswordBtn i {
+  font-size: 17px !important;
+  pointer-events: none;
+}
+
+/* Icon lock di kiri input */
+.input-wrap .fa-lock {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--c-muted);
+  font-size: 15px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Input dengan icon kiri */
+.field-inp#loginPassword {
+  padding-left: 42px !important;
+  padding-right: 55px !important;
 }
   </style>
 </head>
