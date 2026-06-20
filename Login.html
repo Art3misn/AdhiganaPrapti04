@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#070a10" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Adhigana" />
-  <link rel="manifest" href="manifest.json" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#070a10"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Adhigana"/>
+  <link rel="manifest" href="manifest.json"/>
   <title>ADHIGANA PRAPTI — Portal & Mading</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{
@@ -269,58 +269,6 @@
     .stat-val{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;line-height:1.1}
     .stat-sub{font-size:11px;color:var(--c-muted);margin-top:2px}
 
-    /* RINGKASAN DETAIL ABSENSI - TAMBAHAN BARU */
-    .ringkas-detail {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 12px;
-    }
-    .ringkas-detail .detail-box {
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.02);
-      border: 1px solid var(--c-border);
-      max-height: 180px;
-      overflow-y: auto;
-    }
-    .ringkas-detail .detail-box .detail-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-    .ringkas-detail .detail-box .detail-title.hadir { color: var(--c-cyan); }
-    .ringkas-detail .detail-box .detail-title.izin { color: var(--c-amber); }
-    .ringkas-detail .detail-box .detail-title.alfa { color: var(--c-red); }
-    .ringkas-detail .detail-box .detail-name {
-      font-size: 11px;
-      color: var(--c-dim);
-      padding: 3px 0;
-      border-bottom: 1px solid rgba(255,255,255,.02);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .ringkas-detail .detail-box .detail-name .dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .ringkas-detail .detail-box .detail-name .dot.hadir { background: var(--c-cyan); }
-    .ringkas-detail .detail-box .detail-name .dot.izin { background: var(--c-amber); }
-    .ringkas-detail .detail-box .detail-name .dot.alfa { background: var(--c-red); }
-    .ringkas-detail .detail-box .empty-detail {
-      font-size: 11px;
-      color: var(--c-muted);
-      text-align: center;
-      padding: 12px 0;
-    }
-
     /* ABSENSI */
     .abs-search{width:100%;padding:10px 14px;border-radius:13px;border:1px solid var(--c-border);background:rgba(255,255,255,.04);color:var(--c-text);font-size:13px;outline:none;font-family:inherit;margin-bottom:12px;transition:border-color .2s}
     .abs-search:focus{border-color:rgba(110,231,247,.3)}
@@ -362,92 +310,8 @@
       .login-panel-right{padding:40px 28px}
       .notif-dropdown{width:calc(100vw - 32px);right:-10px}
       .toast-container{bottom:16px;right:12px;left:12px;max-width:none}.pwa-banner{flex-wrap:wrap}
-      .ringkas-detail{grid-template-columns:1fr}
-      .ringkas-detail .detail-box{max-height:140px}
     }
     @media(max-width:480px){.notif-dropdown{width:calc(100vw - 20px);right:-5px;max-height:380px}.toast{width:100%}}
-    /* ========================================
-   PERBAIKAN TOGGLE PASSWORD - ADA KOTAKNYA
-   ======================================== */
-
-/* Container input password */
-.input-wrap {
-  position: relative;
-}
-
-/* Input password - beri ruang untuk tombol */
-.field-inp#loginPassword {
-  padding-right: 55px !important;
-  padding-left: 42px !important;
-}
-
-/* Icon lock di kiri */
-.input-wrap .fa-lock {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--c-muted);
-  font-size: 15px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* ===== TOMBOL TOGGLE PASSWORD - DENGAN KOTAK/BORDER ===== */
-#togglePasswordBtn {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  
-  /* KOTAK/BORDER */
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 8px !important;
-  
-  /* Ukuran */
-  width: 36px;
-  height: 36px;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  
-  /* Warna */
-  color: var(--c-muted) !important;
-  font-size: 16px !important;
-  
-  /* Kursor */
-  cursor: pointer !important;
-  
-  /* Transisi */
-  transition: all 0.2s ease !important;
-  
-  /* Reset */
-  padding: 0 !important;
-  z-index: 2 !important;
-  outline: none !important;
-}
-
-/* HOVER - saat mouse di atas tombol */
-#togglePasswordBtn:hover {
-  background: rgba(110, 231, 247, 0.1) !important;
-  border-color: rgba(110, 231, 247, 0.3) !important;
-  color: var(--c-cyan) !important;
-}
-
-/* AKTIF - saat password terlihat */
-#togglePasswordBtn.active {
-  background: rgba(110, 231, 247, 0.12) !important;
-  border-color: rgba(110, 231, 247, 0.4) !important;
-  color: var(--c-cyan) !important;
-}
-
-/* Icon di dalam tombol */
-#togglePasswordBtn i {
-  font-size: 16px !important;
-  pointer-events: none;
-  line-height: 1;
-}
   </style>
 </head>
 <body>
@@ -551,15 +415,12 @@
         </div>
       </div>
       <div class="form-field">
-  <label>Kata Sandi</label>
-  <div class="input-wrap" style="position:relative;">
-    <i class="fa-regular fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--c-muted);z-index:2;"></i>
-    <input class="field-inp" id="loginPassword" type="password" placeholder="••••••••" style="padding-right:50px;"/>
-    <button type="button" id="togglePasswordBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--c-muted);cursor:pointer;font-size:18px;padding:5px;z-index:2;transition:color 0.2s;">
-      <i class="fa-regular fa-eye" id="eyeIcon"></i>
-    </button>
-  </div>
-</div>
+        <label>Kata Sandi</label>
+        <div class="input-wrap">
+          <i class="fa-regular fa-lock"></i>
+          <input class="field-inp" id="loginPassword" type="password" placeholder="••••••••"/>
+        </div>
+      </div>
       <button class="login-submit" id="loginSubmit">
         <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Portal
       </button>
@@ -666,10 +527,8 @@
         </div>
       </div>
       <div class="card" style="margin-top:16px">
-        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px"><i class="fa-solid fa-chart-bar" style="color:var(--c-cyan);margin-right:7px"></i>Rekap Absensi Hari Ini</h4>
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px"><i class="fa-solid fa-chart-bar" style="color:var(--c-cyan);margin-right:7px"></i>Rekap Absensi Terakhir</h4>
         <div id="ringkasAbsensi" style="color:var(--c-muted);font-size:13px">Memuat data...</div>
-        <!-- DETAIL ABSENSI - TAMBAHAN BARU -->
-        <div id="ringkasDetailAbsensi" class="ringkas-detail" style="display:none;"></div>
       </div>
     </div>
 
@@ -905,9 +764,21 @@ const fmtTime = () => new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minu
 // ═══════════════════════════════════════════════════════════
 // SUARA
 // ═══════════════════════════════════════════════════════════
+// AudioContext dibuat sekali setelah user gesture, lalu di-reuse
+let _audioCtx = null;
+function getAudioCtx() {
+  if(!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+// Unlock AudioContext saat user pertama kali interaksi
+document.addEventListener('click', ()=>{ try{ getAudioCtx(); }catch{} }, { once:true });
+document.addEventListener('touchstart', ()=>{ try{ getAudioCtx(); }catch{} }, { once:true });
+
 function playSound(type='default') {
   try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const ctx = getAudioCtx();
+    if(!ctx) return;
     const pats = {
       kas:    [{f:880,d:.08,t:0},{f:1100,d:.08,t:.1},{f:1320,d:.15,t:.2}],
       mading: [{f:660,d:.1,t:0},{f:880,d:.1,t:.12},{f:1100,d:.15,t:.24}],
@@ -927,7 +798,7 @@ function playSound(type='default') {
       g.gain.exponentialRampToValueAtTime(0.001,st+d);
       osc.start(st); osc.stop(st+d+.05);
     });
-  } catch{ if(navigator.vibrate) navigator.vibrate([150,50,150]); }
+  } catch(e){ console.warn('Sound error:',e); if(navigator.vibrate) navigator.vibrate([150,50,150]); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -959,15 +830,14 @@ function showToast({type='info',title='',desc='',amount='',amountColor=''}) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// NOTIF DROPDOWN - DI SINI SEMUA NOTIF DISIMPAN
+// NOTIF DROPDOWN
 // ═══════════════════════════════════════════════════════════
 function addToDropdown(notif) {
-  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-  // Cek duplicate berdasarkan id
+  const saved = JSON.parse(localStorage.getItem('ap_notifs_v3')||'[]');
   if(!saved.some(n=>n.id===notif.id)){
     saved.unshift(notif);
-    if(saved.length>100) saved.pop();
-    localStorage.setItem('ap_notifs_v4',JSON.stringify(saved));
+    if(saved.length>50) saved.pop();
+    localStorage.setItem('ap_notifs_v3',JSON.stringify(saved));
   }
   renderDropdown();
 }
@@ -975,15 +845,12 @@ function addToDropdown(notif) {
 function renderDropdown() {
   const el = document.getElementById('notifList');
   if(!el) return;
-  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-  if(!saved.length){ 
-    el.innerHTML='<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>'; 
-    return; 
-  }
+  const saved = JSON.parse(localStorage.getItem('ap_notifs_v3')||'[]');
+  if(!saved.length){ el.innerHTML='<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>'; return; }
   const ICON={kas:'fa-coins',mading:'fa-newspaper',absensi:'fa-clipboard-check',info:'fa-circle-info'};
   const LBL={kas:'Kas',mading:'Mading',absensi:'Absensi',info:'Info'};
-  el.innerHTML=saved.slice(0,50).map(n=>`
-    <div class="notif-item unread-${n.type}" data-id="${n.id}">
+  el.innerHTML=saved.slice(0,30).map(n=>`
+    <div class="notif-item unread-${n.type}">
       <div class="notif-icon-wrap ${n.type}"><i class="fa-solid ${ICON[n.type]||'fa-bell'}"></i></div>
       <div class="notif-content">
         <div><span class="notif-type-tag ${n.type}">${LBL[n.type]||'Info'}</span></div>
@@ -992,28 +859,9 @@ function renderDropdown() {
         <div class="notif-time">${n.timestamp?new Date(n.timestamp).toLocaleString('id-ID',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'}):''}</div>
       </div>
     </div>`).join('');
-
-  // Klik notif untuk tandai sudah dibaca (hapus border)
-  el.querySelectorAll('.notif-item').forEach(item=>{
-    item.addEventListener('click', function(){
-      const id = this.dataset.id;
-      const saved2 = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-      const found = saved2.find(n=>n.id===id);
-      if(found){
-        // Hapus dari array (sudah dibaca)
-        const idx = saved2.indexOf(found);
-        saved2.splice(idx,1);
-        localStorage.setItem('ap_notifs_v4',JSON.stringify(saved2));
-        renderDropdown();
-        updateBadge();
-      }
-    });
-  });
 }
 
 function updateBadge() {
-  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-  unreadCount = saved.length;
   const c = unreadCount>99?'99+':String(unreadCount);
   ['notifBadge','mobNotifBadge'].forEach(id=>{
     const el=document.getElementById(id); if(!el) return;
@@ -1028,12 +876,15 @@ function updateBadge() {
 // ═══════════════════════════════════════════════════════════
 async function subscribeFCM() {
   try {
+    // Daftarkan SW dulu
     await navigator.serviceWorker.register('/service-worker.js');
     const swReg = await navigator.serviceWorker.ready;
 
+    // Minta token FCM
     const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
     if(!token){ console.warn('FCM token kosong'); return null; }
 
+    // Simpan token ke Firestore koleksi fcm_tokens
     await db.collection('fcm_tokens').doc(token).set({
       token,
       createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
@@ -1043,6 +894,7 @@ async function subscribeFCM() {
 
     console.log('✅ FCM token tersimpan:', token.slice(0,20)+'...');
 
+    // Update status UI
     const statusEl = document.getElementById('notifStatus');
     if(statusEl){
       statusEl.innerHTML = '✅ Push aktif — notifikasi masuk ke HP kamu meski tab tertutup!';
@@ -1058,6 +910,8 @@ async function subscribeFCM() {
   }
 }
 
+// Kirim push ke SEMUA token yang tersimpan di Firestore
+// Dilakukan dari browser client (tanpa Cloud Functions)
 async function sendPushToAll(title, body, type='info') {
   try {
     const snap = await db.collection('fcm_tokens').get();
@@ -1065,10 +919,13 @@ async function sendPushToAll(title, body, type='info') {
     snap.forEach(d => tokens.push(d.data().token));
     if(!tokens.length){ console.log('Tidak ada subscriber'); return; }
 
+    // Simpan ke koleksi push_queue — service worker / background script akan pick up
+    // Tapi karena kita tidak punya server, kita pakai Firestore trigger manual:
+    // Simpan notif ke koleksi 'push_notifications' lalu semua client onSnapshot akan trigger
     await db.collection('push_notifications').add({
       title, body, type,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      tokens: tokens.slice(0,500)
+      tokens: tokens.slice(0,500) // max 500 token per batch
     });
     console.log(`✅ Push notification queued ke ${tokens.length} devices`);
   } catch(err) {
@@ -1083,8 +940,9 @@ messaging.onMessage((payload) => {
   const t = type||'info';
   playSound(t);
   showToast({type:t, title:title||'Notifikasi', desc:body||''});
-  addToDropdown({id:'fcm_'+Date.now(), type:t, title:title||'Notifikasi', body:body||'', timestamp:new Date().toISOString()});
+  unreadCount++;
   updateBadge();
+  addToDropdown({id:'fcm_'+Date.now(), type:t, title:title||'Notifikasi', body:body||'', timestamp:new Date().toISOString()});
 });
 
 async function updateFCMSubscriberCount() {
@@ -1123,15 +981,14 @@ function startListeners() {
 
       snap.docChanges().forEach(ch => {
         if(ch.type==='added'){
-          // Skip notifikasi pertama kali load
           if(isFirstLoad){ knownIds.add(ch.doc.id); return; }
           if(knownIds.has(ch.doc.id)) return;
           knownIds.add(ch.doc.id);
           const d=ch.doc.data(), judul=d.judul||'Pengumuman Baru', isi=d.isi||'';
           playSound('mading');
           showToast({type:'mading',title:`📰 ${judul}`,desc:isi.slice(0,80)+(isi.length>80?'...':'')});
+          unreadCount++; updateBadge();
           addToDropdown({id:ch.doc.id,type:'mading',title:`📰 ${judul}`,body:isi.slice(0,100),timestamp:new Date().toISOString()});
-          updateBadge();
         }
       });
       isFirstLoad = false;
@@ -1152,8 +1009,8 @@ function startListeners() {
           const amount=(masuk?'+':'-')+fmtRp(d.nominal);
           playSound('kas');
           showToast({type:'kas',title,desc:d.keterangan||'',amount,amountColor:masuk?'green':'red'});
+          unreadCount++; updateBadge();
           addToDropdown({id:ch.doc.id,type:'kas',title,body:`${d.keterangan} — ${amount}`,timestamp:new Date().toISOString()});
-          updateBadge();
         }
       });
     });
@@ -1167,9 +1024,7 @@ function startListeners() {
       const todayDoc = all.find(r=>r.tanggal===today);
       if(todayDoc?.records){
         const vals=Object.values(todayDoc.records);
-        const h=vals.filter(v=>v==='hadir').length;
-        const i=vals.filter(v=>v==='izin').length;
-        const a=vals.filter(v=>v==='alfa').length;
+        const h=vals.filter(v=>v==='hadir').length, i=vals.filter(v=>v==='izin').length, a=vals.filter(v=>v==='alfa').length;
         document.getElementById('rHadir').textContent=h;
         document.getElementById('ringkasAbsensi').innerHTML=`
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
@@ -1187,34 +1042,9 @@ function startListeners() {
             </div>
           </div>
           <p style="font-size:11px;color:var(--c-muted);margin-top:8px">Data hari ini (${today})</p>`;
-
-        // RENDER NAMA-NAMA ANGGOTA HADIR, IZIN, ALFA
-        const detailContainer = document.getElementById('ringkasDetailAbsensi');
-        detailContainer.style.display = 'grid';
-        
-        const hadirList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'hadir');
-        const izinList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'izin');
-        const alfaList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'alfa');
-
-        detailContainer.innerHTML = `
-          <div class="detail-box">
-            <div class="detail-title hadir"><i class="fa-solid fa-check-circle"></i> Hadir (${hadirList.length})</div>
-            ${hadirList.length ? hadirList.map(a => `<div class="detail-name"><span class="dot hadir"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-          <div class="detail-box">
-            <div class="detail-title izin"><i class="fa-solid fa-clock"></i> Izin (${izinList.length})</div>
-            ${izinList.length ? izinList.map(a => `<div class="detail-name"><span class="dot izin"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-          <div class="detail-box">
-            <div class="detail-title alfa"><i class="fa-solid fa-times-circle"></i> Alfa (${alfaList.length})</div>
-            ${alfaList.length ? alfaList.map(a => `<div class="detail-name"><span class="dot alfa"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-        `;
       } else {
         document.getElementById('rHadir').textContent='—';
         document.getElementById('ringkasAbsensi').innerHTML='<p style="font-size:13px;color:var(--c-muted)">Belum ada absensi hari ini.</p>';
-        const detailContainer = document.getElementById('ringkasDetailAbsensi');
-        detailContainer.style.display = 'none';
       }
 
       snap.docChanges().forEach(ch=>{
@@ -1225,18 +1055,22 @@ function startListeners() {
           const title=`📋 Absensi ${d.tanggal||''}`, body=`Hadir: ${h} dari ${ALL_ANGGOTA.length} anggota`;
           playSound('absensi');
           showToast({type:'absensi',title,desc:body});
+          unreadCount++; updateBadge();
           addToDropdown({id:ch.doc.id,type:'absensi',title,body,timestamp:new Date().toISOString()});
-          updateBadge();
         }
       });
     });
 
-  // ── PUSH NOTIFICATIONS listener ──
+  // ── PUSH NOTIFICATIONS listener (dari Firestore, bukan FCM server) ──
+  // Ini untuk trigger suara di semua tab yang terbuka ketika ada push_notification baru
   const u4 = db.collection('push_notifications').orderBy('timestamp','desc').limit(1)
     .onSnapshot(snap => {
       snap.docChanges().forEach(ch => {
         if(ch.type==='added'&&!knownIds.has('pn_'+ch.doc.id)){
           knownIds.add('pn_'+ch.doc.id);
+          if(isFirstLoad) return;
+          // Sudah ditangani oleh FCM onMessage / onBackgroundMessage di SW
+          // Ini backup untuk tab yang aktif
         }
       });
     });
@@ -1389,6 +1223,7 @@ document.getElementById('btnSimpanAbsensi')?.addEventListener('click', async()=>
     const h=vals.filter(v=>v==='hadir').length, i=vals.filter(v=>v==='izin').length, a=vals.filter(v=>v==='alfa').length;
     playSound('absensi');
     showToast({type:'absensi',title:'📋 Absensi Tersimpan!',desc:`Hadir: ${h} · Izin: ${i} · Alfa: ${a}`});
+    // Kirim push ke semua subscriber
     await sendPushToAll(`📋 Absensi ${today}`,`Hadir: ${h} · Izin: ${i} · Alfa: ${a} dari 54 anggota`,'absensi');
   } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
   finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Simpan & Notif'; }
@@ -1412,6 +1247,7 @@ document.getElementById('btnPublishMading')?.addEventListener('click', async()=>
     document.getElementById('madingJudul').value='';
     document.getElementById('madingIsi').value='';
     showToast({type:'mading',title:'✅ Dipublish!',desc:'Push notification dikirim ke semua subscriber'});
+    // Push ke semua FCM token
     await sendPushToAll(`📰 ${judul}`, isi.slice(0,100)+(isi.length>100?'...':''), 'mading');
   } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
   finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Publish & Push ke Semua'; }
@@ -1438,6 +1274,7 @@ document.getElementById('btnTambahKas')?.addEventListener('click', async()=>{
     const masuk=jenis==='masuk';
     const title=masuk?'💰 Kas Masuk!':'💸 Kas Keluar';
     showToast({type:'kas',title:'✅ Kas Dicatat!',desc:'Push notification dikirim ke semua subscriber'});
+    // Push ke semua FCM token
     await sendPushToAll(title, `${ket} — ${(masuk?'+':'-')+fmtRp(nominal)}`, 'kas');
   } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
   finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-plus"></i> Tambah & Push ke Semua'; }
@@ -1459,6 +1296,7 @@ auth.onAuthStateChanged(async user=>{
     currentUser=null; currentRole='anggota';
     stopListeners();
     hideDashboard();
+    // Load mading publik tanpa auth
     db.collection('mading').orderBy('tanggal','desc').limit(20).onSnapshot(snap=>{
       renderMadingPub(snap.docs.map(d=>({id:d.id,...d.data()})));
     });
@@ -1534,6 +1372,7 @@ function showDashboard(){
   initAbsensi();
   updateFCMSubscriberCount();
 
+  // Auto subscribe FCM setelah login jika sudah granted
   if(Notification.permission==='granted'){
     subscribeFCM();
   } else {
@@ -1584,7 +1423,7 @@ const notifDropdown=document.getElementById('notifDropdown');
 document.getElementById('notifBell')?.addEventListener('click',e=>{ e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
 document.getElementById('mobNotifBell')?.addEventListener('click',e=>{ e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
 document.addEventListener('click',()=>notifDropdown?.classList.remove('open'));
-document.getElementById('clearNotifBtn')?.addEventListener('click',()=>{ localStorage.removeItem('ap_notifs_v4'); updateBadge(); renderDropdown(); notifDropdown?.classList.remove('open'); });
+document.getElementById('clearNotifBtn')?.addEventListener('click',()=>{ localStorage.removeItem('ap_notifs_v3'); unreadCount=0; updateBadge(); renderDropdown(); notifDropdown?.classList.remove('open'); });
 
 // ═══════════════════════════════════════════════════════════
 // HAMBURGER & SCROLL
@@ -1612,92 +1451,7 @@ document.getElementById('pwaBtnDismiss')?.addEventListener('click',()=>{ localSt
 
 // INIT
 renderDropdown();
-updateBadge();
 console.log('🔥 Portal Adhigana Prapti v3 — FCM Push + Firebase Auth + Firestore siap!');
-  // ═══════════════════════════════════════════════════════════
-// TOGGLE PASSWORD - Lihat Password Sebentar
-// ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  const toggleBtn = document.getElementById('togglePasswordBtn');
-  const passwordInput = document.getElementById('loginPassword');
-  const eyeIcon = document.getElementById('eyeIcon');
-  let timeoutId = null;
-
-  if (!toggleBtn || !passwordInput || !eyeIcon) return;
-
-  // Fungsi untuk toggle password
-  function togglePasswordVisibility(show) {
-    if (show) {
-      passwordInput.type = 'text';
-      eyeIcon.className = 'fa-regular fa-eye-slash';
-      toggleBtn.classList.add('active');
-      
-      // Auto-hide setelah 3 detik
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(function() {
-        passwordInput.type = 'password';
-        eyeIcon.className = 'fa-regular fa-eye';
-        toggleBtn.classList.remove('active');
-        timeoutId = null;
-      }, 3000); // 3 detik
-    } else {
-      passwordInput.type = 'password';
-      eyeIcon.className = 'fa-regular fa-eye';
-      toggleBtn.classList.remove('active');
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
-      }
-    }
-  }
-
-  // Event: Klik & Tahan (mousedown)
-  toggleBtn.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-    togglePasswordVisibility(true);
-  });
-
-  // Event: Lepas mouse (mouseup)
-  toggleBtn.addEventListener('mouseup', function(e) {
-    e.preventDefault();
-    // Biarkan timeout berjalan, tidak langsung sembunyikan
-  });
-
-  // Event: Mouse keluar dari tombol
-  toggleBtn.addEventListener('mouseleave', function() {
-    // Jika password sedang terlihat, sembunyikan
-    if (passwordInput.type === 'text') {
-      togglePasswordVisibility(false);
-    }
-  });
-
-  // Untuk touch device
-  toggleBtn.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    togglePasswordVisibility(true);
-  });
-
-  toggleBtn.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    // Biarkan timeout berjalan
-  });
-
-  // Reset saat modal ditutup
-  const loginOverlay = document.getElementById('loginOverlay');
-  if (loginOverlay) {
-    const observer = new MutationObserver(function() {
-      if (!loginOverlay.classList.contains('open')) {
-        // Modal ditutup, reset password
-        if (passwordInput.type === 'text') {
-          togglePasswordVisibility(false);
-        }
-      }
-    });
-    observer.observe(loginOverlay, { attributes: true, attributeFilter: ['class'] });
-  }
-});
 </script>
 </body>
 </html>
