@@ -1,545 +1,938 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karnaval & Pesta Rakyat · Adhigana Prapti</title>
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<title>Karnaval HUT RI | Karang Taruna Adhigana Prapti</title>
+    html {
+      scroll-behavior: smooth;
+    }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    body {
+      font-family: "Inter", sans-serif;
+      background: #080b12;
+      color: #f0f3fa;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-<style>
+    .container {
+      width: min(1200px, 92%);
+      margin: 0 auto;
+    }
 
-/* =========================
-    RESET & BASE STYLE
-========================= */
+    section {
+      padding: 100px 0 80px;
+      position: relative;
+    }
 
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    /* ----- GLOW & ANIMATION ----- */
+    .glow-text {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24, #f0932b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-html{
-  scroll-behavior: smooth;
-}
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 36px;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
 
-body{
-  font-family: 'Poppins', sans-serif;
-  background: #06070b;
-  color: white;
-  line-height: 1.8;
-  overflow-x: hidden;
-}
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(238, 90, 36, 0.3);
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 30px 60px -16px rgba(238, 90, 36, 0.2);
+    }
 
-/* =========================
-    GLOBAL STYLES
-========================= */
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 16px;
+    }
 
-.container{
-  width: min(1100px, 90%);
-  margin: auto;
-}
+    .section-subtitle {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 56px;
+      color: #a8b3cf;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
 
-section{
-  padding: 100px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-}
+    /* ----- BUTTONS ----- */
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(145deg, #ff6b6b, #ee5a24);
+      border: none;
+      padding: 16px 44px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 8px 32px -6px rgba(238, 90, 36, 0.35);
+      letter-spacing: -0.01em;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
 
-.section-title{
-  text-align: center;
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  margin-bottom: 15px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      transform: rotate(0deg);
+    }
 
-.section-subtitle{
-  text-align: center;
-  max-width: 650px;
-  margin: auto;
-  color: #b9c0ce;
-  line-height: 1.8;
-  margin-bottom: 60px;
-  font-size: 15px;
-}
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
 
-/* =========================
-    NAVBAR
-========================= */
+    .btn-primary:hover {
+      transform: scale(1.05) translateY(-4px);
+      box-shadow: 0 16px 48px -8px rgba(238, 90, 36, 0.5);
+    }
 
-.navbar{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 999;
-  backdrop-filter: blur(20px);
-  background: rgba(6, 7, 11, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+    .btn-outline {
+      display: inline-block;
+      padding: 12px 32px;
+      border-radius: 60px;
+      border: 2px solid rgba(255, 107, 107, 0.4);
+      color: #ff6b6b;
+      background: transparent;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
 
-.nav-wrapper{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-}
+    .btn-outline:hover {
+      background: rgba(255, 107, 107, 0.1);
+      border-color: #ff6b6b;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px -8px rgba(255, 107, 107, 0.2);
+    }
 
-.logo{
-  font-size: 1.3rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
+    /* ----- NAVBAR ----- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      padding: 16px 0;
+      background: rgba(8, 11, 18, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      animation: slideDown 0.6s ease-out;
+    }
 
-.logo span {
-  color: #69d7e8;
-}
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
 
-.back-btn{
-  text-decoration: none;
-  color: black;
-  padding: 12px 26px;
-  border-radius: 14px;
-  background: #69d7e8;
-  font-weight: 700;
-  font-size: 14px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.back-btn:hover{
-  transform: translateY(-2px);
-  opacity: 0.9;
-}
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
 
-/* =========================
-    HERO SECTION
-========================= */
+    .logo span {
+      color: #ff6b6b;
+    }
 
-.hero{
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  position: relative;
-  background: linear-gradient(rgba(6, 7, 11, 0.7), rgba(6, 7, 11, 0.95)), url("images/pawai-obor.jpg");
-  background-size: cover;
-  background-position: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
 
-.hero-content{
-  text-align: center;
-  padding-top: 60px;
-}
+    .back-link {
+      color: #c8d2e8;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s;
+    }
 
-.event-badge{
-  display: inline-block;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: rgba(105, 215, 232, 0.12);
-  color: #69d7e8;
-  border: 1px solid rgba(105, 215, 232, 0.2);
-  margin-bottom: 30px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
+    .back-link i {
+      font-size: 0.9rem;
+    }
 
-.hero h1{
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: -1px;
-}
+    .back-link:hover {
+      color: #ff6b6b;
+    }
 
-.hero p{
-  max-width: 700px;
-  margin: 25px auto 45px auto;
-  color: #b9c0ce;
-  line-height: 1.8;
-  font-size: 16px;
-}
+    /* ----- HERO ----- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(238, 90, 36, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(8, 11, 18, 0.8) 0%, transparent 50%),
+        linear-gradient(145deg, #080b12 0%, #0f1625 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+    }
 
-.hero-info{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  margin-top: 40px;
-}
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" opacity="0.05"><circle cx="200" cy="200" r="300" fill="%23ff6b6b"/><circle cx="900" cy="500" r="400" fill="%23ee5a24"/></svg>');
+      background-size: cover;
+      pointer-events: none;
+    }
 
-.info-card{
-  padding: 30px 25px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  text-align: left;
-  transition: border-color 0.3s ease;
-}
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px 0;
+    }
 
-.info-card:hover {
-  border-color: rgba(105, 215, 232, 0.2);
-}
+    .event-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 107, 107, 0.08);
+      border: 1px solid rgba(255, 107, 107, 0.18);
+      padding: 8px 24px;
+      border-radius: 80px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #ff6b6b;
+      margin-bottom: 32px;
+      backdrop-filter: blur(4px);
+      animation: fadeInUp 0.8s ease-out;
+    }
 
-.info-card h4{
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #69d7e8;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-.info-card p{
-  margin: 0;
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-}
+    .hero h1 {
+      font-size: clamp(2.8rem, 8vw, 5.6rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
 
-/* =========================
-    COUNTDOWN SECTION
-========================= */
+    .hero h1 .highlight-glow {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24, #f0932b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-.countdown{
-  background: rgba(255, 255, 255, 0.01);
-}
+    .hero p {
+      max-width: 660px;
+      margin: 8px auto 48px;
+      color: #bcc6df;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
 
-.count-grid{
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-}
+    .hero-actions {
+      animation: fadeInUp 0.8s ease-out 0.3s both;
+    }
 
-.count-box{
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 35px 20px;
-  text-align: center;
-  border-radius: 20px;
-}
+    .hero-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
 
-.count-box span{
-  display: block;
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
-  font-weight: 700;
-  color: #69d7e8;
-  line-height: 1;
-  margin-bottom: 5px;
-}
+    .info-tile {
+      padding: 28px 20px;
+      text-align: left;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
 
-.count-box small{
-  color: #b9c0ce;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+    .info-tile:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 107, 107, 0.2);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 32px -12px rgba(255, 107, 107, 0.1);
+    }
 
-.count-box strong{
-  font-size: 16px;
-  color: #69d7e8;
-  font-weight: 600;
-  display: block;
-}
+    .info-tile h4 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ff6b6b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
 
-/* =========================
-    SEKSI SPESIFIK BACKGROUNDS
-========================= */
+    .info-tile p {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #fff;
+      margin: 0;
+    }
 
-.about { background: #06070b; }
-.about .section-subtitle { margin-bottom: 0; font-size: 16px; }
+    /* ----- COUNTDOWN (FIXED - tanpa -webkit-mask) ----- */
+    .countdown-section {
+      background: radial-gradient(circle at 30% 30%, rgba(238, 90, 36, 0.04) 0%, transparent 70%);
+    }
 
-.highlight { background: rgba(255, 255, 255, 0.01); }
+    .count-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
 
-.timeline { background: #06070b; }
+    .count-box {
+      padding: 32px 12px;
+      text-align: center;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      backdrop-filter: blur(4px);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+    }
 
-.statistic { background: rgba(255, 255, 255, 0.01); }
+    /* Efek border gradien menggunakan pseudo-element */
+    .count-box::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 40px;
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(238, 90, 36, 0.1), rgba(240, 147, 43, 0.3));
+      z-index: -1;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
 
-.gallery { background: #06070b; }
-.gallery .hero-info { gap: 25px; }
-.gallery .info-card { padding: 15px; background: rgba(255, 255, 255, 0.01); }
+    .count-box:hover::before {
+      opacity: 1;
+    }
 
-.information { background: rgba(255, 255, 255, 0.01); }
-.information .info-card { font-size: 15px; color: #b9c0ce; font-weight: 500; }
+    .count-box:hover {
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 40px -12px rgba(255, 107, 107, 0.15);
+    }
 
-.faq { background: #06070b; }
-.faq .container { max-width: 800px; }
-.faq .info-card h4 { font-size: 16px; color: white; text-transform: none; letter-spacing: 0; }
-.faq .info-card p { color: #b9c0ce; font-size: 14px; }
+    .count-box span {
+      display: block;
+      font-size: clamp(3rem, 6vw, 4.8rem);
+      font-weight: 800;
+      background: linear-gradient(145deg, #ff6b6b, #ee5a24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
 
-/* =========================
-    CLOSING SECTION
-========================= */
+    .count-box small {
+      color: #a8b3cf;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+    }
 
-.closing {
-  min-height: auto;
-  padding: 120px 0;
-  background: linear-gradient(rgba(6, 7, 11, 0.85), rgba(6, 7, 11, 0.95)), url("images/pawai-obor.jpg");
-  background-size: cover;
-  background-position: center;
-}
+    /* ----- FLEX GRID ----- */
+    .flex-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 32px;
+    }
 
-/* =========================
-    FOOTER
-========================= */
+    .card-highlight {
+      padding: 40px 32px;
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-footer{
-  background: #020306;
-  padding: 60px 0;
-  text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
+    .card-highlight::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 107, 107, 0.03) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
 
-footer h3{
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
+    .card-highlight:hover::after {
+      opacity: 1;
+    }
 
-footer p{
-  font-size: 14px;
-}
+    .card-highlight i {
+      font-size: 3rem;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+      display: inline-block;
+      transition: transform 0.5s;
+    }
 
-/* =========================
-    RESPONSIVE LAYOUT
-========================= */
+    .card-highlight:hover i {
+      transform: scale(1.1) rotate(-5deg);
+    }
 
-@media(max-width:900px){
-  .hero-info{
-    grid-template-columns: 1fr;
-  }
-  .count-grid{
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+    .card-highlight h4 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
 
-@media(max-width:600px){
-  .count-grid{
-    grid-template-columns: 1fr;
-  }
-  section{
-    padding: 70px 0;
-  }
-  .hero h1{
-    font-size: 2.2rem;
-  }
-}
+    .card-highlight p {
+      color: #b0bedc;
+      font-size: 0.95rem;
+      position: relative;
+    }
 
-</style>
+    .card-highlight:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 107, 107, 0.2);
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 30px 60px -16px rgba(255, 107, 107, 0.15);
+    }
+
+    /* ----- TIMELINE ----- */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
+    .tl-item {
+      padding: 28px 24px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.015);
+      border-left: 4px solid #ff6b6b;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 30px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff6b6b;
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+    }
+
+    .tl-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+      transform: translateX(8px) scale(1.01);
+      border-left-color: #f0932b;
+    }
+
+    .tl-item strong {
+      display: block;
+      font-size: 1.2rem;
+      color: #ff6b6b;
+      font-weight: 700;
+    }
+
+    .tl-item p {
+      color: #b0bedc;
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    /* ----- GALLERY ----- */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .gallery-card {
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 4/3;
+      background: #121a2a;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+    }
+
+    .gallery-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .gallery-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .gallery-card:hover {
+      border-color: rgba(255, 107, 107, 0.3);
+      box-shadow: 0 24px 48px -12px rgba(255, 107, 107, 0.15);
+      transform: scale(1.02);
+    }
+
+    .gallery-card::after {
+      content: '📸';
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      font-size: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.4s;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 12px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    .gallery-card:hover::after {
+      opacity: 1;
+    }
+
+    /* ----- INFO CHIP ----- */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .chip {
+      padding: 16px 30px;
+      border-radius: 80px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-weight: 500;
+      color: #c8d2e8;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip i {
+      color: #ff6b6b;
+      font-size: 1rem;
+    }
+
+    .chip:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 107, 107, 0.2);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 24px -8px rgba(255, 107, 107, 0.1);
+    }
+
+    /* ----- FAQ ----- */
+    .faq-box {
+      padding: 28px 32px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      margin-bottom: 20px;
+      transition: all 0.4s ease;
+    }
+
+    .faq-box:hover {
+      background: rgba(255, 255, 255, 0.025);
+      border-color: rgba(255, 107, 107, 0.1);
+      transform: translateX(6px);
+    }
+
+    .faq-box h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .faq-box h4 i {
+      color: #ff6b6b;
+      font-size: 1.2rem;
+    }
+
+    .faq-box p {
+      color: #b0bedc;
+      margin-top: 8px;
+      padding-left: 38px;
+    }
+
+    /* ----- CLOSING ----- */
+    .closing-section {
+      background: radial-gradient(ellipse at 30% 40%, rgba(238, 90, 36, 0.06) 0%, transparent 70%),
+                  linear-gradient(145deg, #080b12, #0e1627);
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    /* ----- FOOTER ----- */
+    footer {
+      background: #050810;
+      padding: 50px 0 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+    }
+
+    footer h3 {
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    footer p {
+      color: #7883a0;
+      font-size: 0.9rem;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin: 24px 0 16px;
+    }
+
+    .footer-social a {
+      color: #7883a0;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-social a:hover {
+      color: #ff6b6b;
+      transform: translateY(-4px) scale(1.1);
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 900px) {
+      .hero-info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .count-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-info-grid {
+        grid-template-columns: 1fr;
+      }
+      .count-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-wrapper {
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+      }
+      .back-link span {
+        display: none;
+      }
+      .count-box span {
+        font-size: 2.6rem;
+      }
+      .section-title {
+        font-size: 1.8rem;
+      }
+      section {
+        padding: 70px 0 50px;
+      }
+    }
+  </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="container nav-wrapper">
     <div class="logo">Adhigana <span>Prapti</span></div>
-    <a href="index.html" class="back-btn">Kembali ke Beranda</a>
+    <div class="nav-actions">
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> <span>Beranda</span></a>
+    </div>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="container">
-    <div class="hero-content">
-      <span class="event-badge">EVENT HUT REPUBLIK INDONESIA 2026</span>
-      <h1>Karnaval<br>& Pesta Rakyat</h1>
-      <p>Menyalakan semangat kebersamaan, mempererat persaudaraan, dan memeriahkan Hari Kemerdekaan Republik Indonesia bersama seluruh masyarakat Desa.</p>
-      
-      <div class="hero-info">
-        <div class="info-card">
-          <h4>Tanggal</h4>
-          <p>17 Agustus 2026</p>
-        </div>
-        <div class="info-card">
-          <h4>Waktu</h4>
-          <p>06.30 WIB</p>
-        </div>
-        <div class="info-card">
-          <h4>Lokasi</h4>
-          <p>Sirnagalih Tengah</p>
-        </div>
+  <div class="container hero-content">
+    <span class="event-badge"><i class="fas fa-flag"></i> HUT RI 2026</span>
+    <h1>
+      <span class="highlight-glow">Karnaval</span><br />
+      & Pesta Rakyat
+    </h1>
+    <p>Merayakan kemerdekaan dengan kreativitas, kebersamaan, dan semangat gotong royong yang membara.</p>
+    <div class="hero-actions">
+      <a href="#countdown" class="btn-primary"><i class="fas fa-clock" style="margin-right: 10px;"></i> Lihat Hitung Mundur</a>
+    </div>
+
+    <div class="hero-info-grid">
+      <div class="info-tile">
+        <h4><i class="far fa-calendar-alt" style="margin-right: 6px;"></i> Tanggal</h4>
+        <p>17 Agustus 2026</p>
+      </div>
+      <div class="info-tile">
+        <h4><i class="far fa-clock" style="margin-right: 6px;"></i> Waktu</h4>
+        <p>06.30 WIB</p>
+      </div>
+      <div class="info-tile">
+        <h4><i class="fas fa-map-pin" style="margin-right: 6px;"></i> Lokasi</h4>
+        <p>Sirnagalih Tengah</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="countdown">
+<!-- COUNTDOWN -->
+<section class="countdown-section" id="countdown">
   <div class="container">
-    <h2 class="section-title">Menuju Hari Pelaksanaan</h2>
-    <p class="section-subtitle">Hitung mundur menuju malam penuh kebersamaan dan kemeriahan.</p>
-    
+    <h2 class="section-title">Menuju <span class="glow-text">Hari H</span></h2>
+    <p class="section-subtitle">Hitung mundur menuju puncak kemeriahan karnaval dan pesta rakyat.</p>
     <div class="count-grid">
-      <div class="count-box">
-        <span id="days">00</span>
-        <small>Hari</small>
-      </div>
-      <div class="count-box">
-        <span id="hours">00</span>
-        <small>Jam</small>
-      </div>
-      <div class="count-box">
-        <span id="minutes">00</span>
-        <small>Menit</small>
-      </div>
-      <div class="count-box">
-        <span id="seconds">00</span>
-        <small>Detik</small>
-      </div>
+      <div class="count-box"><span id="days">00</span><small>Hari</small></div>
+      <div class="count-box"><span id="hours">00</span><small>Jam</small></div>
+      <div class="count-box"><span id="minutes">00</span><small>Menit</small></div>
+      <div class="count-box"><span id="seconds">00</span><small>Detik</small></div>
     </div>
   </div>
 </section>
 
-<section class="about">
+<!-- TENTANG ACARA -->
+<section>
   <div class="container">
-    <h2 class="section-title">Tentang Acara</h2>
-    <p class="section-subtitle">Karnaval dan Pesta Rakyat merupakan kegiatan tahunan yang diselenggarakan Karang Taruna Adhigana Prapti dalam rangka memeriahkan Hari Ulang Tahun Republik Indonesia.</p>
-  </div>
-</section>
-
-<section class="highlight">
-  <div class="container">
-    <h2 class="section-title">Highlight Acara</h2>
-    <div class="hero-info">
-      <div class="info-card">
+    <h2 class="section-title">Tentang <span class="glow-text">Acara</span></h2>
+    <p class="section-subtitle">Karnaval dan Pesta Rakyat adalah tradisi tahunan Karang Taruna Adhigana Prapti yang memadukan kreativitas, budaya, dan kebersamaan dalam semangat kemerdekaan.</p>
+    <div class="flex-grid-2">
+      <div class="card-highlight">
+        <i class="fas fa-theater-masks"></i>
         <h4>Karnaval Budaya</h4>
-        <p>Berjalan bersama mengelilingi desa dengan berbagai kostum unik dan kreativitas khas kemerdekaan.</p>
+        <p>Pawai meriah dengan kostum kreatif, drum band, dan atraksi seni yang menghidupkan semangat kemerdekaan.</p>
       </div>
-      <div class="info-card">
+      <div class="card-highlight">
+        <i class="fas fa-trophy"></i>
         <h4>Pesta Rakyat</h4>
-        <p>Berbagai penampilan menarik dan perlombaan tradisional untuk seluruh masyarakat.</p>
+        <p>Perlombaan tradisional, pentas seni, dan hiburan yang melibatkan seluruh elemen masyarakat.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="timeline">
+<!-- RUNDOWN -->
+<section style="background: rgba(255,255,255,0.01);">
   <div class="container">
-    <h2 class="section-title">Rundown Acara</h2>
+    <h2 class="section-title">Rundown <span class="glow-text">Acara</span></h2>
+    <p class="section-subtitle">Alur karnaval dari pagi hingga siang yang penuh warna.</p>
+    <div class="timeline-grid">
+      <div class="tl-item"><strong>06.30</strong><p>Persiapan Karnaval</p></div>
+      <div class="tl-item"><strong>07.00</strong><p>Pemberangkatan Peserta</p></div>
+      <div class="tl-item"><strong>08.00</strong><p>Karnaval Keliling Desa</p></div>
+      <div class="tl-item"><strong>10.00</strong><p>Pesta Rakyat & Lomba</p></div>
+      <div class="tl-item"><strong>12.00</strong><p>Penutupan</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATISTIK -->
+<section>
+  <div class="container">
+    <h2 class="section-title">Edisi <span class="glow-text">Sebelumnya</span></h2>
     <div class="count-grid">
-      <div class="count-box">
-        <strong>06.30 WIB</strong>
-        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Persiapan Karnaval</p>
-      </div>
-      <div class="count-box">
-        <strong>07.00 WIB</strong>
-        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Pemberangkatan</p>
-      </div>
-      <div class="count-box">
-        <strong>10.00</strong>
-        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Selesai</p>
-      </div>
-      <div class="count-box">
-        <strong>10.00</strong>
-        <p style="font-size: 14px; margin-top: 10px; color: #b9c0ce;">Perlombaan</p>
-      </div>
+      <div class="count-box"><span>500+</span><small>Peserta</small></div>
+      <div class="count-box"><span>8</span><small>RT Berpartisipasi</small></div>
+      <div class="count-box"><span>60+</span><small>Panitia</small></div>
+      <div class="count-box"><span>1</span><small>Hari Kemerdekaan</small></div>
     </div>
   </div>
 </section>
 
-<section class="statistic">
+<!-- GALERI -->
+<section style="background: rgba(255,255,255,0.01);">
   <div class="container">
-    <h2 class="section-title">Dokumentasi Tahun Sebelumnya</h2>
-    <div class="count-grid">
-      <div class="count-box">
-        <span>500+</span>
-        <small>Peserta</small>
+    <h2 class="section-title">Galeri <span class="glow-text">Kegiatan</span></h2>
+    <p class="section-subtitle">Momen-momen berwarna dari karnaval tahun-tahun sebelumnya.</p>
+    <div class="gallery-grid">
+      <div class="gallery-card">
+        <img src="asset/Karnaval.jpg" alt="Karnaval" />
       </div>
-      <div class="count-box">
-        <span>5+</span>
-        <small>RT Berpartisipasi</small>
+      <div class="gallery-card">
+        <img src="asset/Karnaval 2.jpeg" alt="Karnaval" />
       </div>
-      <div class="count-box">
-        <span>50+</span>
-        <small>Panitia</small>
-      </div>
-      <div class="count-box">
-        <span>1</span>
-        <small>Siang Kebersamaan</small>
+      <div class="gallery-card">
+        <img src="asset/Karnaval 3.jpeg" alt="Pesta Rakyat" />
       </div>
     </div>
   </div>
 </section>
 
-<section class="gallery">
+<!-- INFORMASI PENTING -->
+<section>
   <div class="container">
-    <h2 class="section-title">Galeri Kegiatan</h2>
-    <div class="hero-info">
-      <div class="info-card">
-        <img src="/asset/Karnaval.jpg" alt="Foto Karnaval" style="border-radius:12px; width:100%; height:220px; object-fit:cover; display:block;">
-      </div>
-      <div class="info-card">
-        <img src="/asset/Karnaval 2.jpeg" alt="Foto Hiburan Rakyat" style="border-radius:12px; width:100%; height:220px; object-fit:cover; display:block;">
-      </div>
-      <div class="info-card">
-        <img src="/asset/Karnaval 3.jpeg" alt="Dokumentasi Warga" style="border-radius:12px; width:100%; height:220px; object-fit:cover; display:block;">
-      </div>
+    <h2 class="section-title">Informasi <span class="glow-text">Penting</span></h2>
+    <div class="chip-group">
+      <div class="chip"><i class="fas fa-people-arrows"></i> Ikuti arahan panitia</div>
+      <div class="chip"><i class="fas fa-trash-alt"></i> Jaga kebersihan</div>
+      <div class="chip"><i class="fas fa-shield-alt"></i> Jaga ketertiban</div>
+      <div class="chip"><i class="fas fa-parking"></i> Parkir tersedia</div>
+      <div class="chip"><i class="fas fa-camera"></i> Abadikan momen</div>
     </div>
   </div>
 </section>
 
-<section class="information">
-  <div class="container">
-    <h2 class="section-title">Informasi Penting</h2>
-    <div class="hero-info">
-      <div class="info-card">Mengikuti arahan panitia</div>
-      <div class="info-card">Menjaga kebersihan lingkungan</div>
-      <div class="info-card">Menjaga ketertiban acara</div>
+<!-- FAQ -->
+<section style="background: rgba(255,255,255,0.01);">
+  <div class="container" style="max-width: 840px;">
+    <h2 class="section-title">Pertanyaan <span class="glow-text">Umum</span></h2>
+    <div class="faq-box">
+      <h4><i class="fas fa-ticket-alt"></i> Apakah acara ini gratis?</h4>
+      <p>Ya, seluruh masyarakat dapat mengikuti kegiatan tanpa biaya.</p>
+    </div>
+    <div class="faq-box">
+      <h4><i class="fas fa-user-friends"></i> Siapa yang boleh ikut?</h4>
+      <p>Seluruh warga dan tamu yang hadir dipersilakan.</p>
+    </div>
+    <div class="faq-box">
+      <h4><i class="fas fa-car"></i> Apakah tersedia parkir?</h4>
+      <p>Ya, area parkir telah disediakan panitia.</p>
+    </div>
+    <div class="faq-box">
+      <h4><i class="fas fa-tshirt"></i> Ada dress code untuk karnaval?</h4>
+      <p>Bebas kreatif, namun disarankan menggunakan kostum bertema kemerdekaan atau budaya Nusantara.</p>
     </div>
   </div>
 </section>
 
-<section class="faq">
-  <div class="container">
-    <h2 class="section-title">Pertanyaan Umum</h2>
-    <div class="info-card" style="margin-bottom:20px;">
-      <h4>Apakah acara ini gratis?</h4>
-      <p style="margin-top: 5px;">Ya, seluruh masyarakat dapat mengikuti kegiatan tanpa biaya.</p>
-    </div>
-    <div class="info-card" style="margin-bottom:20px;">
-      <h4>Siapa yang boleh mengikuti?</h4>
-      <p style="margin-top: 5px;">Seluruh warga dan tamu yang hadir.</p>
-    </div>
-    <div class="info-card">
-      <h4>Apakah tersedia parkir?</h4>
-      <p style="margin-top: 5px;">Ya, area parkir telah disediakan panitia.</p>
-    </div>
+<!-- CLOSING -->
+<section class="closing-section">
+  <div class="container" style="text-align: center;">
+    <h2 style="font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em;">Mari <span class="glow-text">Meriahkan</span> Bersama</h2>
+    <p style="max-width: 600px; margin: 20px auto 40px; color: #b0bedc; font-size: 1.05rem; line-height: 1.8;">Karnaval dan Pesta Rakyat adalah wujud cinta tanah air, kreativitas tanpa batas, dan kebersamaan yang tak tergantikan.</p>
+    <a href="index.html" class="btn-primary"><i class="fas fa-arrow-left" style="margin-right: 10px;"></i> Kembali ke Beranda</a>
   </div>
 </section>
 
-<section class="closing">
-  <div class="container">
-    <div class="hero-content" style="padding-top: 0;">
-      <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 20px; font-weight: 700;">Mari Meriahkan Bersama</h2>
-      <p style="max-width: 650px; margin: auto; color: #b9c0ce; margin-bottom: 40px;">Karnaval dan Pesta Rakyat bukan sekadar acara tahunan, tetapi juga simbol kebersamaan, persatuan, dan semangat gotong royong masyarakat.</p>
-      <a href="index.html" class="back-btn">Kembali ke Beranda</a>
-    </div>
-  </div>
-</section>
-
+<!-- FOOTER -->
 <footer>
   <div class="container">
     <h3>Karang Taruna Adhigana Prapti</h3>
-    <p style="margin-top: 10px; color: #b9c0ce;">Bersama Berkarya Untuk Desa</p>
-    <p style="margin-top: 30px; color: #656d7a; font-size: 13px;">&copy; 2026 Karang Taruna Adhigana Prapti. All Rights Reserved.</p>
+    <div class="footer-social">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <p style="margin: 4px 0 8px;">Bersama Berkarya Untuk Desa</p>
+    <p style="color: #4f5a75; font-size: 0.8rem;">&copy; 2026 Adhigana Prapti. All rights reserved.</p>
   </div>
 </footer>
 
+<!-- COUNTDOWN SCRIPT -->
 <script>
-const targetDate = new Date("August 17, 2026 06:30:00").getTime();
+  const target = new Date("August 17, 2026 06:30:00").getTime();
 
-setInterval(()=>{
-  const now = new Date().getTime();
-  const distance = targetDate - now;
+  function updateCountdown() {
+    const now = Date.now();
+    const diff = Math.max(target - now, 0);
 
-  const days = Math.floor(distance / (1000*60*60*24));
-  const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-  const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-  const seconds = Math.floor((distance % (1000*60)) / 1000);
+    document.getElementById('days').textContent = Math.floor(diff / (1000*60*60*24));
+    document.getElementById('hours').textContent = Math.floor((diff / (1000*60*60)) % 24);
+    document.getElementById('minutes').textContent = Math.floor((diff / (1000*60)) % 60);
+    document.getElementById('seconds').textContent = Math.floor((diff / 1000) % 60);
+  }
 
-  document.getElementById("days").innerHTML = days;
-  document.getElementById("hours").innerHTML = hours;
-  document.getElementById("minutes").innerHTML = minutes;
-  document.getElementById("seconds").innerHTML = seconds;
-},1000);
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+
+<!-- SCROLL ANIMATION (Intersection Observer) -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card-highlight, .tl-item, .count-box, .info-tile, .gallery-card, .faq-box, .chip').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      observer.observe(el);
+    });
+  });
 </script>
 
 </body>
