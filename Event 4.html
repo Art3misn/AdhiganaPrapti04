@@ -1,190 +1,879 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poster Maulid Nabi 2026 | Adhigana Prapti</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maulid Nabi 1448 H · Adhigana Prapti</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<style>
-  *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  body {
-    background: #06070b;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
+    body {
+      font-family: "Inter", sans-serif;
+      background: #080b12;
+      color: #f0f3fa;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-  /* Elemen Poster (Rasio 4:5 Cocok untuk Instagram/WhatsApp) */
-  .poster-card {
-    width: 100%;
-    max-width: 500px;
-    background: linear-gradient(135deg, #0f111a 0%, #06070b 100%);
-    border: 2px solid #d4af37;
-    border-radius: 24px;
-    padding: 40px 30px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  }
+    .container {
+      width: min(1200px, 92%);
+      margin: 0 auto;
+    }
 
-  /* Aksen Hiasan Sudut */
-  .poster-card::before {
-    content: "";
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 12px;
-    pointer-events: none;
-  }
+    section {
+      padding: 100px 0 80px;
+      position: relative;
+    }
 
-  .org-tag {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #b9c0ce;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
+    /* ----- GLOW & ANIMATION ----- */
+    .glow-text {
+      background: linear-gradient(135deg, #d4af37, #f5d77b, #b8962a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-  .org-name {
-    font-size: 14px;
-    color: #69d7e8;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 30px;
-    text-transform: uppercase;
-  }
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 16px;
+    }
 
-  .arabic-text {
-    font-family: 'Amiri', serif;
-    font-size: 2.5rem;
-    color: #d4af37;
-    margin-bottom: 10px;
-    line-height: 1;
-  }
+    .section-subtitle {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 56px;
+      color: #a8b3cf;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
 
-  .main-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: white;
-    line-height: 1.3;
-    letter-spacing: -0.5px;
-  }
+    /* ----- BUTTONS ----- */
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(145deg, #d4af37, #b8962a);
+      border: none;
+      padding: 16px 44px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #0b111e;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 8px 32px -6px rgba(212, 175, 55, 0.35);
+      letter-spacing: -0.01em;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
 
-  .hijriah {
-    font-size: 16px;
-    color: #d4af37;
-    font-weight: 600;
-    margin-top: 5px;
-    margin-bottom: 25px;
-    display: block;
-  }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
 
-  .divider {
-    width: 60px;
-    height: 2px;
-    background: #d4af37;
-    margin: 0 auto 25px auto;
-  }
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
 
-  .theme-box {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    padding: 15px;
-    border-radius: 14px;
-    margin-bottom: 35px;
-  }
+    .btn-primary:hover {
+      transform: scale(1.05) translateY(-4px);
+      box-shadow: 0 16px 48px -8px rgba(212, 175, 55, 0.5);
+    }
 
-  .theme-box p {
-    font-size: 13px;
-    color: #b9c0ce;
-    font-style: italic;
-    line-height: 1.6;
-  }
+    .btn-outline {
+      display: inline-block;
+      padding: 12px 32px;
+      border-radius: 60px;
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      color: #d4af37;
+      background: transparent;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
 
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    text-align: left;
-    margin-bottom: 35px;
-  }
+    .btn-outline:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: #d4af37;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px -8px rgba(212, 175, 55, 0.2);
+    }
 
-  .info-item {
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 15px;
-    border-radius: 12px;
-  }
+    /* ----- NAVBAR ----- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      padding: 16px 0;
+      background: rgba(8, 11, 18, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      animation: slideDown 0.6s ease-out;
+    }
 
-  .info-item h4 {
-    font-size: 11px;
-    text-transform: uppercase;
-    color: #d4af37;
-    margin-bottom: 5px;
-    letter-spacing: 1px;
-  }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
 
-  .info-item p {
-    font-size: 13px;
-    color: white;
-    font-weight: 600;
-  }
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  .footer-note {
-    font-size: 12px;
-    color: #656d7a;
-    letter-spacing: 0.5px;
-  }
-</style>
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span {
+      color: #d4af37;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .back-link {
+      color: #c8d2e8;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s;
+    }
+
+    .back-link i {
+      font-size: 0.9rem;
+    }
+
+    .back-link:hover {
+      color: #d4af37;
+    }
+
+    /* ----- HERO (ISLAMIC ELEGANCE) ----- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(212, 175, 55, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 60%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
+        linear-gradient(145deg, #080b12 0%, #0f0e1a 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: 'ﷺ';
+      font-family: 'Amiri', serif;
+      position: absolute;
+      font-size: 25rem;
+      color: rgba(212, 175, 55, 0.03);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '✦';
+      position: absolute;
+      font-size: 18rem;
+      color: rgba(212, 175, 55, 0.02);
+      bottom: 5%;
+      right: 5%;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .event-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      padding: 8px 24px;
+      border-radius: 80px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #d4af37;
+      margin-bottom: 28px;
+      backdrop-filter: blur(4px);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero .arabic-hero {
+      font-family: 'Amiri', serif;
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      color: #d4af37;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      animation: fadeInUp 0.8s ease-out 0.05s both;
+      text-shadow: 0 0 60px rgba(212, 175, 55, 0.1);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero h1 .highlight-glow {
+      background: linear-gradient(135deg, #d4af37, #f5d77b, #b8962a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .hijriah-text {
+      font-size: 1.1rem;
+      color: rgba(212, 175, 55, 0.6);
+      font-weight: 600;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.8s ease-out 0.15s both;
+    }
+
+    .hero p {
+      max-width: 660px;
+      margin: 8px auto 40px;
+      color: #bcc6df;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-actions {
+      animation: fadeInUp 0.8s ease-out 0.25s both;
+    }
+
+    .hero-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+      animation: fadeInUp 0.8s ease-out 0.3s both;
+    }
+
+    .info-tile {
+      padding: 28px 20px;
+      text-align: left;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .info-tile:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(212, 175, 55, 0.2);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 32px -12px rgba(212, 175, 55, 0.1);
+    }
+
+    .info-tile h4 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #d4af37;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .info-tile p {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #fff;
+      margin: 0;
+    }
+
+    /* ----- COUNTDOWN ----- */
+    .countdown-section {
+      background: radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+    }
+
+    .count-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .count-box {
+      padding: 32px 12px;
+      text-align: center;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      backdrop-filter: blur(4px);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+    }
+
+    .count-box::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 40px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.1), rgba(245, 215, 123, 0.3));
+      z-index: -1;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
+
+    .count-box:hover::before {
+      opacity: 1;
+    }
+
+    .count-box:hover {
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 40px -12px rgba(212, 175, 55, 0.15);
+    }
+
+    .count-box span {
+      display: block;
+      font-size: clamp(3rem, 6vw, 4.8rem);
+      font-weight: 800;
+      background: linear-gradient(145deg, #d4af37, #b8962a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .count-box small {
+      color: #a8b3cf;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+    }
+
+    /* ----- FLEX GRID ----- */
+    .flex-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 32px;
+    }
+
+    .card-highlight {
+      padding: 40px 32px;
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-highlight::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .card-highlight:hover::after {
+      opacity: 1;
+    }
+
+    .card-highlight i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      display: inline-block;
+      transition: transform 0.5s;
+    }
+
+    .card-highlight i.fa-mosque { color: #d4af37; }
+    .card-highlight i.fa-quran { color: #f5d77b; }
+    .card-highlight i.fa-utensils { color: #f59e0b; }
+
+    .card-highlight:hover i {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
+    .card-highlight h4 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    .card-highlight p {
+      color: #b0bedc;
+      font-size: 0.95rem;
+      position: relative;
+    }
+
+    .card-highlight:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(212, 175, 55, 0.2);
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 30px 60px -16px rgba(212, 175, 55, 0.15);
+    }
+
+    /* ----- TIMELINE ----- */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
+    .tl-item {
+      padding: 28px 24px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.015);
+      border-left: 4px solid #d4af37;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 30px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #d4af37;
+      box-shadow: 0 0 24px rgba(212, 175, 55, 0.4);
+    }
+
+    .tl-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+      transform: translateX(8px) scale(1.01);
+      border-left-color: #f5d77b;
+    }
+
+    .tl-item strong {
+      display: block;
+      font-size: 1.2rem;
+      color: #d4af37;
+      font-weight: 700;
+    }
+
+    .tl-item p {
+      color: #b0bedc;
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    /* ----- INFO CHIP ----- */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .chip {
+      padding: 16px 30px;
+      border-radius: 80px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-weight: 500;
+      color: #c8d2e8;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip i {
+      color: #d4af37;
+      font-size: 1rem;
+    }
+
+    .chip:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(212, 175, 55, 0.2);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 24px -8px rgba(212, 175, 55, 0.1);
+    }
+
+    /* ----- FAQ ----- */
+    .faq-box {
+      padding: 28px 32px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      margin-bottom: 20px;
+      transition: all 0.4s ease;
+    }
+
+    .faq-box:hover {
+      background: rgba(255, 255, 255, 0.025);
+      border-color: rgba(212, 175, 55, 0.1);
+      transform: translateX(6px);
+    }
+
+    .faq-box h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .faq-box h4 i {
+      color: #d4af37;
+      font-size: 1.2rem;
+    }
+
+    .faq-box p {
+      color: #b0bedc;
+      margin-top: 8px;
+      padding-left: 38px;
+    }
+
+    /* ----- CLOSING ----- */
+    .closing-section {
+      background: radial-gradient(ellipse at 30% 40%, rgba(212, 175, 55, 0.06) 0%, transparent 70%),
+                  linear-gradient(145deg, #080b12, #0f0e1a);
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    /* ----- FOOTER ----- */
+    footer {
+      background: #05050a;
+      padding: 50px 0 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+    }
+
+    footer h3 {
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    footer h3 span {
+      color: #d4af37;
+    }
+
+    footer p {
+      color: #7883a0;
+      font-size: 0.9rem;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin: 24px 0 16px;
+    }
+
+    .footer-social a {
+      color: #7883a0;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-social a:hover {
+      color: #d4af37;
+      transform: translateY(-4px) scale(1.1);
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 900px) {
+      .hero-info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .count-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-info-grid {
+        grid-template-columns: 1fr;
+      }
+      .count-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .nav-wrapper {
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+      }
+      .back-link span {
+        display: none;
+      }
+      .count-box span {
+        font-size: 2.6rem;
+      }
+      .section-title {
+        font-size: 1.8rem;
+      }
+      section {
+        padding: 70px 0 50px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="poster-card">
-  <p class="org-tag">Peringatan Hari Besar Islam</p>
-  <p class="org-name">Karang Taruna Adhigana Prapti</p>
-  
-  <h1 class="main-title">MAULID NABI<br>MUHAMMAD SAW</h1>
-  <span class="hijriah">1448 Hijriah</span>
-
-  <div class="divider"></div>
-
-  <div class="theme-box">
-    <p>"Meneladani Akhlak Rasulullah SAW sebagai Fondasi Generasi Muda yang Berkarakter dan Berbudaya"</p>
-  </div>
-
-  <div class="info-grid">
-    <div class="info-item">
-      <h4>Tanggal</h4>
-      <p>Selasa, 25 Agustus 2026</p>
-    </div>
-    <div class="info-item">
-      <h4>Waktu</h4>
-      <p>19.30 WIB (Ba'da Isya)</p>
-    </div>
-    <div class="info-item" style="grid-column: span 2;">
-      <h4>Tempat</h4>
-      <p>Masjid Al-Hatami</p>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container nav-wrapper">
+    <div class="logo">Adhigana <span>Prapti</span></div>
+    <div class="nav-actions">
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> <span>Beranda</span></a>
     </div>
   </div>
+</nav>
 
-  <p class="footer-note">Terbuka Untuk Seluruh Masyarakat Desa</p>
-</div>
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-content">
+    <span class="event-badge"><i class="fas fa-star"></i> Peringatan Hari Besar Islam</span>
+    <div class="arabic-hero">ﷺ</div>
+    <h1>
+      MAULID NABI<br>
+      <span class="highlight-glow">MUHAMMAD SAW</span>
+    </h1>
+    <p class="hijriah-text">✦ 1448 Hijriah ✦</p>
+    <p>Memperingati kelahiran Rasulullah SAW dengan penuh kebersamaan, meneladani akhlak mulia, dan mempererat ukhuwah islamiyah di antara sesama.</p>
+    <div class="hero-actions">
+      <a href="#countdown" class="btn-primary"><i class="fas fa-clock" style="margin-right: 10px;"></i> Lihat Hitung Mundur</a>
+    </div>
+
+    <div class="hero-info-grid">
+      <div class="info-tile">
+        <h4><i class="far fa-calendar-alt" style="margin-right: 6px;"></i> Tanggal</h4>
+        <p>Selasa, 25 Agustus 2026</p>
+      </div>
+      <div class="info-tile">
+        <h4><i class="far fa-clock" style="margin-right: 6px;"></i> Waktu</h4>
+        <p>19.30 WIB (Ba'da Isya)</p>
+      </div>
+      <div class="info-tile">
+        <h4><i class="fas fa-map-pin" style="margin-right: 6px;"></i> Lokasi</h4>
+        <p>Masjid Al-Hatami</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section class="countdown-section" id="countdown">
+  <div class="container">
+    <h2 class="section-title">Menuju <span class="glow-text">Malam Maulid</span></h2>
+    <p class="section-subtitle">Hitung mundur menuju malam penuh berkah dan kebersamaan.</p>
+    <div class="count-grid">
+      <div class="count-box"><span id="days">00</span><small>Hari</small></div>
+      <div class="count-box"><span id="hours">00</span><small>Jam</small></div>
+      <div class="count-box"><span id="minutes">00</span><small>Menit</small></div>
+      <div class="count-box"><span id="seconds">00</span><small>Detik</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- TENTANG ACARA -->
+<section>
+  <div class="container">
+    <h2 class="section-title">Tentang <span class="glow-text">Acara</span></h2>
+    <p class="section-subtitle">Peringatan Maulid Nabi Muhammad SAW diselenggarakan oleh Karang Taruna Adhigana Prapti sebagai wujud cinta dan penghormatan kepada junjungan umat Islam.</p>
+    <div class="flex-grid-2">
+      <div class="card-highlight">
+        <i class="fas fa-mosque"></i>
+        <h4>Peringatan Maulid</h4>
+        <p>Acara inti berupa pembacaan sholawat, kisah perjuangan, dan tausiyah tentang keteladanan Rasulullah SAW.</p>
+      </div>
+      <div class="card-highlight">
+        <i class="fas fa-quran"></i>
+        <h4>Kajian Islami</h4>
+        <p>Menghadirkan penceramah untuk mengupas akhlak dan sunnah Rasulullah SAW dalam kehidupan sehari-hari.</p>
+      </div>
+      <div class="card-highlight">
+        <i class="fas fa-utensils"></i>
+        <h4>Berbagi Makanan</h4>
+        <p>Disediakan makanan ringan untuk seluruh jamaah yang hadir sebagai wujud kebersamaan. *Terbatas</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RUNDOWN -->
+<section style="background: rgba(255,255,255,0.01);">
+  <div class="container">
+    <h2 class="section-title">Rundown <span class="glow-text">Acara</span></h2>
+    <p class="section-subtitle">Susunan acara malam penuh berkah ini.</p>
+    <div class="timeline-grid">
+      <div class="tl-item"><strong>19.30</strong><p>Persiapan & Registrasi</p></div>
+      <div class="tl-item"><strong>19.45</strong><p>Pembukaan & Sambutan</p></div>
+      <div class="tl-item"><strong>20.00</strong><p>Pembacaan Sholawat & Maulid</p></div>
+      <div class="tl-item"><strong>20.30</strong><p>Tausiyah & Kajian</p></div>
+      <div class="tl-item"><strong>21.30</strong><p>Doa Bersama</p></div>
+      <div class="tl-item"><strong>21.45</strong><p>Pembagian Makanan *Terbatas</p></div>
+      <div class="tl-item"><strong>22.00</strong><p>Penutupan</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- INFORMASI PENTING -->
+<section>
+  <div class="container">
+    <h2 class="section-title">Informasi <span class="glow-text">Penting</span></h2>
+    <div class="chip-group">
+      <div class="chip"><i class="fas fa-people-arrows"></i> Ikuti arahan panitia</div>
+      <div class="chip"><i class="fas fa-trash-alt"></i> Jaga kebersihan</div>
+      <div class="chip"><i class="fas fa-shield-alt"></i> Jaga ketertiban</div>
+      <div class="chip"><i class="fas fa-parking"></i> Parkir tersedia</div>
+      <div class="chip"><i class="fas fa-tshirt"></i> Pakaian sopan & muslim</div>
+      <div class="chip"><i class="fas fa-utensils"></i> Makanan terbatas</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background: rgba(255,255,255,0.01);">
+  <div class="container" style="max-width: 840px;">
+    <h2 class="section-title">Pertanyaan <span class="glow-text">Umum</span></h2>
+    <div class="faq-box">
+      <h4><i class="fas fa-ticket-alt"></i> Apakah acara ini gratis?</h4>
+      <p>Ya, seluruh masyarakat dapat mengikuti kegiatan tanpa biaya.</p>
+    </div>
+    <div class="faq-box">
+      <h4><i class="fas fa-user-friends"></i> Siapa yang boleh ikut?</h4>
+      <p>Seluruh warga dan tamu yang hadir dipersilakan, baik muslim maupun non-muslim yang ingin belajar bersama.</p>
+    </div>
+    <div class="faq-box">
+      <h4><i class="fas fa-car"></i> Apakah tersedia parkir?</h4>
+      <p>Ya, area parkir telah disediakan panitia di sekitar lokasi.</p>
+    </div>
+    <div class="faq-box">
+      <h4><i class="fas fa-utensils"></i> Apakah makanan untuk semua?</h4>
+      <p>Makanan ringan disediakan untuk jamaah yang hadir, namun jumlahnya terbatas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing-section">
+  <div class="container" style="text-align: center;">
+    <h2 style="font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em;">Mari <span class="glow-text">Bershalawat</span> Bersama</h2>
+    <p style="max-width: 600px; margin: 20px auto 40px; color: #b0bedc; font-size: 1.05rem; line-height: 1.8;">Mari hadiri dan ramaikan peringatan Maulid Nabi Muhammad SAW. Semoga kita semua mendapatkan syafaat dan keberkahan dari beliau.</p>
+    <a href="index.html" class="btn-primary"><i class="fas fa-arrow-left" style="margin-right: 10px;"></i> Kembali ke Beranda</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <h3>Karang Taruna <span>Adhigana Prapti</span></h3>
+    <div class="footer-social">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <p style="margin: 4px 0 8px;">Bersama Berkarya Untuk Desa</p>
+    <p style="color: #4f5a75; font-size: 0.8rem;">&copy; 2026 Adhigana Prapti. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- COUNTDOWN SCRIPT -->
+<script>
+  const target = new Date("August 25, 2026 19:30:00").getTime();
+
+  function updateCountdown() {
+    const now = Date.now();
+    const diff = Math.max(target - now, 0);
+
+    document.getElementById('days').textContent = Math.floor(diff / (1000*60*60*24));
+    document.getElementById('hours').textContent = Math.floor((diff / (1000*60*60)) % 24);
+    document.getElementById('minutes').textContent = Math.floor((diff / (1000*60)) % 60);
+    document.getElementById('seconds').textContent = Math.floor((diff / 1000) % 60);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+
+<!-- SCROLL ANIMATION -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card-highlight, .tl-item, .count-box, .info-tile, .faq-box, .chip').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      observer.observe(el);
+    });
+  });
+</script>
 
 </body>
 </html>
