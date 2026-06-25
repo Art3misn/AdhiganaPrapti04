@@ -30,6 +30,72 @@
   
   <style>
     /* ============================================================
+   FIX OVERFLOW - CEGAH SCROLL KANAN
+   ============================================================ */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Perbaiki container */
+.container {
+  width: 92% !important;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Perbaiki hero section */
+#beranda {
+  overflow: hidden !important;
+  padding: 100px 0 80px !important;
+}
+
+/* Perbaiki background orbs */
+.bg-orb {
+  max-width: 500px !important;
+  max-height: 500px !important;
+  overflow: hidden !important;
+}
+
+/* Perbaiki hero card */
+.hero-card {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Perbaiki grid */
+.hero-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 30px !important;
+  overflow: hidden !important;
+}
+
+/* Perbaiki semua section */
+section, 
+footer,
+nav {
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Perbaiki gambar */
+img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+    /* ============================================================
        SEMUA STYLE TETAP SAMA + TAMBAHAN ANIMASI PREMIUM
        ============================================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
