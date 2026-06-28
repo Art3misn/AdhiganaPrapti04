@@ -1484,6 +1484,21 @@
       background: rgba(255,95,95,.05);
     }
 
+    /* ── LOADING ASPIRASI ── */
+    .aspirasi-loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .aspirasi-loading i {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 12px;
+      color: var(--cyan);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
     @media (max-width: 1024px) {
       .aspirasi-grid {
         grid-template-columns: 1fr;
@@ -1992,7 +2007,6 @@
         <i class="fa-solid fa-star"></i> Sponsor Silver
       </div>
       <div class="sponsor-grid silver-grid stagger-children">
-        <!-- 50 Sponsor Silver -->
         <div class="sponsor-card silver"><img src="/indomie.png" alt="Sponsor Silver 1"></div>
         <div class="sponsor-card silver"><img src="asset/sponsor12.png" alt="Sponsor Silver 2"></div>
         <div class="sponsor-card silver"><img src="asset/sponsor13.png" alt="Sponsor Silver 3"></div>
@@ -2275,7 +2289,7 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════
-     ASPIRASI, KRITIK & SARAN
+     ASPIRASI, KRITIK & SARAN - FIREBASE
 ══════════════════════════════════════════════════════ -->
 <section id="aspirasi" class="aspirasi-section">
   <div class="container">
@@ -2334,13 +2348,12 @@
             <i class="fa-regular fa-trash-can"></i> Hapus Semua
           </button>
         </div>
-        <p class="sub" id="aspirasiCount">0 pesan terkirim</p>
+        <p class="sub" id="aspirasiCount">Memuat data...</p>
 
         <div class="aspirasi-scroll" id="aspirasiList">
-          <div class="empty-state">
-            <i class="fa-regular fa-message"></i>
-            Belum ada aspirasi.<br>
-            Jadilah yang pertama!
+          <div class="aspirasi-loading">
+            <i class="fa-solid fa-spinner"></i>
+            Memuat aspirasi...
           </div>
         </div>
       </div>
@@ -2768,34 +2781,18 @@ function showToast(msg, type) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ASPIRASI, KRITIK & SARAN - LOCALSTORAGE
+// ASPIRASI, KRITIK & SARAN - FIRESTORE
 // ═══════════════════════════════════════════════════════════
 (function() {
-  const STORAGE_KEY = 'ap_aspirasi_v2';
-  const FORM = document.getElementById('aspirasiForm');
+  const COLLECTION = 'aspirasi';
   const LIST = document.getElementById('aspirasiList');
   const COUNT = document.getElementById('aspirasiCount');
+  const FORM = document.getElementById('aspirasiForm');
   const HAPUS_SEMUA = document.getElementById('hapusSemuaAspirasi');
 
-  // Ambil data dari localStorage
-  function getAspirasi() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    } catch {
-      return [];
-    }
-  }
-
-  // Simpan ke localStorage
-  function saveAspirasi(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  // Render daftar
-  function renderAspirasi() {
-    const data = getAspirasi();
-    
-    if (data.length === 0) {
+  // Fungsi render data dari Firestore
+  function renderAspirasi(data) {
+    if (!data || data.length === 0) {
       LIST.innerHTML = `
         <div class="empty-state">
           <i class="fa-regular fa-message"></i>
@@ -2808,12 +2805,12 @@ function showToast(msg, type) {
     }
 
     let html = '';
-    // Tampilkan dari yang terbaru
-    data.slice().reverse().forEach(function(item, index) {
-      const waktu = new Date(item.timestamp).toLocaleString('id-ID', {
+    // Urutkan dari yang terbaru
+    data.slice().reverse().forEach(function(item) {
+      const waktu = item.timestamp ? new Date(item.timestamp.seconds * 1000).toLocaleString('id-ID', {
         day: 'numeric', month: 'short', year: 'numeric',
         hour: '2-digit', minute: '2-digit'
-      });
+      }) : 'Baru saja';
       
       const kategoriLabel = {
         aspirasi: '💡 Aspirasi',
@@ -2823,11 +2820,11 @@ function showToast(msg, type) {
       }[item.kategori] || item.kategori;
 
       html += `
-        <div class="aspirasi-item">
+        <div class="aspirasi-item" data-id="${item.id}">
           <div class="meta">
             <span class="nama">${item.nama ? esc(item.nama) : 'Anonim'}</span>
             <span class="kategori ${item.kategori}">${kategoriLabel}</span>
-            <button class="hapus-btn" data-index="${data.length - 1 - index}" title="Hapus">
+            <button class="hapus-btn" data-id="${item.id}" title="Hapus">
               <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>
@@ -2843,19 +2840,42 @@ function showToast(msg, type) {
     // Event listener hapus per item
     LIST.querySelectorAll('.hapus-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const idx = parseInt(this.dataset.index);
+        const id = this.dataset.id;
         if (confirm('Hapus aspirasi ini?')) {
-          const current = getAspirasi();
-          current.splice(idx, 1);
-          saveAspirasi(current);
-          renderAspirasi();
-          showToast('🗑️ Aspirasi dihapus', 'info');
+          db.collection(COLLECTION).doc(id).delete()
+            .then(function() {
+              showToast('🗑️ Aspirasi dihapus', 'info');
+            })
+            .catch(function(err) {
+              showToast('❌ Gagal hapus: ' + err.message, 'error');
+            });
         }
       });
     });
   }
 
-  // Kirim aspirasi
+  // Listen real-time dari Firestore
+  db.collection(COLLECTION)
+    .orderBy('timestamp', 'desc')
+    .onSnapshot(function(snapshot) {
+      const data = [];
+      snapshot.forEach(function(doc) {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      renderAspirasi(data);
+    }, function(error) {
+      console.error('Firestore error:', error);
+      LIST.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-triangle-exclamation" style="color:var(--red);"></i>
+          Gagal memuat data.<br>
+          Periksa koneksi internet Anda.
+        </div>
+      `;
+      COUNT.textContent = '❌ Error';
+    });
+
+  // Kirim aspirasi ke Firestore
   if (FORM) {
     FORM.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -2875,67 +2895,61 @@ function showToast(msg, type) {
         return;
       }
 
-      // Simpan
-      const current = getAspirasi();
-      current.push({
+      // Disable tombol
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+      // Simpan ke Firestore
+      db.collection(COLLECTION).add({
         nama: nama || 'Anonim',
         kategori: kategori,
         pesan: pesan,
-        timestamp: Date.now()
-      });
-      saveAspirasi(current);
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(function() {
+        // Reset form
+        document.getElementById('aspirasiNama').value = '';
+        document.getElementById('aspirasiKategori').value = '';
+        document.getElementById('aspirasiPesan').value = '';
 
-      // Reset form
-      document.getElementById('aspirasiNama').value = '';
-      document.getElementById('aspirasiKategori').value = '';
-      document.getElementById('aspirasiPesan').value = '';
-
-      renderAspirasi();
-      showToast('✅ Aspirasi berhasil dikirim! Terima kasih 🙏', 'success');
-
-      // Animasi tombol
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Terkirim!';
-      setTimeout(function() {
+        showToast('✅ Aspirasi berhasil dikirim! Terima kasih 🙏', 'success');
+      })
+      .catch(function(err) {
+        showToast('❌ Gagal mengirim: ' + err.message, 'error');
+      })
+      .finally(function() {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Kirim Aspirasi';
-      }, 1500);
+      });
     });
   }
 
-  // Hapus semua
+  // Hapus semua aspirasi
   if (HAPUS_SEMUA) {
     HAPUS_SEMUA.addEventListener('click', function() {
-      const data = getAspirasi();
-      if (data.length === 0) {
-        showToast('📭 Belum ada aspirasi untuk dihapus', 'info');
-        return;
-      }
-      if (confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) {
-        saveAspirasi([]);
-        renderAspirasi();
-        showToast('🗑️ Semua aspirasi dihapus', 'info');
-      }
+      if (!confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) return;
+      
+      db.collection(COLLECTION).get()
+        .then(function(snapshot) {
+          const batch = db.batch();
+          snapshot.forEach(function(doc) {
+            batch.delete(doc.ref);
+          });
+          return batch.commit();
+        })
+        .then(function() {
+          showToast('🗑️ Semua aspirasi dihapus', 'info');
+        })
+        .catch(function(err) {
+          showToast('❌ Gagal hapus semua: ' + err.message, 'error');
+        });
     });
   }
-
-  // Render awal
-  renderAspirasi();
-
-  // Auto-refresh setiap 2 detik (sinkronisasi antar tab)
-  setInterval(function() {
-    renderAspirasi();
-  }, 2000);
-
-  // Sinkronisasi antar tab
-  window.addEventListener('storage', function(e) {
-    if (e.key === STORAGE_KEY) renderAspirasi();
-  });
 
 })();
 
 // ═══════════════════════════════════════════════════════════
-// PWA INSTALL - UNIVERSAL
+// PWA INSTALL - UNIVERSAL (SUDAH ADA)
 // ═══════════════════════════════════════════════════════════
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
@@ -2993,7 +3007,7 @@ function setProgress(p, txt) {
 function doReset() {
   var ov = document.getElementById('resetOverlay');
   ov.classList.add('open');
-  var KEEP = { ap_absensi_v2: 1, ap_mading_v2: 1, ap_kas_v2: 1, ap_aspirasi_v2: 1 };
+  var KEEP = { ap_absensi_v2: 1, ap_mading_v2: 1, ap_kas_v2: 1 };
   setProgress(10, 'Menghapus cache...');
   caches.keys()
     .then(function(keys) { return Promise.all(keys.map(function(k){ return caches.delete(k); })); })
@@ -3084,7 +3098,7 @@ window.addEventListener('storage', function(e) {
 });
 
 console.log('🔥 Adhigana Prapti - Premium Interactive PWA ready!');
-console.log('💬 Aspirasi, Kritik & Saran siap digunakan!');
+console.log('💬 Aspirasi, Kritik & Saran tersimpan di Firestore!');
 </script>
 </body>
 </html>
