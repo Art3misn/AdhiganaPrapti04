@@ -30,67 +30,60 @@
   
   <style>
     /* ============================================================
-   FIX OVERFLOW - CEGAH SCROLL KANAN
-   ============================================================ */
-html, body {
-  overflow-x: hidden !important;
-  width: 100% !important;
-  max-width: 100vw !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
+       FIX OVERFLOW - CEGAH SCROLL KANAN
+    ============================================================ */
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100vw !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
 
-* {
-  max-width: 100%;
-  box-sizing: border-box;
-}
+    * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
 
-/* Perbaiki container */
-.container {
-  width: 92% !important;
-  max-width: 1280px !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
+    .container {
+      width: 92% !important;
+      max-width: 1280px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
 
-/* Perbaiki hero section */
-#beranda {
-  overflow: hidden !important;
-  padding: 100px 0 80px !important;
-}
+    #beranda {
+      overflow: hidden !important;
+      padding: 100px 0 80px !important;
+    }
 
-/* Perbaiki background orbs */
-.bg-orb {
-  max-width: 500px !important;
-  max-height: 500px !important;
-  overflow: hidden !important;
-}
+    .bg-orb {
+      max-width: 500px !important;
+      max-height: 500px !important;
+      overflow: hidden !important;
+    }
 
-/* Perbaiki hero card */
-.hero-card {
-  max-width: 100% !important;
-  overflow: hidden !important;
-}
+    .hero-card {
+      max-width: 100% !important;
+      overflow: hidden !important;
+    }
 
-/* Perbaiki grid */
-.hero-grid {
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 30px !important;
-  overflow: hidden !important;
-}
+    .hero-grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 30px !important;
+      overflow: hidden !important;
+    }
 
-/* Perbaiki semua section */
-section, 
-footer,
-nav {
-  overflow: hidden !important;
-  max-width: 100% !important;
-}
+    section, footer, nav {
+      overflow: hidden !important;
+      max-width: 100% !important;
+    }
+
     /* ============================================================
        SEMUA STYLE TETAP SAMA + TAMBAHAN ANIMASI PREMIUM
-       ============================================================ */
+    ============================================================ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --bg:      #070a10;
@@ -108,7 +101,6 @@ nav {
       --green:   #4ade80;
       --amber:   #ffb340;
       
-      /* Premium easing */
       --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -274,7 +266,7 @@ nav {
     .stagger-children.visible > * { opacity: 1; transform: none; }
 
     /* ============================================================
-       NAVBAR - PREMIUM (tambahan animasi)
+       NAVBAR - PREMIUM
     ============================================================ */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 900;
@@ -392,7 +384,7 @@ nav {
     .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); width: 22px; }
 
-    /* ── MOBILE SIDEBAR ── (tambahan animasi premium) */
+    /* ── MOBILE SIDEBAR ── */
     .mobile-sidebar {
       position: fixed; top: 0; right: -100%; width: 300px; height: 100vh;
       background: var(--panel); z-index: 99999;
@@ -459,7 +451,7 @@ nav {
     }
     .sidebar-overlay.open { opacity: 1; visibility: visible; }
 
-    /* ── BUTTONS ── (tambahan animasi premium) */
+    /* ── BUTTONS ── */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 9px;
       padding: 14px 28px; border-radius: 14px;
@@ -518,7 +510,7 @@ nav {
       box-shadow: 0 8px 32px rgba(0,0,0,.2);
     }
 
-    /* ── CARDS ── (tambahan animasi premium) */
+    /* ── CARDS ── */
     .card {
       background: var(--panel); border: 1px solid var(--border);
       border-radius: 22px; 
@@ -550,7 +542,7 @@ nav {
     .sec-sub { color: var(--dim); font-size: 15px; line-height: 1.8; max-width: 560px; }
     .section-head { margin-bottom: 56px; }
 
-    /* ── HERO ── (tambahan animasi premium) */
+    /* ── HERO ── */
     #beranda {
       min-height: 100vh; padding: 100px 0 80px;
       display: flex; align-items: center;
@@ -674,7 +666,7 @@ nav {
     }
     .hero-card p { color: var(--dim); font-size: 13px; line-height: 1.85; text-align: justify; }
 
-    /* ── STATS ── (tambahan animasi premium) */
+    /* ── STATS ── */
     .stats-section { padding: 0 0 80px; margin-top: -24px; position: relative; z-index: 10; }
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     .stat-card {
@@ -704,7 +696,7 @@ nav {
     }
     .stat-label { font-size: 12px; color: var(--dim); margin-top: 3px; }
 
-    /* ── PROFIL ── (tambahan animasi premium) */
+    /* ── PROFIL ── */
     #profil { padding: 100px 0; }
     .profil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
     .profil-img { 
@@ -759,7 +751,7 @@ nav {
     }
     .struktur-img img { width: 100%; }
 
-    /* ── MARQUEE ── (tambahan animasi) */
+    /* ── MARQUEE ── */
     #pengurus { padding: 80px 0; overflow: hidden; }
     .marquee-row { width: 100%; overflow: hidden; margin-bottom: 18px; }
     .marquee-track {
@@ -798,7 +790,7 @@ nav {
     .pg-card h4 { font-size: 11px; font-weight: 700; line-height: 1.35; color: var(--text); }
     .pg-card span { font-size: 10px; color: var(--cyan); font-weight: 600; }
 
-    /* ── EVENT ── (tambahan animasi premium) */
+    /* ── EVENT ── */
     #event { padding: 100px 0; }
     .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
     .event-card { 
@@ -896,7 +888,7 @@ nav {
       box-shadow: 0 16px 40px rgba(110,231,247,.3);
     }
 
-    /* ── BERITA ── (tambahan animasi premium) */
+    /* ── BERITA ── */
     #berita { padding: 100px 0; background: var(--surface); }
     .berita-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     .berita-card { 
@@ -927,7 +919,7 @@ nav {
     }
     .berita-body p { color: var(--dim); font-size: 13px; line-height: 1.75; margin-bottom: 18px; }
 
-    /* ── GALERI ── (tambahan animasi premium) */
+    /* ── GALERI ── */
     #galeri { padding: 100px 0; }
     .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
     .gallery-item { display: flex; flex-direction: column; gap: 12px; }
@@ -966,7 +958,7 @@ nav {
     }
     .gal-close:hover { color: var(--text); transform: rotate(90deg) scale(1.2); }
 
-    /* ── KONTAK ── (tambahan animasi premium) */
+    /* ── KONTAK ── */
     #kontak { padding: 100px 0; background: var(--surface); }
     .kontak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
     .kontak-img { 
@@ -1005,7 +997,7 @@ nav {
     .kontak-item p, .kontak-item a { font-size: 13px; color: var(--dim); transition: color .2s; }
     .kontak-item a:hover { color: var(--cyan); }
 
-    /* ── FOOTER ── (tambahan animasi premium) */
+    /* ── FOOTER ── */
     footer {
       background: #040508; border-top: 1px solid var(--border);
       padding: 72px 0 28px;
@@ -1085,38 +1077,8 @@ nav {
     }
     .progress-text { margin-top: 8px; font-size: 12px; color: var(--dim); }
 
-    /* ── RESPONSIVE ── (tetap sama) */
-    @media (max-width: 1100px) {
-      .hero-grid, .profil-grid, .kontak-grid { grid-template-columns: 1fr; }
-      .events-grid { grid-template-columns: 1fr 1fr; }
-      .berita-grid { grid-template-columns: 1fr 1fr; }
-      .gallery-grid { grid-template-columns: 1fr 1fr; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-      .hero-title { font-size: 50px; }
-      .sec-title { font-size: 32px; }
-      .events-grid, .berita-grid, .gallery-grid, .features-grid, .kontak-items { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      #beranda { padding-top: 90px; }
-      .hero-card { padding: 28px 24px; }
-      .lomba-box { padding: 32px 24px; }
-      .ios-standalone { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
-      .ios-standalone nav { padding-top: env(safe-area-inset-top); }
-      .ios-standalone footer { padding-bottom: env(safe-area-inset-bottom); }
-    }
-    @media (max-width: 480px) {
-      .hero-title { font-size: 40px; }
-      .stats-grid { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
-    }
-
     /* =========================================
-       SPONSOR SECTION (dengan animasi premium)
+       SPONSOR SECTION
     ========================================= */
     .sponsor-section { padding: 80px 0; background: var(--surface); }
     .section-title { text-align: center; margin-bottom: 48px; }
@@ -1158,7 +1120,9 @@ nav {
 
     @media (max-width: 768px) { .gold-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); } .silver-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); } .media-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); } }
 
-    /* ========================================= SPONSORSHIP PACKAGES ========================================= */
+    /* =========================================
+       SPONSORSHIP PACKAGES
+    ========================================= */
     .sponsorship-section { padding: 80px 0; background: var(--bg); }
     .sponsorship-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-bottom: 64px; align-items: stretch; }
     .sponsorship-card { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 32px 24px 24px; position: relative; transition: all 0.5s var(--ease-premium); display: flex; flex-direction: column; }
@@ -1234,6 +1198,342 @@ nav {
       background: rgba(255,255,255,.08);
       border-radius: 2px;
     }
+
+    /* ============================================================
+       KOTAK ASPIRASI - PREMIUM
+    ============================================================ */
+    .aspirasi-section {
+      padding: 80px 0;
+      background: var(--surface);
+    }
+
+    .aspirasi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .aspirasi-form-wrap {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      transition: all .4s var(--ease-premium);
+    }
+
+    .aspirasi-form-wrap:hover {
+      border-color: rgba(110,231,247,.15);
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+
+    .aspirasi-form-wrap h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .aspirasi-form-wrap p {
+      color: var(--dim);
+      font-size: 13px;
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dim);
+      margin-bottom: 5px;
+    }
+
+    .form-group label .required {
+      color: var(--red);
+      margin-left: 3px;
+    }
+
+    .form-group label .optional {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 11px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      transition: all .3s var(--ease-premium);
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: rgba(110,231,247,.3);
+      box-shadow: 0 0 0 4px rgba(110,231,247,.06);
+      background: rgba(255,255,255,.05);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--muted);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-group select option {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+      color: #05151a;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+      transition: all .4s var(--ease-spring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(110,231,247,.25);
+    }
+
+    .btn-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── DAFTAR ASPIRASI ── */
+    .aspirasi-list-wrap {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      max-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .aspirasi-list-wrap h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .aspirasi-list-wrap .sub {
+      color: var(--dim);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .aspirasi-list-wrap .empty-state {
+      color: var(--muted);
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+    }
+
+    .aspirasi-list-wrap .empty-state i {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 16px;
+      color: var(--border);
+    }
+
+    .aspirasi-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .aspirasi-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .aspirasi-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.08);
+      border-radius: 2px;
+    }
+
+    .aspirasi-item {
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      transition: all .3s var(--ease-premium);
+      background: rgba(255,255,255,.02);
+    }
+
+    .aspirasi-item:hover {
+      border-color: rgba(110,231,247,.1);
+      background: rgba(255,255,255,.04);
+    }
+
+    .aspirasi-item .meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .aspirasi-item .nama {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .aspirasi-item .kategori {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 12px;
+      border-radius: 999px;
+      background: rgba(110,231,247,.08);
+      color: var(--cyan);
+    }
+
+    .aspirasi-item .kategori.aspirasi { background: rgba(110,231,247,.08); color: var(--cyan); }
+    .aspirasi-item .kategori.kritik { background: rgba(255,95,95,.08); color: var(--red); }
+    .aspirasi-item .kategori.saran { background: rgba(245,200,66,.08); color: var(--gold); }
+    .aspirasi-item .kategori.pertanyaan { background: rgba(74,222,128,.08); color: var(--green); }
+
+    .aspirasi-item .pesan {
+      color: var(--dim);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 4px;
+      word-wrap: break-word;
+    }
+
+    .aspirasi-item .waktu {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .aspirasi-item .hapus-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: all .3s ease;
+      margin-left: auto;
+    }
+
+    .aspirasi-item .hapus-btn:hover {
+      color: var(--red);
+      background: rgba(255,95,95,.1);
+    }
+
+    .aspirasi-list-wrap .list-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .btn-hapus-semua {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 12px;
+      border-radius: 8px;
+      transition: .3s;
+      font-family: inherit;
+    }
+
+    .btn-hapus-semua:hover {
+      color: var(--red);
+      background: rgba(255,95,95,.05);
+    }
+
+    @media (max-width: 1024px) {
+      .aspirasi-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .aspirasi-list-wrap {
+        max-height: 450px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .aspirasi-form-wrap,
+      .aspirasi-list-wrap {
+        padding: 20px 16px;
+      }
+      .aspirasi-form-wrap h3,
+      .aspirasi-list-wrap h3 {
+        font-size: 20px;
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .hero-grid, .profil-grid, .kontak-grid { grid-template-columns: 1fr; }
+      .events-grid { grid-template-columns: 1fr 1fr; }
+      .berita-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-title { font-size: 50px; }
+      .sec-title { font-size: 32px; }
+      .events-grid, .berita-grid, .gallery-grid, .features-grid, .kontak-items { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      #beranda { padding-top: 90px; }
+      .hero-card { padding: 28px 24px; }
+      .lomba-box { padding: 32px 24px; }
+      .ios-standalone { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+      .ios-standalone nav { padding-top: env(safe-area-inset-top); }
+      .ios-standalone footer { padding-bottom: env(safe-area-inset-bottom); }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: 40px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -1278,6 +1578,7 @@ nav {
       <a href="#event">Event</a>
       <a href="#galeri">Galeri</a>
       <a href="#berita">Berita</a>
+      <a href="#aspirasi">Aspirasi</a>
       <a href="#kontak">Kontak</a>
       <a href="/Login.html" class="nav-portal-btn" id="btnNavLogin">
         <i class="fa-solid fa-right-to-bracket"></i> Masuk Portal
@@ -1301,6 +1602,7 @@ nav {
     <a href="#event">Event</a>
     <a href="#galeri">Galeri</a>
     <a href="#berita">Berita</a>
+    <a href="#aspirasi">Aspirasi</a>
     <a href="#kontak">Kontak</a>
     <a href="/Login.html" class="mob-portal" id="mobileBtnLogin">
       <i class="fa-solid fa-right-to-bracket"></i> Masuk Portal
@@ -1918,8 +2220,7 @@ nav {
         <div class="berita-thumb"><img src="/Mini Soccer.jpeg" alt="Persiapan Jalan Santai" /></div>
         <div class="berita-body">
           <div class="berita-date">12 Juni 2026</div>
-          <h3>Membakar Semangat di Lapangan Hijau: Kick-Off Mini Soccer Adhigana Prapti Jadi Pemantik Awal Pergerakan Pemuda
-</h3>
+          <h3>Membakar Semangat di Lapangan Hijau: Kick-Off Mini Soccer Adhigana Prapti Jadi Pemantik Awal Pergerakan Pemuda</h3>
           <p>Langkah besar selalu dimulai dari satu hentakan kecil.</p>
           <a href="Berita 1.html" class="btn-outline">Baca Selengkapnya</a>
         </div>
@@ -1972,6 +2273,80 @@ nav {
   <span class="gal-close" id="galClose">&times;</span>
   <img id="galPreview" src="" alt="" />
 </div>
+
+<!-- ══════════════════════════════════════════════════════
+     ASPIRASI, KRITIK & SARAN
+══════════════════════════════════════════════════════ -->
+<section id="aspirasi" class="aspirasi-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="sec-eye reveal fade-up">
+        <i class="fa-regular fa-comment-dots"></i> Suara Pemuda
+      </div>
+      <h2 class="sec-title reveal fade-up" style="transition-delay:.05s;">
+        Aspirasi, Kritik &amp; <em>Saran</em>
+      </h2>
+      <p class="sec-sub reveal fade-up" style="transition-delay:.1s;">
+        Kirimkan ide, masukan, atau kritik membangun untuk kemajuan Adhigana Prapti. 
+        Suaramu sangat berarti bagi kami.
+      </p>
+    </div>
+
+    <div class="aspirasi-grid">
+      <!-- FORM KIRIM -->
+      <div class="aspirasi-form-wrap reveal fade-right">
+        <h3>✍️ Kirim Pesan</h3>
+        <p>Isi form di bawah ini dengan aspirasi, kritik, atau saran kamu.</p>
+
+        <form id="aspirasiForm">
+          <div class="form-group">
+            <label for="aspirasiNama">Nama <span class="optional">(opsional)</span></label>
+            <input type="text" id="aspirasiNama" placeholder="Masukkan nama kamu..." maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label for="aspirasiKategori">Kategori <span class="required">*</span></label>
+            <select id="aspirasiKategori" required>
+              <option value="">Pilih kategori...</option>
+              <option value="aspirasi">💡 Aspirasi</option>
+              <option value="kritik">🔴 Kritik</option>
+              <option value="saran">💛 Saran</option>
+              <option value="pertanyaan">❓ Pertanyaan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="aspirasiPesan">Pesan <span class="required">*</span></label>
+            <textarea id="aspirasiPesan" placeholder="Tulis pesan kamu di sini..." required minlength="5" maxlength="1000"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="aspirasiSubmit">
+            <i class="fa-regular fa-paper-plane"></i> Kirim Aspirasi
+          </button>
+        </form>
+      </div>
+
+      <!-- DAFTAR ASPIRASI -->
+      <div class="aspirasi-list-wrap reveal fade-left" style="transition-delay:.1s;">
+        <div class="list-actions">
+          <h3>📋 Aspirasi Terkirim</h3>
+          <button id="hapusSemuaAspirasi" class="btn-hapus-semua">
+            <i class="fa-regular fa-trash-can"></i> Hapus Semua
+          </button>
+        </div>
+        <p class="sub" id="aspirasiCount">0 pesan terkirim</p>
+
+        <div class="aspirasi-scroll" id="aspirasiList">
+          <div class="empty-state">
+            <i class="fa-regular fa-message"></i>
+            Belum ada aspirasi.<br>
+            Jadilah yang pertama!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ══════════════════════════════════════════════════════
      KONTAK
@@ -2038,6 +2413,7 @@ nav {
           <a href="#event">Event</a>
           <a href="#galeri">Galeri</a>
           <a href="#berita">Berita</a>
+          <a href="#aspirasi">Aspirasi</a>
           <a href="#kontak">Kontak</a>
         </div>
       </div>
@@ -2104,13 +2480,11 @@ const auth = firebase.auth();
 // NAVBAR - TAMBAHAN ANIMASI MUNCUL
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
-  // Navbar muncul dengan animasi
   const nav = document.getElementById('mainNav');
   setTimeout(function() {
     nav.classList.add('visible');
   }, 100);
   
-  // Trigger reveal untuk elemen yang sudah terlihat
   document.querySelectorAll('.reveal').forEach(function(el) {
     if (isInView(el)) el.classList.add('visible');
   });
@@ -2239,7 +2613,7 @@ if (heroCard && window.innerWidth > 768) {
 // ═══════════════════════════════════════════════════════════
 // RIPPLE EFFECT - PREMIUM
 // ═══════════════════════════════════════════════════════════
-document.querySelectorAll('.btn-primary, .btn-gold, .btn-outline, .nav-portal-btn, .lomba-btn').forEach(function(el) {
+document.querySelectorAll('.btn-primary, .btn-gold, .btn-outline, .nav-portal-btn, .lomba-btn, .btn-submit').forEach(function(el) {
   el.addEventListener('click', function(e) {
     var rect = this.getBoundingClientRect();
     var size = Math.max(rect.width, rect.height) * 1.5;
@@ -2394,6 +2768,173 @@ function showToast(msg, type) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// ASPIRASI, KRITIK & SARAN - LOCALSTORAGE
+// ═══════════════════════════════════════════════════════════
+(function() {
+  const STORAGE_KEY = 'ap_aspirasi_v2';
+  const FORM = document.getElementById('aspirasiForm');
+  const LIST = document.getElementById('aspirasiList');
+  const COUNT = document.getElementById('aspirasiCount');
+  const HAPUS_SEMUA = document.getElementById('hapusSemuaAspirasi');
+
+  // Ambil data dari localStorage
+  function getAspirasi() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  // Simpan ke localStorage
+  function saveAspirasi(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  // Render daftar
+  function renderAspirasi() {
+    const data = getAspirasi();
+    
+    if (data.length === 0) {
+      LIST.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-regular fa-message"></i>
+          Belum ada aspirasi.<br>
+          Jadilah yang pertama!
+        </div>
+      `;
+      COUNT.textContent = '0 pesan terkirim';
+      return;
+    }
+
+    let html = '';
+    // Tampilkan dari yang terbaru
+    data.slice().reverse().forEach(function(item, index) {
+      const waktu = new Date(item.timestamp).toLocaleString('id-ID', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+      
+      const kategoriLabel = {
+        aspirasi: '💡 Aspirasi',
+        kritik: '🔴 Kritik',
+        saran: '💛 Saran',
+        pertanyaan: '❓ Pertanyaan'
+      }[item.kategori] || item.kategori;
+
+      html += `
+        <div class="aspirasi-item">
+          <div class="meta">
+            <span class="nama">${item.nama ? esc(item.nama) : 'Anonim'}</span>
+            <span class="kategori ${item.kategori}">${kategoriLabel}</span>
+            <button class="hapus-btn" data-index="${data.length - 1 - index}" title="Hapus">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+          <div class="pesan">${esc(item.pesan)}</div>
+          <div class="waktu"><i class="fa-regular fa-clock"></i> ${waktu}</div>
+        </div>
+      `;
+    });
+
+    LIST.innerHTML = html;
+    COUNT.textContent = data.length + ' pesan terkirim';
+
+    // Event listener hapus per item
+    LIST.querySelectorAll('.hapus-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.index);
+        if (confirm('Hapus aspirasi ini?')) {
+          const current = getAspirasi();
+          current.splice(idx, 1);
+          saveAspirasi(current);
+          renderAspirasi();
+          showToast('🗑️ Aspirasi dihapus', 'info');
+        }
+      });
+    });
+  }
+
+  // Kirim aspirasi
+  if (FORM) {
+    FORM.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const nama = document.getElementById('aspirasiNama').value.trim();
+      const kategori = document.getElementById('aspirasiKategori').value;
+      const pesan = document.getElementById('aspirasiPesan').value.trim();
+      const submitBtn = document.getElementById('aspirasiSubmit');
+
+      if (!kategori) {
+        showToast('⚠️ Pilih kategori terlebih dahulu!', 'error');
+        return;
+      }
+
+      if (pesan.length < 5) {
+        showToast('⚠️ Pesan minimal 5 karakter!', 'error');
+        return;
+      }
+
+      // Simpan
+      const current = getAspirasi();
+      current.push({
+        nama: nama || 'Anonim',
+        kategori: kategori,
+        pesan: pesan,
+        timestamp: Date.now()
+      });
+      saveAspirasi(current);
+
+      // Reset form
+      document.getElementById('aspirasiNama').value = '';
+      document.getElementById('aspirasiKategori').value = '';
+      document.getElementById('aspirasiPesan').value = '';
+
+      renderAspirasi();
+      showToast('✅ Aspirasi berhasil dikirim! Terima kasih 🙏', 'success');
+
+      // Animasi tombol
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Terkirim!';
+      setTimeout(function() {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Kirim Aspirasi';
+      }, 1500);
+    });
+  }
+
+  // Hapus semua
+  if (HAPUS_SEMUA) {
+    HAPUS_SEMUA.addEventListener('click', function() {
+      const data = getAspirasi();
+      if (data.length === 0) {
+        showToast('📭 Belum ada aspirasi untuk dihapus', 'info');
+        return;
+      }
+      if (confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) {
+        saveAspirasi([]);
+        renderAspirasi();
+        showToast('🗑️ Semua aspirasi dihapus', 'info');
+      }
+    });
+  }
+
+  // Render awal
+  renderAspirasi();
+
+  // Auto-refresh setiap 2 detik (sinkronisasi antar tab)
+  setInterval(function() {
+    renderAspirasi();
+  }, 2000);
+
+  // Sinkronisasi antar tab
+  window.addEventListener('storage', function(e) {
+    if (e.key === STORAGE_KEY) renderAspirasi();
+  });
+
+})();
+
+// ═══════════════════════════════════════════════════════════
 // PWA INSTALL - UNIVERSAL
 // ═══════════════════════════════════════════════════════════
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -2452,7 +2993,7 @@ function setProgress(p, txt) {
 function doReset() {
   var ov = document.getElementById('resetOverlay');
   ov.classList.add('open');
-  var KEEP = { ap_absensi_v2: 1, ap_mading_v2: 1, ap_kas_v2: 1 };
+  var KEEP = { ap_absensi_v2: 1, ap_mading_v2: 1, ap_kas_v2: 1, ap_aspirasi_v2: 1 };
   setProgress(10, 'Menghapus cache...');
   caches.keys()
     .then(function(keys) { return Promise.all(keys.map(function(k){ return caches.delete(k); })); })
@@ -2543,6 +3084,7 @@ window.addEventListener('storage', function(e) {
 });
 
 console.log('🔥 Adhigana Prapti - Premium Interactive PWA ready!');
+console.log('💬 Aspirasi, Kritik & Saran siap digunakan!');
 </script>
 </body>
 </html>
