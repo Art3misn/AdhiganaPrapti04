@@ -738,57 +738,264 @@
     .feature-card p { font-size: 13px; color: var(--dim); line-height: 1.65; }
 
     /* ── STRUKTUR ── */
-    #struktur { padding: 100px 0; background: var(--surface); }
-    .struktur-wrap { text-align: center; }
-    .struktur-img {
-      border-radius: 22px; border: 1px solid var(--border);
-      overflow: hidden; margin-bottom: 24px;
-      transition: all .4s var(--ease-premium);
-    }
-    .struktur-img:hover { 
-      transform: scale(1.01); 
-      box-shadow: 0 24px 60px rgba(0,0,0,.45);
-    }
-    .struktur-img img { width: 100%; }
+    /* ============================================================
+   BAGAN STRUKTUR ORGANISASI
+============================================================ */
+#struktur-pengurus {
+  padding: 100px 0;
+  background: var(--surface);
+}
 
-    /* ── MARQUEE ── */
-    #pengurus { padding: 80px 0; overflow: hidden; }
-    .marquee-row { width: 100%; overflow: hidden; margin-bottom: 18px; }
-    .marquee-track {
-      display: flex; gap: 16px; width: max-content;
-      animation: scrollLeft 50s linear infinite;
-      will-change: transform;
-    }
-    .marquee-row.rev .marquee-track { animation-direction: reverse; }
-    .marquee-row:hover .marquee-track { animation-play-state: paused; }
-    @keyframes scrollLeft {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-    
-    .pg-card {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 10px; min-width: 150px; max-width: 150px;
-      background: var(--panel); border: 1px solid var(--border);
-      border-radius: 18px; padding: 16px 12px; text-align: center;
-      transition: all .4s var(--ease-premium);
-    }
-    .pg-card:hover { 
-      transform: translateY(-8px) scale(1.06); 
-      border-color: rgba(110,231,247,.2); 
-      box-shadow: 0 20px 50px rgba(0,0,0,.4);
-    }
-    .pg-card img {
-      width: 72px; height: 72px; border-radius: 50%;
-      object-fit: cover; border: 2px solid rgba(110,231,247,.15);
-      transition: all .4s var(--ease-spring);
-    }
-    .pg-card:hover img { 
-      border-color: rgba(110,231,247,.5); 
-      transform: scale(1.1);
-    }
-    .pg-card h4 { font-size: 11px; font-weight: 700; line-height: 1.35; color: var(--text); }
-    .pg-card span { font-size: 10px; color: var(--cyan); font-weight: 600; }
+.struktur-bagan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px 0;
+}
+
+/* LEVEL BAGAN */
+.bagan-level {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.bagan-level::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(180deg, var(--cyan), transparent);
+  opacity: 0.3;
+}
+
+.bagan-level:first-child::after {
+  display: none;
+}
+
+.bagan-level-1 .bagan-card {
+  min-width: 200px;
+}
+
+.bagan-level-2 .bagan-card {
+  min-width: 180px;
+}
+
+.bagan-level-3 .bagan-card {
+  min-width: 160px;
+}
+
+/* ROW BAGAN */
+.bagan-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+  position: relative;
+}
+
+/* CARD BAGAN */
+.bagan-card {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  transition: all .4s var(--ease-premium);
+  flex: 0 1 auto;
+  position: relative;
+  min-width: 150px;
+}
+
+.bagan-card::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  width: 2px;
+  height: 16px;
+  background: var(--border);
+}
+
+.bagan-level-1 .bagan-card::before,
+.bagan-level-2 .bagan-card::before {
+  display: none;
+}
+
+.bagan-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  border-color: rgba(110,231,247,.3);
+  box-shadow: 0 20px 50px rgba(0,0,0,.4);
+}
+
+.bagan-card img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(110,231,247,.15);
+  transition: all .4s var(--ease-spring);
+}
+
+.bagan-card:hover img {
+  border-color: rgba(110,231,247,.5);
+  transform: scale(1.08);
+}
+
+.bagan-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-top: 4px;
+}
+
+.bagan-card span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cyan);
+  background: rgba(110,231,247,.08);
+  padding: 4px 14px;
+  border-radius: 999px;
+}
+
+/* KETUA UMUM */
+.bagan-ketua {
+  border-color: rgba(245,200,66,.3) !important;
+  background: linear-gradient(145deg, rgba(245,200,66,.05), var(--panel)) !important;
+  min-width: 220px !important;
+}
+
+.bagan-ketua img {
+  border-color: rgba(245,200,66,.3) !important;
+}
+
+.bagan-ketua span {
+  background: rgba(245,200,66,.15) !important;
+  color: var(--gold) !important;
+}
+
+/* KETUA PELAKSANA */
+.bagan-ketua-pelaksana {
+  border-color: rgba(110,231,247,.2) !important;
+  background: linear-gradient(145deg, rgba(110,231,247,.05), var(--panel)) !important;
+  min-width: 200px !important;
+}
+
+.bagan-ketua-pelaksana img {
+  border-color: rgba(110,231,247,.3) !important;
+}
+
+/* DIVISI */
+.bagan-divisi {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px 16px 14px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+  transition: all .4s var(--ease-premium);
+}
+
+.bagan-divisi:hover {
+  border-color: rgba(110,231,247,.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.bagan-divisi-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-align: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bagan-divisi-title i {
+  font-size: 16px;
+}
+
+.bagan-divisi-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bagan-card.kecil {
+  padding: 12px 10px;
+  min-width: 80px;
+  max-width: 100px;
+  border-width: 1px;
+  border-color: rgba(255,255,255,.04);
+  background: rgba(255,255,255,.02);
+}
+
+.bagan-card.kecil::before {
+  display: none;
+}
+
+.bagan-card.kecil img {
+  width: 48px;
+  height: 48px;
+  border-width: 2px;
+}
+
+.bagan-card.kecil h4 {
+  font-size: 10px;
+}
+
+.bagan-card.kecil span {
+  font-size: 9px;
+  padding: 2px 10px;
+}
+
+.bagan-card.kecil:hover {
+  transform: translateY(-4px) scale(1.04);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .bagan-row {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .bagan-divisi {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .bagan-card {
+    min-width: 120px !important;
+  }
+  
+  .bagan-card.kecil {
+    min-width: 70px !important;
+    max-width: 85px !important;
+  }
+  
+  .bagan-divisi-items {
+    gap: 6px;
+  }
+}
 
     /* ── EVENT ── */
     #event { padding: 100px 0; }
@@ -1743,100 +1950,387 @@
 </section>
 
 <!-- ══════════════════════════════════════════════════════
-     STRUKTUR
+     STRUKTUR ORGANISASI PENGURUS - BAGAN
 ══════════════════════════════════════════════════════ -->
-<section id="struktur">
+<section id="struktur-pengurus">
   <div class="container">
     <div class="section-head" style="text-align:center;">
-      <div class="sec-eye reveal fade-up">Organisasi</div>
-      <h2 class="sec-title reveal fade-up" style="transition-delay:.05s;">Struktur <em>Kepanitiaan</em></h2>
+      <div class="sec-eye reveal fade-up">Struktur Organisasi</div>
+      <h2 class="sec-title reveal fade-up" style="transition-delay:.05s;">Pengurus Karang Taruna <em>Adhigana Prapti</em></h2>
+      <p class="sec-sub reveal fade-up" style="transition-delay:.1s;margin:0 auto;">Struktur kepengurusan yang solid dan terorganisir untuk kemajuan bersama.</p>
     </div>
-    <div class="struktur-wrap reveal scale-in" style="transition-delay:.1s;">
-      <div class="struktur-img">
-        <img src="/asset/Struktur.png" alt="Struktur Organisasi Adhigana Prapti" />
+
+    <div class="struktur-bagan reveal scale-in" style="transition-delay:.1s;">
+      
+      <!-- KETUA UMUM -->
+      <div class="bagan-level bagan-level-1">
+        <div class="bagan-card bagan-ketua">
+          <img src="/asset/Profil Foto/M. Daffa.JPG" onerror="this.src='/asset/Avatar.png'" alt="Ketua Umum">
+          <h4>M. Daffa Saeful Faiz</h4>
+          <span>Ketua Umum</span>
+        </div>
       </div>
-      <a href="asset/Struktur.pdf" target="_blank" class="btn-gold">
-        <i class="fa-solid fa-download"></i> Download PDF
-      </a>
-    </div>
-  </div>
-</section>
 
-<!-- ══════════════════════════════════════════════════════
-     MARQUEE PENGURUS
-══════════════════════════════════════════════════════ -->
-<section id="pengurus">
-  <div class="container" style="margin-bottom:40px;">
-    <div class="sec-eye reveal fade-up" style="text-align:center;">Pengurus</div>
-    <h2 class="sec-title reveal fade-up" style="text-align:center;transition-delay:.05s;">Karang Taruna <em>Adhigana Prapti</em></h2>
-  </div>
+      <!-- HUBUNGAN KETUA - SEKRETARIS & BENDAHARA -->
+      <div class="bagan-level bagan-level-2">
+        <div class="bagan-row">
+          <div class="bagan-card">
+            <img src="/asset/Profil Foto/Yasna.JPG" onerror="this.src='/asset/Avatar.png'" alt="Sekretaris Umum">
+            <h4>Yasna Nur Azka Zakiyah</h4>
+            <span>Sekretaris Umum</span>
+          </div>
+          <div class="bagan-card">
+            <img src="/asset/Avatar.png" alt="Bendahara Umum">
+            <h4>Putri Nur Apriani</h4>
+            <span>Bendahara Umum</span>
+          </div>
+        </div>
+      </div>
 
-  <div class="marquee-row">
-    <div class="marquee-track" id="mq1">
-      <div class="pg-card"><img src="/asset/Profil Foto/M. Daffa.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Daffa Saeful Faiz</h4><span>Ketua Umum</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Yasna.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Yasna Nur Azka Zakiyah</h4><span>Sekretaris Umum</span></div>
-      <div class="pg-card"><img src="/asset/Avatar.png"><h4>Putri Nur Apriani</h4><span>Bendahara Umum</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Rafi Keny.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Rafi Keny Akhdan</h4><span>Ketua Pelaksana</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Kaysa.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Kaysa Hasnah Mumtaaza</h4><span>Sekretaris Pelaksana</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Naya.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Naya Salsabila</h4><span>Bendahara Pelaksana</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/rayhan korlap.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Rayhan Nur Pajri</h4><span>Koord. Div. Lapangan</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/haikal.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Haikal Abil Fida</h4><span>Div. Koordinasi Lapangan</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Ardi.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Ardiansyah Pramadani</h4><span>Div. Koordinasi Lapangan</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/fahmi.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Fahmi Maulana</h4><span>Div. Koordinasi Lapangan</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/daffa kecil.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Daffa Yusuf Afandy</h4><span>Div. Koordinasi Lapangan</span></div>
-    </div>
-  </div>
+      <!-- KETUA PELAKSANA -->
+      <div class="bagan-level bagan-level-2">
+        <div class="bagan-row">
+          <div class="bagan-card bagan-ketua-pelaksana">
+            <img src="/asset/Profil Foto/Rafi Keny.JPG" onerror="this.src='/asset/Avatar.png'" alt="Ketua Pelaksana">
+            <h4>Rafi Keny Akhdan</h4>
+            <span>Ketua Pelaksana</span>
+          </div>
+        </div>
+      </div>
 
-  <div class="marquee-row rev">
-    <div class="marquee-track" id="mq2">
-      <div class="pg-card"><img src="/asset/Profil Foto/Faiq.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Faiq Ahsan</h4><span>Koord. Div. Acara</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Zidan.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Zidan Ziyadul Haq</h4><span>Div. Acara</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/arfan.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Arfan Najmi</h4><span>Div. Acara</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Badrul.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Badrul Zaman</h4><span>Div. Acara</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/mutia.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Mutia Zahran</h4><span>Div. Acara</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/raifa inong.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Raifa Putri Ramadhani</h4><span>Div. Acara</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/panji.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Panji Jatmika</h4><span>Koord. Div. Pubdok</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/ari pdd.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Fachri Akbar</h4><span>Div. Pubdok</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/erul.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Muhamad Darul Tahqiq</h4><span>Div. Pubdok</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/riccel.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Rhicelle Apriliana</h4><span>Div. Pubdok</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/riska.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Riska Maulida Fitri</h4><span>Div. Pubdok</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/agisna.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Agisna Maulida Noer</h4><span>Div. Pubdok</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/gita.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Anggita Nurfadillah</h4><span>Div. Pubdok</span></div>
-    </div>
-  </div>
+      <!-- SEKRETARIS & BENDAHARA PELAKSANA -->
+      <div class="bagan-level bagan-level-3">
+        <div class="bagan-row">
+          <div class="bagan-card">
+            <img src="/asset/Profil Foto/Kaysa.JPG" onerror="this.src='/asset/Avatar.png'" alt="Sekretaris Pelaksana">
+            <h4>Kaysa Hasnah Mumtaaza</h4>
+            <span>Sekretaris Pelaksana</span>
+          </div>
+          <div class="bagan-card">
+            <img src="/asset/Profil Foto/Naya.JPG" onerror="this.src='/asset/Avatar.png'" alt="Bendahara Pelaksana">
+            <h4>Naya Salsabila</h4>
+            <span>Bendahara Pelaksana</span>
+          </div>
+        </div>
+      </div>
 
-  <div class="marquee-row">
-    <div class="marquee-track" id="mq3">
-      <div class="pg-card"><img src="/asset/Profil Foto/Alfin.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Alfin Saputra</h4><span>Koord. Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/huda.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Huda Kasya Islami</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/irham.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Irham Ghifarul Khilmi</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/almas.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Almas Dara Saputri Wiwaha</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Avatar.png"><h4>Zulfa Hamidah</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Avatar.png"><h4>Windi Meliana</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/arum.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Arum Rohimah</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/tiara.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Alvyra Mutiara Andira</h4><span>Div. Humas</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Zahran.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Zahran Saputra Wiwaha</h4><span>Koord. Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Gema.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Gema Darma Wijana</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Cean.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Raihan Muzhafar Yusuf</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Ari.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Ari Pratama Putra</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Aurel.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Aurel Pricila Ananta</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Vina.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Vina Siti Aminah</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/April.JPG" onerror="this.src='/asset/Avatar.png'"><h4>April Amelia Putri</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Dinda.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Dinda Aulia</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Agnia.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Agnia Ilma Triana</h4><span>Div. Konsumsi</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Azis.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Abdul Azis</h4><span>Koord. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Romi.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Romi Zayyinul Aripin</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Rojab.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Rojab Mulyana</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Irfan.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Irfan Naufal Amrulloh</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Fadlan.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Fadlan Nurullah</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Arya.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Arya Maulana</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Avatar.png"><h4>Danil Mauluda</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/fabin.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Fabin Alfarizi Rizal Riyansah</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/rai.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Rai Nepal Ibrahim</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/robi.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Robby Muharram</h4><span>Div. Dekorasi &amp; Logistik</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/Rama.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Rama Pratama Adila</h4><span>Koord. Div. Kebersihan</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/arfik.JPG" onerror="this.src='/asset/Avatar.png'"><h4>Arfik Ramdhani</h4><span>Div. Kebersihan</span></div>
-      <div class="pg-card"><img src="/asset/Profil Foto/ais.JPG" onerror="this.src='/asset/Avatar.png'"><h4>M. Fariz Saeful Ammar</h4><span>Div. Kebersihan</span></div>
+      <!-- DIVISI-DIVISI -->
+      <div class="bagan-level bagan-level-4">
+        <div class="bagan-row">
+          <!-- Divisi Lapangan -->
+          <div class="bagan-divisi">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-people-arrows"></i> Divisi Lapangan
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/rayhan korlap.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Rayhan Nur Pajri</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/haikal.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Haikal Abil Fida</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Ardi.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Ardiansyah Pramadani</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/fahmi.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Fahmi Maulana</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/daffa kecil.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Daffa Yusuf Afandy</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divisi Acara -->
+          <div class="bagan-divisi">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-calendar-check"></i> Divisi Acara
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Faiq.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Faiq Ahsan</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Zidan.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Zidan Ziyadul Haq</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/arfan.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Arfan Najmi</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Badrul.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Badrul Zaman</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/mutia.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Mutia Zahran</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/raifa inong.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Raifa Putri Ramadhani</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divisi Pubdok -->
+          <div class="bagan-divisi">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-camera"></i> Divisi Pubdok
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/panji.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Panji Jatmika</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/ari pdd.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Fachri Akbar</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/erul.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Muhamad Darul Tahqiq</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/riccel.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Rhicelle Apriliana</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/riska.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Riska Maulida Fitri</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/agisna.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Agisna Maulida Noer</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/gita.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Anggita Nurfadillah</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIVISI LANJUTAN -->
+      <div class="bagan-level bagan-level-4">
+        <div class="bagan-row">
+          <!-- Divisi Humas -->
+          <div class="bagan-divisi">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-handshake"></i> Divisi Humas
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Alfin.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Alfin Saputra</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/huda.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Huda Kasya Islami</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/irham.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Irham Ghifarul Khilmi</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/almas.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Almas Dara Saputri Wiwaha</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Avatar.png">
+                <h4>Zulfa Hamidah</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Avatar.png">
+                <h4>Windi Meliana</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/arum.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Arum Rohimah</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/tiara.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Alvyra Mutiara Andira</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divisi Konsumsi -->
+          <div class="bagan-divisi">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-utensils"></i> Divisi Konsumsi
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Zahran.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Zahran Saputra Wiwaha</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Gema.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Gema Darma Wijana</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Cean.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Raihan Muzhafar Yusuf</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Ari.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Ari Pratama Putra</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Aurel.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Aurel Pricila Ananta</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Vina.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Vina Siti Aminah</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/April.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>April Amelia Putri</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Dinda.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Dinda Aulia</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Agnia.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Agnia Ilma Triana</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divisi Dekorasi & Logistik -->
+          <div class="bagan-divisi">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-palette"></i> Divisi Dekorasi &amp; Logistik
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Azis.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Abdul Azis</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Romi.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Romi Zayyinul Aripin</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Rojab.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Rojab Mulyana</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Irfan.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Irfan Naufal Amrulloh</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Fadlan.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Fadlan Nurullah</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Arya.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Arya Maulana</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Avatar.png">
+                <h4>Danil Mauluda</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/fabin.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Fabin Alfarizi Rizal Riyansah</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/rai.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Rai Nepal Ibrahim</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/robi.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Robby Muharram</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIVISI KEBERSIHAN -->
+      <div class="bagan-level bagan-level-4">
+        <div class="bagan-row">
+          <div class="bagan-divisi" style="margin:0 auto;">
+            <div class="bagan-divisi-title">
+              <i class="fa-solid fa-broom"></i> Divisi Kebersihan
+            </div>
+            <div class="bagan-divisi-items">
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/Rama.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Rama Pratama Adila</h4>
+                <span>Koordinator</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/arfik.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>Arfik Ramdhani</h4>
+                <span>Anggota</span>
+              </div>
+              <div class="bagan-card kecil">
+                <img src="/asset/Profil Foto/ais.JPG" onerror="this.src='/asset/Avatar.png'">
+                <h4>M. Fariz Saeful Ammar</h4>
+                <span>Anggota</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -2504,6 +2998,27 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.stagger-children').forEach(function(el) {
     if (isInView(el)) el.classList.add('visible');
   });
+  
+  // ============================================================
+  // MARQUEE SEAMLESS - AUTO DUPLICATE KONTEN
+  // ============================================================
+  document.querySelectorAll('.marquee-track').forEach(function(track) {
+    // Ambil semua child asli
+    const originalChildren = Array.from(track.children);
+    
+    // Clone SETIAP child dan tambahkan ke track
+    originalChildren.forEach(function(child) {
+      const clone = child.cloneNode(true);
+      track.appendChild(clone);
+    });
+    
+    // Pastikan total item genap agar seamless
+    const totalItems = track.children.length;
+    if (totalItems % 2 !== 0) {
+      const firstChild = track.children[0].cloneNode(true);
+      track.appendChild(firstChild);
+    }
+  });
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -2700,14 +3215,6 @@ document.addEventListener('DOMContentLoaded', function() {
       ham.classList.remove('active');
     });
   });
-});
-
-// ═══════════════════════════════════════════════════════════
-// MARQUEE DUPLICATE
-// ═══════════════════════════════════════════════════════════
-['mq1','mq2','mq3'].forEach(function(id) {
-  var el = document.getElementById(id);
-  if (el) el.innerHTML += el.innerHTML;
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -3099,6 +3606,7 @@ window.addEventListener('storage', function(e) {
 
 console.log('🔥 Adhigana Prapti - Premium Interactive PWA ready!');
 console.log('💬 Aspirasi, Kritik & Saran tersimpan di Firestore!');
+console.log('🔄 Marquee berjalan seamless dengan kecepatan 10 detik!');
 </script>
 </body>
 </html>
