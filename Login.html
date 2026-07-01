@@ -19,7 +19,7 @@
       --c-bg:#070a10;--c-surface:#0d1018;--c-panel:#111520;
       --c-border:rgba(255,255,255,.06);--c-text:#eef2ff;--c-muted:#5a6480;--c-dim:#8b95b0;
       --c-cyan:#6ee7f7;--c-cyan2:#38c4d8;--c-red:#ff5f5f;--c-amber:#ffb340;
-      --c-green:#4ade80;--c-purple:#a78bfa;
+      --c-green:#4ade80;--c-purple:#a78bfa;--c-gold:#f5c842;
       --r-card:20px;--r-btn:14px;--r-input:13px;
       --shadow-lg:0 32px 80px rgba(0,0,0,.55);
     }
@@ -96,12 +96,14 @@
     .toast-accent.mading{background:linear-gradient(90deg,var(--c-cyan),var(--c-cyan2))}
     .toast-accent.absensi{background:linear-gradient(90deg,var(--c-amber),#f59e0b)}
     .toast-accent.info{background:linear-gradient(90deg,var(--c-purple),#7c3aed)}
+    .toast-accent.aspirasi{background:linear-gradient(90deg,var(--c-purple),#7c3aed)}
     .toast-body{display:flex;gap:12px;align-items:flex-start;padding:14px 16px}
     .toast-icon{width:38px;height:38px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
     .toast-icon.kas{background:rgba(74,222,128,.12);color:var(--c-green)}
     .toast-icon.mading{background:rgba(110,231,247,.12);color:var(--c-cyan)}
     .toast-icon.absensi{background:rgba(255,179,64,.12);color:var(--c-amber)}
     .toast-icon.info{background:rgba(167,139,250,.12);color:var(--c-purple)}
+    .toast-icon.aspirasi{background:rgba(167,139,250,.12);color:var(--c-purple)}
     .toast-text{flex:1;min-width:0}
     .toast-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--c-muted);margin-bottom:2px}
     .toast-title{font-size:13px;font-weight:700;margin-bottom:3px}
@@ -118,6 +120,7 @@
     .toast-progress-bar.mading{background:var(--c-cyan)}
     .toast-progress-bar.absensi{background:var(--c-amber)}
     .toast-progress-bar.info{background:var(--c-purple)}
+    .toast-progress-bar.aspirasi{background:var(--c-purple)}
 
     /* HAMBURGER */
     .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
@@ -269,7 +272,7 @@
     .stat-val{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;line-height:1.1}
     .stat-sub{font-size:11px;color:var(--c-muted);margin-top:2px}
 
-    /* RINGKASAN DETAIL ABSENSI - TAMBAHAN BARU */
+    /* RINGKASAN DETAIL ABSENSI */
     .ringkas-detail {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -321,6 +324,45 @@
       padding: 12px 0;
     }
 
+    /* ============================================================
+       ASPIRASI - KHUSUS
+    ============================================================ */
+    .aspirasi-item{padding:14px 16px;border:1px solid var(--c-border);border-radius:14px;background:rgba(255,255,255,.02);margin-bottom:10px;transition:all .2s}
+    .aspirasi-item:hover{background:rgba(255,255,255,.04);border-color:rgba(110,231,247,.1)}
+    .aspirasi-item .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+    .aspirasi-item .nama{font-weight:700;font-size:14px;color:var(--c-text)}
+    .aspirasi-item .kategori{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 12px;border-radius:999px}
+    .aspirasi-item .kategori.aspirasi{background:rgba(110,231,247,.08);color:var(--c-cyan)}
+    .aspirasi-item .kategori.kritik{background:rgba(255,95,95,.08);color:var(--c-red)}
+    .aspirasi-item .kategori.saran{background:rgba(245,200,66,.08);color:var(--c-gold)}
+    .aspirasi-item .kategori.pertanyaan{background:rgba(74,222,128,.08);color:var(--c-green)}
+    .aspirasi-item .pesan{color:var(--c-dim);font-size:13px;line-height:1.7;word-wrap:break-word}
+    .aspirasi-item .waktu{font-size:11px;color:var(--c-muted);margin-top:4px}
+    .aspirasi-item .hapus-btn{background:none;border:none;color:var(--c-muted);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:8px;transition:.2s;margin-left:auto}
+    .aspirasi-item .hapus-btn:hover{color:var(--c-red);background:rgba(255,95,95,.1)}
+    .aspirasi-scroll{max-height:450px;overflow-y:auto;padding-right:4px}
+    .aspirasi-scroll::-webkit-scrollbar{width:4px}
+    .aspirasi-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+    .empty-state{padding:40px 20px;text-align:center;color:var(--c-muted);font-size:14px}
+    .empty-state i{font-size:32px;display:block;margin-bottom:10px}
+
+    /* ============================================================
+       KAS SPONSORSHIP - KHUSUS
+    ============================================================ */
+    .kas-sponsor-item{padding:14px 16px;border:1px solid var(--c-border);border-radius:14px;background:rgba(255,255,255,.02);margin-bottom:10px;transition:all .2s}
+    .kas-sponsor-item:hover{background:rgba(255,255,255,.04);border-color:rgba(245,200,66,.1)}
+    .kas-sponsor-item .jenis{font-weight:700;font-size:13px}
+    .kas-sponsor-item .jenis.masuk{color:var(--c-green)}
+    .kas-sponsor-item .jenis.keluar{color:var(--c-red)}
+    .kas-sponsor-item .nominal{font-weight:800;font-size:15px}
+    .kas-sponsor-item .keterangan{color:var(--c-dim);font-size:13px}
+    .kas-sponsor-item .waktu{font-size:11px;color:var(--c-muted)}
+
+    .ringkas-sponsor{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+    .ringkas-sponsor .box{padding:14px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid var(--c-border);text-align:center}
+    .ringkas-sponsor .box .val{font-size:20px;font-weight:800;font-family:'Space Grotesk',sans-serif}
+    .ringkas-sponsor .box .label{font-size:11px;color:var(--c-muted);margin-top:2px}
+
     /* ABSENSI */
     .abs-search{width:100%;padding:10px 14px;border-radius:13px;border:1px solid var(--c-border);background:rgba(255,255,255,.04);color:var(--c-text);font-size:13px;outline:none;font-family:inherit;margin-bottom:12px;transition:border-color .2s}
     .abs-search:focus{border-color:rgba(110,231,247,.3)}
@@ -366,88 +408,17 @@
       .ringkas-detail .detail-box{max-height:140px}
     }
     @media(max-width:480px){.notif-dropdown{width:calc(100vw - 20px);right:-5px;max-height:380px}.toast{width:100%}}
+
     /* ========================================
-   PERBAIKAN TOGGLE PASSWORD - ADA KOTAKNYA
-   ======================================== */
-
-/* Container input password */
-.input-wrap {
-  position: relative;
-}
-
-/* Input password - beri ruang untuk tombol */
-.field-inp#loginPassword {
-  padding-right: 55px !important;
-  padding-left: 42px !important;
-}
-
-/* Icon lock di kiri */
-.input-wrap .fa-lock {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--c-muted);
-  font-size: 15px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* ===== TOMBOL TOGGLE PASSWORD - DENGAN KOTAK/BORDER ===== */
-#togglePasswordBtn {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  
-  /* KOTAK/BORDER */
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 8px !important;
-  
-  /* Ukuran */
-  width: 36px;
-  height: 36px;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  
-  /* Warna */
-  color: var(--c-muted) !important;
-  font-size: 16px !important;
-  
-  /* Kursor */
-  cursor: pointer !important;
-  
-  /* Transisi */
-  transition: all 0.2s ease !important;
-  
-  /* Reset */
-  padding: 0 !important;
-  z-index: 2 !important;
-  outline: none !important;
-}
-
-/* HOVER - saat mouse di atas tombol */
-#togglePasswordBtn:hover {
-  background: rgba(110, 231, 247, 0.1) !important;
-  border-color: rgba(110, 231, 247, 0.3) !important;
-  color: var(--c-cyan) !important;
-}
-
-/* AKTIF - saat password terlihat */
-#togglePasswordBtn.active {
-  background: rgba(110, 231, 247, 0.12) !important;
-  border-color: rgba(110, 231, 247, 0.4) !important;
-  color: var(--c-cyan) !important;
-}
-
-/* Icon di dalam tombol */
-#togglePasswordBtn i {
-  font-size: 16px !important;
-  pointer-events: none;
-  line-height: 1;
-}
+       TOGGLE PASSWORD
+    ======================================== */
+    .input-wrap{position:relative}
+    .field-inp#loginPassword{padding-right:55px !important;padding-left:42px !important}
+    .input-wrap .fa-lock{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--c-muted);font-size:15px;z-index:2;pointer-events:none}
+    #togglePasswordBtn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.05) !important;border:1.5px solid rgba(255,255,255,.12) !important;border-radius:8px !important;width:36px;height:36px;display:flex !important;align-items:center;justify-content:center;color:var(--c-muted) !important;font-size:16px !important;cursor:pointer !important;transition:all .2s ease !important;padding:0 !important;z-index:2 !important;outline:none !important}
+    #togglePasswordBtn:hover{background:rgba(110,231,247,.1) !important;border-color:rgba(110,231,247,.3) !important;color:var(--c-cyan) !important}
+    #togglePasswordBtn.active{background:rgba(110,231,247,.12) !important;border-color:rgba(110,231,247,.4) !important;color:var(--c-cyan) !important}
+    #togglePasswordBtn i{font-size:16px !important;pointer-events:none;line-height:1}
   </style>
 </head>
 <body>
@@ -551,15 +522,15 @@
         </div>
       </div>
       <div class="form-field">
-  <label>Kata Sandi</label>
-  <div class="input-wrap" style="position:relative;">
-    <i class="fa-regular fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--c-muted);z-index:2;"></i>
-    <input class="field-inp" id="loginPassword" type="password" placeholder="••••••••" style="padding-right:50px;"/>
-    <button type="button" id="togglePasswordBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--c-muted);cursor:pointer;font-size:18px;padding:5px;z-index:2;transition:color 0.2s;">
-      <i class="fa-regular fa-eye" id="eyeIcon"></i>
-    </button>
-  </div>
-</div>
+        <label>Kata Sandi</label>
+        <div class="input-wrap" style="position:relative;">
+          <i class="fa-regular fa-lock" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--c-muted);z-index:2;"></i>
+          <input class="field-inp" id="loginPassword" type="password" placeholder="••••••••" style="padding-right:50px;"/>
+          <button type="button" id="togglePasswordBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--c-muted);cursor:pointer;font-size:18px;padding:5px;z-index:2;transition:color 0.2s;">
+            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
       <button class="login-submit" id="loginSubmit">
         <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Portal
       </button>
@@ -628,16 +599,18 @@
       </div>
     </div>
 
-    <!-- Tabs -->
+    <!-- Tabs - DITAMBAHKAN ASPIRASI & KAS SPONSOR -->
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="ringkas"><i class="fa-solid fa-gauge-high"></i> Ringkas</button>
       <button class="tab-btn" data-tab="absensi"><i class="fa-solid fa-clipboard-check"></i> Absensi</button>
       <button class="tab-btn" data-tab="mading"><i class="fa-solid fa-newspaper"></i> Mading</button>
       <button class="tab-btn" data-tab="kas"><i class="fa-solid fa-coins"></i> Kas</button>
+      <button class="tab-btn" data-tab="aspirasi"><i class="fa-regular fa-comment"></i> Aspirasi</button>
+      <button class="tab-btn" data-tab="kassponsor"><i class="fa-solid fa-hand-holding-dollar"></i> Kas Sponsor</button>
       <button class="tab-btn admin-only" data-tab="kelola"><i class="fa-solid fa-gear"></i> Kelola</button>
     </div>
 
-    <!-- TAB RINGKAS -->
+    <!-- TAB RINGKAS - DITAMBAHKAN STATS ASPIRASI & KAS SPONSOR -->
     <div id="paneRingkas" class="tab-pane active">
       <div class="stats-grid">
         <div class="card stat-card">
@@ -664,11 +637,26 @@
             <div class="stat-sub">transparan</div>
           </div>
         </div>
+        <div class="card stat-card">
+          <div class="stat-icon" style="color:var(--c-purple);background:rgba(167,139,250,.07)"><i class="fa-regular fa-comment"></i></div>
+          <div>
+            <div class="stat-label">Aspirasi Masuk</div>
+            <div class="stat-val" id="rAspirasi">—</div>
+            <div class="stat-sub">terbaru</div>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon" style="color:var(--c-gold);background:rgba(245,200,66,.07)"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+          <div>
+            <div class="stat-label">Saldo Kas Sponsor</div>
+            <div class="stat-val" id="rKasSponsor">—</div>
+            <div class="stat-sub">transparan</div>
+          </div>
+        </div>
       </div>
       <div class="card" style="margin-top:16px">
         <h4 style="font-size:14px;font-weight:700;margin-bottom:12px"><i class="fa-solid fa-chart-bar" style="color:var(--c-cyan);margin-right:7px"></i>Rekap Absensi Hari Ini</h4>
         <div id="ringkasAbsensi" style="color:var(--c-muted);font-size:13px">Memuat data...</div>
-        <!-- DETAIL ABSENSI - TAMBAHAN BARU -->
         <div id="ringkasDetailAbsensi" class="ringkas-detail" style="display:none;"></div>
       </div>
     </div>
@@ -752,6 +740,62 @@
             <div id="kasSaldoInfo" style="font-size:13px;color:var(--c-muted)"></div>
           </div>
           <div id="kasRiwayat" style="display:flex;flex-direction:column;gap:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB ASPIRASI - BARU DITAMBAHKAN -->
+    <div id="paneAspirasi" class="tab-pane">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div>
+            <h3 style="margin-bottom:4px"><i class="fa-regular fa-comment" style="color:var(--c-purple);margin-right:8px"></i>Kelola Aspirasi</h3>
+            <p style="color:var(--c-muted);font-size:13px">Semua aspirasi dari publik & dashboard. Bisa dihapus dari sini.</p>
+          </div>
+          <button class="btn btn-danger btn-sm" id="hapusSemuaAspirasi"><i class="fa-solid fa-trash"></i> Hapus Semua</button>
+        </div>
+        <div id="aspirasiList" class="aspirasi-scroll">
+          <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Memuat aspirasi...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB KAS SPONSORSHIP - BARU DITAMBAHKAN -->
+    <div id="paneKassponsor" class="tab-pane">
+      <div class="card">
+        <h3 style="margin-bottom:4px"><i class="fa-solid fa-hand-holding-dollar" style="color:var(--c-gold);margin-right:8px"></i>Kas Sponsorship</h3>
+        <p style="color:var(--c-muted);font-size:13px;margin-bottom:20px">Catat pemasukan & pengeluaran dana sponsorship secara khusus</p>
+
+        <!-- Ringkasan -->
+        <div class="ringkas-sponsor" id="ringkasSponsor">
+          <div class="box"><div class="val" id="totalSponsorMasuk">Rp0</div><div class="label">Total Masuk</div></div>
+          <div class="box"><div class="val" id="totalSponsorKeluar">Rp0</div><div class="label">Total Keluar</div></div>
+          <div class="box"><div class="val" id="saldoSponsor">Rp0</div><div class="label">Saldo Akhir</div></div>
+        </div>
+
+        <!-- Form -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+          <div><label style="display:block;color:var(--c-muted);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px">Jenis</label>
+            <select id="sponsorJenis" class="field-input">
+              <option value="masuk">Pemasukan Sponsor</option>
+              <option value="keluar">Pengeluaran Sponsor</option>
+            </select>
+          </div>
+          <div><label style="display:block;color:var(--c-muted);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px">Nominal (Rp)</label>
+            <input id="sponsorNominal" type="number" class="field-input" placeholder="0" min="1"/>
+          </div>
+          <div style="grid-column:1/-1"><label style="display:block;color:var(--c-muted);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px">Keterangan</label>
+            <input id="sponsorKeterangan" type="text" class="field-input" placeholder="Nama sponsor / keterangan pengeluaran..."/>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn btn-primary" id="btnTambahSponsor" style="background:linear-gradient(135deg,var(--c-gold),#e0a520);color:#1a0f00"><i class="fa-solid fa-plus"></i> Tambah Kas Sponsor</button>
+        </div>
+
+        <!-- Riwayat -->
+        <div style="margin-top:28px">
+          <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">Riwayat Kas Sponsor</h4>
+          <div id="sponsorRiwayat" style="display:flex;flex-direction:column;gap:10px"></div>
         </div>
       </div>
     </div>
@@ -934,7 +978,7 @@ function playSound(type='default') {
 // TOAST
 // ═══════════════════════════════════════════════════════════
 function showToast({type='info',title='',desc='',amount='',amountColor=''}) {
-  const map = {kas:{icon:'fa-coins',cls:'kas'},mading:{icon:'fa-newspaper',cls:'mading'},absensi:{icon:'fa-clipboard-check',cls:'absensi'},info:{icon:'fa-circle-info',cls:'info'}};
+  const map = {kas:{icon:'fa-coins',cls:'kas'},mading:{icon:'fa-newspaper',cls:'mading'},absensi:{icon:'fa-clipboard-check',cls:'absensi'},info:{icon:'fa-circle-info',cls:'info'},aspirasi:{icon:'fa-regular fa-comment',cls:'aspirasi'}};
   const t = map[type]||map.info;
   const id = 'toast_'+Date.now();
   const el = document.createElement('div');
@@ -959,11 +1003,10 @@ function showToast({type='info',title='',desc='',amount='',amountColor=''}) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// NOTIF DROPDOWN - DI SINI SEMUA NOTIF DISIMPAN
+// NOTIF DROPDOWN
 // ═══════════════════════════════════════════════════════════
 function addToDropdown(notif) {
   const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-  // Cek duplicate berdasarkan id
   if(!saved.some(n=>n.id===notif.id)){
     saved.unshift(notif);
     if(saved.length>100) saved.pop();
@@ -993,14 +1036,12 @@ function renderDropdown() {
       </div>
     </div>`).join('');
 
-  // Klik notif untuk tandai sudah dibaca (hapus border)
   el.querySelectorAll('.notif-item').forEach(item=>{
     item.addEventListener('click', function(){
       const id = this.dataset.id;
       const saved2 = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
       const found = saved2.find(n=>n.id===id);
       if(found){
-        // Hapus dari array (sudah dibaca)
         const idx = saved2.indexOf(found);
         saved2.splice(idx,1);
         localStorage.setItem('ap_notifs_v4',JSON.stringify(saved2));
@@ -1024,25 +1065,21 @@ function updateBadge() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// FCM — SUBSCRIBE & KIRIM PUSH KE SEMUA TOKEN
+// FCM
 // ═══════════════════════════════════════════════════════════
 async function subscribeFCM() {
   try {
     await navigator.serviceWorker.register('/service-worker.js');
     const swReg = await navigator.serviceWorker.ready;
-
     const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
     if(!token){ console.warn('FCM token kosong'); return null; }
-
     await db.collection('fcm_tokens').doc(token).set({
       token,
       createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
       userAgent:  navigator.userAgent.slice(0,100),
       uid:        currentUser?.uid || 'anonymous'
     }, { merge: true });
-
     console.log('✅ FCM token tersimpan:', token.slice(0,20)+'...');
-
     const statusEl = document.getElementById('notifStatus');
     if(statusEl){
       statusEl.innerHTML = '✅ Push aktif — notifikasi masuk ke HP kamu meski tab tertutup!';
@@ -1064,7 +1101,6 @@ async function sendPushToAll(title, body, type='info') {
     const tokens = [];
     snap.forEach(d => tokens.push(d.data().token));
     if(!tokens.length){ console.log('Tidak ada subscriber'); return; }
-
     await db.collection('push_notifications').add({
       title, body, type,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1076,7 +1112,6 @@ async function sendPushToAll(title, body, type='info') {
   }
 }
 
-// FCM foreground message (tab aktif)
 messaging.onMessage((payload) => {
   console.log('📨 FCM foreground:', payload);
   const {title,body,type} = payload.data || payload.notification || {};
@@ -1107,151 +1142,10 @@ function setSyncStatus(s) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// REALTIME LISTENERS
+// RENDER FUNCTIONS
 // ═══════════════════════════════════════════════════════════
-function startListeners() {
-  setSyncStatus('loading');
 
-  // ── MADING ──
-  const u1 = db.collection('mading').orderBy('tanggal','desc').limit(30)
-    .onSnapshot(snap => {
-      setSyncStatus('ok');
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderMadingList(items);
-      renderMadingPub(items);
-      document.getElementById('rPengumuman').textContent = items.length;
-
-      snap.docChanges().forEach(ch => {
-        if(ch.type==='added'){
-          // Skip notifikasi pertama kali load
-          if(isFirstLoad){ knownIds.add(ch.doc.id); return; }
-          if(knownIds.has(ch.doc.id)) return;
-          knownIds.add(ch.doc.id);
-          const d=ch.doc.data(), judul=d.judul||'Pengumuman Baru', isi=d.isi||'';
-          playSound('mading');
-          showToast({type:'mading',title:`📰 ${judul}`,desc:isi.slice(0,80)+(isi.length>80?'...':'')});
-          addToDropdown({id:ch.doc.id,type:'mading',title:`📰 ${judul}`,body:isi.slice(0,100),timestamp:new Date().toISOString()});
-          updateBadge();
-        }
-      });
-      isFirstLoad = false;
-    }, ()=>setSyncStatus('offline'));
-
-  // ── KAS ──
-  const u2 = db.collection('kas').orderBy('tanggal','desc').limit(50)
-    .onSnapshot(snap => {
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderKasList(items);
-
-      snap.docChanges().forEach(ch => {
-        if(ch.type==='added'){
-          if(knownIds.has(ch.doc.id)||isFirstLoad){ knownIds.add(ch.doc.id); return; }
-          knownIds.add(ch.doc.id);
-          const d=ch.doc.data(), masuk=d.jenis==='masuk';
-          const title=masuk?'💰 Kas Masuk!':'💸 Kas Keluar';
-          const amount=(masuk?'+':'-')+fmtRp(d.nominal);
-          playSound('kas');
-          showToast({type:'kas',title,desc:d.keterangan||'',amount,amountColor:masuk?'green':'red'});
-          addToDropdown({id:ch.doc.id,type:'kas',title,body:`${d.keterangan} — ${amount}`,timestamp:new Date().toISOString()});
-          updateBadge();
-        }
-      });
-    });
-
-  // ── ABSENSI ──
-  const today = new Date().toISOString().split('T')[0];
-  const u3 = db.collection('absensi').orderBy('timestamp','desc').limit(10)
-    .onSnapshot(snap => {
-      const all = snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderAbsensiRiwayat(all);
-      const todayDoc = all.find(r=>r.tanggal===today);
-      if(todayDoc?.records){
-        const vals=Object.values(todayDoc.records);
-        const h=vals.filter(v=>v==='hadir').length;
-        const i=vals.filter(v=>v==='izin').length;
-        const a=vals.filter(v=>v==='alfa').length;
-        document.getElementById('rHadir').textContent=h;
-        document.getElementById('ringkasAbsensi').innerHTML=`
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-            <div style="padding:12px;border-radius:12px;background:rgba(110,231,247,.06);text-align:center">
-              <div style="font-size:22px;font-weight:800;color:var(--c-cyan)">${h}</div>
-              <div style="font-size:11px;color:var(--c-muted)">Hadir</div>
-            </div>
-            <div style="padding:12px;border-radius:12px;background:rgba(255,179,64,.06);text-align:center">
-              <div style="font-size:22px;font-weight:800;color:var(--c-amber)">${i}</div>
-              <div style="font-size:11px;color:var(--c-muted)">Izin</div>
-            </div>
-            <div style="padding:12px;border-radius:12px;background:rgba(255,95,95,.06);text-align:center">
-              <div style="font-size:22px;font-weight:800;color:var(--c-red)">${a}</div>
-              <div style="font-size:11px;color:var(--c-muted)">Alfa</div>
-            </div>
-          </div>
-          <p style="font-size:11px;color:var(--c-muted);margin-top:8px">Data hari ini (${today})</p>`;
-
-        // RENDER NAMA-NAMA ANGGOTA HADIR, IZIN, ALFA
-        const detailContainer = document.getElementById('ringkasDetailAbsensi');
-        detailContainer.style.display = 'grid';
-        
-        const hadirList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'hadir');
-        const izinList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'izin');
-        const alfaList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'alfa');
-
-        detailContainer.innerHTML = `
-          <div class="detail-box">
-            <div class="detail-title hadir"><i class="fa-solid fa-check-circle"></i> Hadir (${hadirList.length})</div>
-            ${hadirList.length ? hadirList.map(a => `<div class="detail-name"><span class="dot hadir"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-          <div class="detail-box">
-            <div class="detail-title izin"><i class="fa-solid fa-clock"></i> Izin (${izinList.length})</div>
-            ${izinList.length ? izinList.map(a => `<div class="detail-name"><span class="dot izin"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-          <div class="detail-box">
-            <div class="detail-title alfa"><i class="fa-solid fa-times-circle"></i> Alfa (${alfaList.length})</div>
-            ${alfaList.length ? alfaList.map(a => `<div class="detail-name"><span class="dot alfa"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-        `;
-      } else {
-        document.getElementById('rHadir').textContent='—';
-        document.getElementById('ringkasAbsensi').innerHTML='<p style="font-size:13px;color:var(--c-muted)">Belum ada absensi hari ini.</p>';
-        const detailContainer = document.getElementById('ringkasDetailAbsensi');
-        detailContainer.style.display = 'none';
-      }
-
-      snap.docChanges().forEach(ch=>{
-        if(ch.type==='added'&&!isFirstLoad&&!knownIds.has(ch.doc.id)){
-          knownIds.add(ch.doc.id);
-          const d=ch.doc.data(), vals=Object.values(d.records||{});
-          const h=vals.filter(v=>v==='hadir').length;
-          const title=`📋 Absensi ${d.tanggal||''}`, body=`Hadir: ${h} dari ${ALL_ANGGOTA.length} anggota`;
-          playSound('absensi');
-          showToast({type:'absensi',title,desc:body});
-          addToDropdown({id:ch.doc.id,type:'absensi',title,body,timestamp:new Date().toISOString()});
-          updateBadge();
-        }
-      });
-    });
-
-  // ── PUSH NOTIFICATIONS listener ──
-  const u4 = db.collection('push_notifications').orderBy('timestamp','desc').limit(1)
-    .onSnapshot(snap => {
-      snap.docChanges().forEach(ch => {
-        if(ch.type==='added'&&!knownIds.has('pn_'+ch.doc.id)){
-          knownIds.add('pn_'+ch.doc.id);
-        }
-      });
-    });
-
-  unsubFns = [u1,u2,u3,u4];
-}
-
-function stopListeners() {
-  unsubFns.forEach(u=>u&&u());
-  unsubFns=[];
-}
-
-// ═══════════════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════════════
+// MADING PUBLIK
 function renderMadingPub(items) {
   const c=document.getElementById('madingPubGrid'); if(!c) return;
   if(!items?.length){ c.innerHTML='<div class="empty-state"><i class="fa-solid fa-newspaper"></i>Belum ada pengumuman.</div>'; return; }
@@ -1263,6 +1157,7 @@ function renderMadingPub(items) {
   });
 }
 
+// MADING LIST (Dashboard)
 function renderMadingList(items) {
   const c=document.getElementById('madingList'); if(!c) return;
   if(!items?.length){ c.innerHTML='<div style="color:var(--c-muted);font-size:13px">Belum ada pengumuman.</div>'; return; }
@@ -1284,6 +1179,7 @@ function renderMadingList(items) {
   });
 }
 
+// KAS UMUM
 function renderKasList(items) {
   const c=document.getElementById('kasRiwayat'); if(!c) return;
   const saldo=items.reduce((a,it)=>{ const n=Number(it.nominal)||0; return it.jenis==='masuk'?a+n:a-n; },0);
@@ -1315,6 +1211,84 @@ function renderKasList(items) {
   });
 }
 
+// ═══════════════════════════════════════════════════════════
+// ASPIRASI - BARU
+// ═══════════════════════════════════════════════════════════
+function renderAspirasiList(items) {
+  const c = document.getElementById('aspirasiList');
+  if (!c) return;
+  document.getElementById('rAspirasi').textContent = items?.length || 0;
+  if (!items?.length) {
+    c.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comment"></i>Belum ada aspirasi.</div>';
+    return;
+  }
+  const kategoriMap = { aspirasi: '💡 Aspirasi', kritik: '🔴 Kritik', saran: '💛 Saran', pertanyaan: '❓ Pertanyaan' };
+  c.innerHTML = '';
+  items.slice().reverse().forEach(it => {
+    const d = document.createElement('div');
+    d.className = 'aspirasi-item';
+    d.innerHTML = `
+      <div class="meta">
+        <span class="nama">${esc(it.nama || 'Anonim')}</span>
+        <span class="kategori ${it.kategori || 'aspirasi'}">${kategoriMap[it.kategori] || it.kategori}</span>
+        <button class="hapus-btn" data-id="${it.id}" title="Hapus"><i class="fa-regular fa-trash-can"></i></button>
+      </div>
+      <div class="pesan">${esc(it.pesan || '')}</div>
+      <div class="waktu"><i class="fa-regular fa-clock"></i> ${fmtDT(it.timestamp)}</div>
+    `;
+    d.querySelector('.hapus-btn')?.addEventListener('click', async () => {
+      if (!confirm('Hapus aspirasi ini?')) return;
+      await db.collection('aspirasi').doc(it.id).delete();
+      showToast({ type: 'info', title: '🗑️ Aspirasi dihapus' });
+    });
+    c.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// KAS SPONSORSHIP - BARU
+// ═══════════════════════════════════════════════════════════
+function renderSponsorList(items) {
+  const c = document.getElementById('sponsorRiwayat');
+  if (!c) return;
+  const masuk = items.filter(i => i.jenis === 'masuk').reduce((a, i) => a + (Number(i.nominal) || 0), 0);
+  const keluar = items.filter(i => i.jenis === 'keluar').reduce((a, i) => a + (Number(i.nominal) || 0), 0);
+  const saldo = masuk - keluar;
+  document.getElementById('totalSponsorMasuk').textContent = fmtRp(masuk);
+  document.getElementById('totalSponsorKeluar').textContent = fmtRp(keluar);
+  document.getElementById('saldoSponsor').textContent = fmtRp(saldo);
+  document.getElementById('rKasSponsor').textContent = fmtRp(saldo);
+  if (!items?.length) {
+    c.innerHTML = '<div style="color:var(--c-muted);font-size:13px">Belum ada transaksi kas sponsor.</div>';
+    return;
+  }
+  c.innerHTML = '';
+  items.slice().reverse().forEach(it => {
+    const masuk2 = it.jenis === 'masuk';
+    const d = document.createElement('div');
+    d.className = 'kas-sponsor-item';
+    d.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:0">
+          <div class="jenis ${it.jenis}">${masuk2 ? '📥 Pemasukan Sponsor' : '📤 Pengeluaran Sponsor'}</div>
+          <div class="keterangan">${esc(it.keterangan || '')}</div>
+          <div class="waktu">${fmtDT(it.tanggal)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="nominal" style="color:${masuk2 ? 'var(--c-green)' : 'var(--c-red)'}">${fmtRp(it.nominal)}</div>
+          <button data-id="${it.id}" class="btn btn-danger btn-sm spdel" style="margin-top:8px"><i class="fa-solid fa-trash"></i> Hapus</button>
+        </div>
+      </div>`;
+    d.querySelector('.spdel')?.addEventListener('click', async () => {
+      if (!confirm('Hapus transaksi sponsor ini?')) return;
+      await db.collection('kas_sponsor').doc(it.id).delete();
+      showToast({ type: 'info', title: '🗑️ Transaksi sponsor dihapus' });
+    });
+    c.appendChild(d);
+  });
+}
+
+// ABSENSI
 function renderAbsensiRiwayat(items) {
   const c=document.getElementById('absensiRiwayat'); if(!c) return;
   if(!items?.length){ c.innerHTML='<p style="font-size:13px;color:var(--c-muted)">Belum ada riwayat absensi.</p>'; return; }
@@ -1340,9 +1314,7 @@ function renderAbsensiRiwayat(items) {
   });
 }
 
-// ═══════════════════════════════════════════════════════════
 // ABSENSI FORM
-// ═══════════════════════════════════════════════════════════
 function initAbsensi() {
   ALL_ANGGOTA.forEach(a=>{ if(!absDraft[a.uid]) absDraft[a.uid]='alfa'; });
   renderAbsensiForm('');
@@ -1418,7 +1390,7 @@ document.getElementById('btnPublishMading')?.addEventListener('click', async()=>
 });
 
 // ═══════════════════════════════════════════════════════════
-// TAMBAH KAS
+// TAMBAH KAS UMUM
 // ═══════════════════════════════════════════════════════════
 document.getElementById('btnTambahKas')?.addEventListener('click', async()=>{
   const jenis=document.getElementById('kasJenis')?.value;
@@ -1442,6 +1414,214 @@ document.getElementById('btnTambahKas')?.addEventListener('click', async()=>{
   } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
   finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-plus"></i> Tambah & Push ke Semua'; }
 });
+
+// ═══════════════════════════════════════════════════════════
+// TAMBAH KAS SPONSOR - BARU
+// ═══════════════════════════════════════════════════════════
+document.getElementById('btnTambahSponsor')?.addEventListener('click', async()=>{
+  const jenis=document.getElementById('sponsorJenis')?.value;
+  const nominal=Number(document.getElementById('sponsorNominal')?.value);
+  const ket=document.getElementById('sponsorKeterangan')?.value?.trim();
+  if(!jenis||!nominal||nominal<=0||!ket){ 
+    showToast({type:'info',title:'⚠️ Lengkapi Data',desc:'Isi semua field kas sponsor!'}); 
+    return; 
+  }
+  const btn=document.getElementById('btnTambahSponsor');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Menyimpan...';
+  try {
+    await db.collection('kas_sponsor').add({
+      jenis, nominal, keterangan: ket,
+      tanggal: firebase.firestore.FieldValue.serverTimestamp(),
+      dicatat_oleh: currentUser?.email||'unknown'
+    });
+    document.getElementById('sponsorNominal').value='';
+    document.getElementById('sponsorKeterangan').value='';
+    showToast({type:'kas',title:'✅ Kas Sponsor Dicatat!',desc:`${jenis==='masuk'?'Pemasukan Sponsor':'Pengeluaran Sponsor'} ${fmtRp(nominal)}`});
+  } catch(err){ 
+    showToast({type:'info',title:'❌ Gagal',desc:err.message}); 
+  }
+  finally{ 
+    btn.disabled=false; 
+    btn.innerHTML='<i class="fa-solid fa-plus"></i> Tambah Kas Sponsor'; 
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// HAPUS SEMUA ASPIRASI - BARU
+// ═══════════════════════════════════════════════════════════
+document.getElementById('hapusSemuaAspirasi')?.addEventListener('click', async()=>{
+  if(!confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) return;
+  try {
+    const snap = await db.collection('aspirasi').get();
+    const batch = db.batch();
+    snap.forEach(d=>batch.delete(d.ref));
+    await batch.commit();
+    showToast({type:'info',title:'🗑️ Semua aspirasi dihapus'});
+  } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// REALTIME LISTENERS
+// ═══════════════════════════════════════════════════════════
+function startListeners() {
+  setSyncStatus('loading');
+
+  // MADING
+  const u1 = db.collection('mading').orderBy('tanggal','desc').limit(30)
+    .onSnapshot(snap => {
+      setSyncStatus('ok');
+      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderMadingList(items);
+      renderMadingPub(items);
+      document.getElementById('rPengumuman').textContent = items.length;
+
+      snap.docChanges().forEach(ch => {
+        if(ch.type==='added'){
+          if(isFirstLoad){ knownIds.add(ch.doc.id); return; }
+          if(knownIds.has(ch.doc.id)) return;
+          knownIds.add(ch.doc.id);
+          const d=ch.doc.data(), judul=d.judul||'Pengumuman Baru', isi=d.isi||'';
+          playSound('mading');
+          showToast({type:'mading',title:`📰 ${judul}`,desc:isi.slice(0,80)+(isi.length>80?'...':'')});
+          addToDropdown({id:ch.doc.id,type:'mading',title:`📰 ${judul}`,body:isi.slice(0,100),timestamp:new Date().toISOString()});
+          updateBadge();
+        }
+      });
+      isFirstLoad = false;
+    }, ()=>setSyncStatus('offline'));
+
+  // KAS UMUM
+  const u2 = db.collection('kas').orderBy('tanggal','desc').limit(50)
+    .onSnapshot(snap => {
+      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderKasList(items);
+      snap.docChanges().forEach(ch => {
+        if(ch.type==='added'){
+          if(knownIds.has(ch.doc.id)||isFirstLoad){ knownIds.add(ch.doc.id); return; }
+          knownIds.add(ch.doc.id);
+          const d=ch.doc.data(), masuk=d.jenis==='masuk';
+          const title=masuk?'💰 Kas Masuk!':'💸 Kas Keluar';
+          const amount=(masuk?'+':'-')+fmtRp(d.nominal);
+          playSound('kas');
+          showToast({type:'kas',title,desc:d.keterangan||'',amount,amountColor:masuk?'green':'red'});
+          addToDropdown({id:ch.doc.id,type:'kas',title,body:`${d.keterangan} — ${amount}`,timestamp:new Date().toISOString()});
+          updateBadge();
+        }
+      });
+    });
+
+  // ASPIRASI - BARU
+  const u3 = db.collection('aspirasi').orderBy('timestamp','desc').limit(50)
+    .onSnapshot(snap => {
+      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderAspirasiList(items);
+      // Deteksi aspirasi baru untuk notifikasi
+      snap.docChanges().forEach(ch => {
+        if(ch.type==='added' && !isFirstLoad && !knownIds.has('asp_'+ch.doc.id)){
+          knownIds.add('asp_'+ch.doc.id);
+          const d = ch.doc.data();
+          const kategoriMap = { aspirasi: '💡 Aspirasi', kritik: '🔴 Kritik', saran: '💛 Saran', pertanyaan: '❓ Pertanyaan' };
+          playSound('aspirasi');
+          showToast({
+            type: 'aspirasi',
+            title: `📩 ${kategoriMap[d.kategori] || 'Aspirasi'} Baru`,
+            desc: `Dari ${d.nama || 'Anonim'}: ${(d.pesan||'').slice(0,60)}${(d.pesan||'').length>60?'...':''}`
+          });
+          addToDropdown({
+            id: 'asp_'+ch.doc.id,
+            type: 'aspirasi',
+            title: `📩 ${kategoriMap[d.kategori] || 'Aspirasi'} Baru`,
+            body: `Dari ${d.nama || 'Anonim'}: ${(d.pesan||'').slice(0,100)}`,
+            timestamp: new Date().toISOString()
+          });
+          updateBadge();
+        }
+      });
+    });
+
+  // KAS SPONSOR - BARU
+  const u4 = db.collection('kas_sponsor').orderBy('tanggal','desc').limit(50)
+    .onSnapshot(snap => {
+      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderSponsorList(items);
+    });
+
+  // ABSENSI
+  const today = new Date().toISOString().split('T')[0];
+  const u5 = db.collection('absensi').orderBy('timestamp','desc').limit(10)
+    .onSnapshot(snap => {
+      const all = snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderAbsensiRiwayat(all);
+      const todayDoc = all.find(r=>r.tanggal===today);
+      if(todayDoc?.records){
+        const vals=Object.values(todayDoc.records);
+        const h=vals.filter(v=>v==='hadir').length;
+        const i=vals.filter(v=>v==='izin').length;
+        const a=vals.filter(v=>v==='alfa').length;
+        document.getElementById('rHadir').textContent=h;
+        document.getElementById('ringkasAbsensi').innerHTML=`
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div style="padding:12px;border-radius:12px;background:rgba(110,231,247,.06);text-align:center">
+              <div style="font-size:22px;font-weight:800;color:var(--c-cyan)">${h}</div>
+              <div style="font-size:11px;color:var(--c-muted)">Hadir</div>
+            </div>
+            <div style="padding:12px;border-radius:12px;background:rgba(255,179,64,.06);text-align:center">
+              <div style="font-size:22px;font-weight:800;color:var(--c-amber)">${i}</div>
+              <div style="font-size:11px;color:var(--c-muted)">Izin</div>
+            </div>
+            <div style="padding:12px;border-radius:12px;background:rgba(255,95,95,.06);text-align:center">
+              <div style="font-size:22px;font-weight:800;color:var(--c-red)">${a}</div>
+              <div style="font-size:11px;color:var(--c-muted)">Alfa</div>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--c-muted);margin-top:8px">Data hari ini (${today})</p>`;
+
+        const detailContainer = document.getElementById('ringkasDetailAbsensi');
+        detailContainer.style.display = 'grid';
+        const hadirList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'hadir');
+        const izinList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'izin');
+        const alfaList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'alfa');
+        detailContainer.innerHTML = `
+          <div class="detail-box">
+            <div class="detail-title hadir"><i class="fa-solid fa-check-circle"></i> Hadir (${hadirList.length})</div>
+            ${hadirList.length ? hadirList.map(a => `<div class="detail-name"><span class="dot hadir"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
+          </div>
+          <div class="detail-box">
+            <div class="detail-title izin"><i class="fa-solid fa-clock"></i> Izin (${izinList.length})</div>
+            ${izinList.length ? izinList.map(a => `<div class="detail-name"><span class="dot izin"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
+          </div>
+          <div class="detail-box">
+            <div class="detail-title alfa"><i class="fa-solid fa-times-circle"></i> Alfa (${alfaList.length})</div>
+            ${alfaList.length ? alfaList.map(a => `<div class="detail-name"><span class="dot alfa"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
+          </div>
+        `;
+      } else {
+        document.getElementById('rHadir').textContent='—';
+        document.getElementById('ringkasAbsensi').innerHTML='<p style="font-size:13px;color:var(--c-muted)">Belum ada absensi hari ini.</p>';
+        const detailContainer = document.getElementById('ringkasDetailAbsensi');
+        detailContainer.style.display = 'none';
+      }
+      snap.docChanges().forEach(ch=>{
+        if(ch.type==='added'&&!isFirstLoad&&!knownIds.has(ch.doc.id)){
+          knownIds.add(ch.doc.id);
+          const d=ch.doc.data(), vals=Object.values(d.records||{});
+          const h=vals.filter(v=>v==='hadir').length;
+          const title=`📋 Absensi ${d.tanggal||''}`, body=`Hadir: ${h} dari ${ALL_ANGGOTA.length} anggota`;
+          playSound('absensi');
+          showToast({type:'absensi',title,desc:body});
+          addToDropdown({id:ch.doc.id,type:'absensi',title,body,timestamp:new Date().toISOString()});
+          updateBadge();
+        }
+      });
+    });
+
+  unsubFns = [u1,u2,u3,u4,u5];
+}
+
+function stopListeners() {
+  unsubFns.forEach(u=>u&&u());
+  unsubFns=[];
+}
 
 // ═══════════════════════════════════════════════════════════
 // FIREBASE AUTH
@@ -1613,9 +1793,10 @@ document.getElementById('pwaBtnDismiss')?.addEventListener('click',()=>{ localSt
 // INIT
 renderDropdown();
 updateBadge();
-console.log('🔥 Portal Adhigana Prapti v3 — FCM Push + Firebase Auth + Firestore siap!');
-  // ═══════════════════════════════════════════════════════════
-// TOGGLE PASSWORD - Lihat Password Sebentar
+console.log('🔥 Portal Adhigana Prapti v4 — Aspirasi + Kas Sponsor siap!');
+
+// ═══════════════════════════════════════════════════════════
+// TOGGLE PASSWORD
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
   const toggleBtn = document.getElementById('togglePasswordBtn');
@@ -1625,74 +1806,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (!toggleBtn || !passwordInput || !eyeIcon) return;
 
-  // Fungsi untuk toggle password
   function togglePasswordVisibility(show) {
     if (show) {
       passwordInput.type = 'text';
       eyeIcon.className = 'fa-regular fa-eye-slash';
       toggleBtn.classList.add('active');
-      
-      // Auto-hide setelah 3 detik
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      if (timeoutId) { clearTimeout(timeoutId); }
       timeoutId = setTimeout(function() {
         passwordInput.type = 'password';
         eyeIcon.className = 'fa-regular fa-eye';
         toggleBtn.classList.remove('active');
         timeoutId = null;
-      }, 3000); // 3 detik
+      }, 3000);
     } else {
       passwordInput.type = 'password';
       eyeIcon.className = 'fa-regular fa-eye';
       toggleBtn.classList.remove('active');
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
-      }
+      if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
     }
   }
 
-  // Event: Klik & Tahan (mousedown)
-  toggleBtn.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-    togglePasswordVisibility(true);
-  });
+  toggleBtn.addEventListener('mousedown', function(e) { e.preventDefault(); togglePasswordVisibility(true); });
+  toggleBtn.addEventListener('mouseup', function(e) { e.preventDefault(); });
+  toggleBtn.addEventListener('mouseleave', function() { if (passwordInput.type === 'text') togglePasswordVisibility(false); });
+  toggleBtn.addEventListener('touchstart', function(e) { e.preventDefault(); togglePasswordVisibility(true); });
+  toggleBtn.addEventListener('touchend', function(e) { e.preventDefault(); });
 
-  // Event: Lepas mouse (mouseup)
-  toggleBtn.addEventListener('mouseup', function(e) {
-    e.preventDefault();
-    // Biarkan timeout berjalan, tidak langsung sembunyikan
-  });
-
-  // Event: Mouse keluar dari tombol
-  toggleBtn.addEventListener('mouseleave', function() {
-    // Jika password sedang terlihat, sembunyikan
-    if (passwordInput.type === 'text') {
-      togglePasswordVisibility(false);
-    }
-  });
-
-  // Untuk touch device
-  toggleBtn.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    togglePasswordVisibility(true);
-  });
-
-  toggleBtn.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    // Biarkan timeout berjalan
-  });
-
-  // Reset saat modal ditutup
   const loginOverlay = document.getElementById('loginOverlay');
   if (loginOverlay) {
     const observer = new MutationObserver(function() {
       if (!loginOverlay.classList.contains('open')) {
-        // Modal ditutup, reset password
-        if (passwordInput.type === 'text') {
-          togglePasswordVisibility(false);
-        }
+        if (passwordInput.type === 'text') togglePasswordVisibility(false);
       }
     });
     observer.observe(loginOverlay, { attributes: true, attributeFilter: ['class'] });
