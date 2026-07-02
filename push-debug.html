@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Debug - Adhigana</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #070a10;
+            color: #eef2ff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: #6ee7f7; margin-bottom: 8px; }
+        .sub { color: #5a6480; margin-bottom: 24px; }
+        .card {
+            background: #0d1018;
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .status {
+            padding: 14px;
+            border-radius: 10px;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+        .status.ok { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
+        .status.err { background: rgba(255,95,95,.1); color: #ff5f5f; border: 1px solid rgba(255,95,95,.2); }
+        .status.info { background: rgba(110,231,247,.1); color: #6ee7f7; border: 1px solid rgba(110,231,247,.2); }
+        .status.warn { background: rgba(255,179,64,.1); color: #ffb340; border: 1px solid rgba(255,179,64,.2); }
+        .status.success { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
+        
+        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        button:hover { transform: translateY(-2px); }
+        .btn-primary { background: #6ee7f7; color: #05151a; }
+        .btn-success { background: rgba(74,222,128,.2); color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
+        .btn-danger { background: rgba(255,95,95,.2); color: #ff5f5f; border: 1px solid rgba(255,95,95,.2); }
+        .btn-warning { background: rgba(255,179,64,.2); color: #ffb340; border: 1px solid rgba(255,179,64,.2); }
+        .btn-purple { background: rgba(167,139,250,.2); color: #a78bfa; border: 1px solid rgba(167,139,250,.2); }
+        
+        .log {
+            background: rgba(0,0,0,.3);
+            border-radius: 10px;
+            padding: 14px;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.8;
+            font-family: 'Courier New', monospace;
+        }
+        .log::-webkit-scrollbar { width: 4px; }
+        .log::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 2px; }
+        .log .ok { color: #4ade80; }
+        .log .err { color: #ff5f5f; }
+        .log .info { color: #6ee7f7; }
+        .log .warn { color: #ffb340; }
+        .log .time { color: #3b4252; }
+        
+        .token-box {
+            background: rgba(0,0,0,.3);
+            padding: 12px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-size: 11px;
+            color: #5a6480;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge.ok { background: rgba(74,222,128,.15); color: #4ade80; }
+        .badge.err { background: rgba(255,95,95,.15); color: #ff5f5f; }
+        .badge.info { background: rgba(110,231,247,.15); color: #6ee7f7; }
+    </style>
+</head>
+<body>
+    <h1>🔔 Push Debug Console</h1>
+    <p class="sub">Debugging push notification untuk Adhigana Prapti</p>
+
+    <div class="card">
+        <h3>📊 Status Sistem</h3>
+        <div id="statusContainer">
+            <div class="status info">⏳ Memeriksa status...</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>🎯 Actions</h3>
+        <div class="btn-group">
+            <button class="btn-primary" onclick="checkAll()">🔍 Check All</button>
+            <button class="btn-success" onclick="testPush()">📨 Test Push</button>
+            <button class="btn-purple" onclick="testAllTypes()">📨 Test All Types</button>
+            <button class="btn-danger" onclick="clearTokens()">🗑️ Clear Tokens</button>
+            <button class="btn-warning" onclick="requestPermission()">🔔 Request Permission</button>
+            <button class="btn-primary" onclick="clearLog()">🧹 Clear Log</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📋 Log</h3>
+        <div class="log" id="logContainer">
+            <div class="info">⏳ Siap untuk debug...</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>🔑 FCM Token</h3>
+        <div class="token-box" id="tokenDisplay">Belum diambil</div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge info" id="tokenStatus">Belum cek</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📊 Subscriber</h3>
+        <div id="subscriberDisplay" style="color:#5a6480;font-size:13px;">Memuat...</div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyATh7MiV8xr4vHgF3AjqMhXc87LhCRF7N0",
+            authDomain: "adhiganaprapti-e8f13.firebaseapp.com",
+            projectId: "adhiganaprapti-e8f13",
+            storageBucket: "adhiganaprapti-e8f13.firebasestorage.app",
+            messagingSenderId: "1011133018564",
+            appId: "1:1011133018564:web:57e9537b39c85a44593491"
+        };
+        const VAPID_KEY = "BFs1kccEgDcaL9RHZwrVH2ltSgNLZusqQmep5NfX-29PKt_0EiQ5_WDHnCv4Er6ZCmSLagAH9QdPFmpSHqEYHbg";
+
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+        const db = firebase.firestore();
+
+        let swRegistration = null;
+        let fcmToken = null;
+
+        function addLog(message, type = 'info') {
+            const container = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = type;
+            const time = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="time">[${time}]</span> ${message}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            addLog('🧹 Log dibersihkan', 'info');
+        }
+
+        function setStatus(message, type = 'info') {
+            const container = document.getElementById('statusContainer');
+            container.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        async function checkAll() {
+            addLog('🔄 Memulai pengecekan...', 'info');
+            setStatus('⏳ Memeriksa...', 'info');
+            
+            // 1. Cek Service Worker
+            try {
+                if (!('serviceWorker' in navigator)) {
+                    addLog('❌ Service Worker tidak didukung', 'err');
+                    setStatus('❌ Browser tidak mendukung SW', 'err');
+                    return;
+                }
+                
+                const reg = await navigator.serviceWorker.getRegistration();
+                if (reg) {
+                    swRegistration = reg;
+                    addLog(`✅ SW terdaftar: ${reg.active?.scriptURL || 'aktif'}`, 'ok');
+                    setStatus('✅ Service Worker aktif', 'ok');
+                } else {
+                    addLog('⚠️ SW belum terdaftar, mencoba register...', 'warn');
+                    const newReg = await navigator.serviceWorker.register('/service-worker.js');
+                    swRegistration = newReg;
+                    addLog('✅ SW berhasil didaftarkan', 'ok');
+                    setStatus('✅ Service Worker terdaftar', 'ok');
+                }
+            } catch (e) {
+                addLog(`❌ Error SW: ${e.message}`, 'err');
+                setStatus(`❌ ${e.message}`, 'err');
+                return;
+            }
+
+            // 2. Cek izin notifikasi
+            addLog(`📌 Notification permission: ${Notification.permission}`, 'info');
+            if (Notification.permission === 'granted') {
+                addLog('✅ Izin notifikasi granted', 'ok');
+            } else if (Notification.permission === 'denied') {
+                addLog('❌ Izin notifikasi denied', 'err');
+                setStatus('❌ Izin ditolak - aktifkan di pengaturan browser', 'err');
+            } else {
+                addLog('⚠️ Izin notifikasi default (belum diminta)', 'warn');
+                setStatus('⚠️ Izin belum diminta - klik Request Permission', 'warn');
+            }
+
+            // 3. Dapatkan FCM token
+            try {
+                if (!swRegistration) {
+                    addLog('❌ SW tidak tersedia untuk FCM', 'err');
+                    return;
+                }
+                
+                const token = await messaging.getToken({
+                    vapidKey: VAPID_KEY,
+                    serviceWorkerRegistration: swRegistration
+                });
+                
+                if (token) {
+                    fcmToken = token;
+                    document.getElementById('tokenDisplay').textContent = token;
+                    document.getElementById('tokenStatus').textContent = '✅ Token valid';
+                    document.getElementById('tokenStatus').className = 'badge ok';
+                    addLog(`✅ FCM Token: ${token.slice(0, 20)}...${token.slice(-10)}`, 'ok');
+                    setStatus('✅ FCM Token berhasil didapatkan', 'ok');
+                } else {
+                    fcmToken = null;
+                    document.getElementById('tokenDisplay').textContent = '❌ Token kosong';
+                    document.getElementById('tokenStatus').textContent = '❌ Kosong';
+                    document.getElementById('tokenStatus').className = 'badge err';
+                    addLog('⚠️ FCM token kosong', 'warn');
+                    setStatus('⚠️ FCM token kosong - coba refresh', 'warn');
+                }
+            } catch (e) {
+                addLog(`❌ Error FCM: ${e.message}`, 'err');
+                setStatus(`❌ ${e.message}`, 'err');
+            }
+
+            // 4. Test connection ke SW
+            try {
+                if (swRegistration?.active) {
+                    swRegistration.active.postMessage({ type: 'PING' });
+                    addLog('📨 PING dikirim ke SW', 'info');
+                    
+                    let pongReceived = false;
+                    const pongHandler = (event) => {
+                        if (event.data?.type === 'PONG') {
+                            pongReceived = true;
+                            addLog(`🏓 PONG received: ${new Date(event.data.timestamp).toLocaleTimeString()}`, 'ok');
+                            navigator.serviceWorker.removeEventListener('message', pongHandler);
+                        }
+                    };
+                    navigator.serviceWorker.addEventListener('message', pongHandler);
+                    setTimeout(() => {
+                        if (!pongReceived) {
+                            addLog('⚠️ PONG tidak diterima (timeout)', 'warn');
+                        }
+                        navigator.serviceWorker.removeEventListener('message', pongHandler);
+                    }, 5000);
+                }
+            } catch (e) {
+                addLog(`❌ Error PING: ${e.message}`, 'err');
+            }
+
+            // 5. Cek subscriber
+            try {
+                const snap = await db.collection('fcm_tokens').get();
+                const tokens = [];
+                snap.forEach(d => tokens.push(d.data()));
+                document.getElementById('subscriberDisplay').innerHTML = `
+                    <span style="color:var(--c-cyan);font-weight:700;font-size:18px">${snap.size}</span> device terdaftar
+                    <div style="font-size:11px;color:#5a6480;margin-top:4px;">
+                        ${tokens.map(t => t.token?.slice(0, 15) + '...').join(', ')}
+                    </div>
+                `;
+                addLog(`📊 ${snap.size} subscriber terdaftar`, 'info');
+            } catch (e) {
+                addLog(`❌ Error subscriber: ${e.message}`, 'err');
+            }
+
+            addLog('✅ Pengecekan selesai!', 'ok');
+        }
+
+        async function testPush() {
+            addLog('📨 Mengirim test push...', 'info');
+            
+            if (!fcmToken) {
+                addLog('❌ Tidak ada FCM token, jalankan Check All dulu', 'err');
+                return;
+            }
+
+            try {
+                await db.collection('push_notifications').add({
+                    title: '🧪 Test Push Debug',
+                    body: `Test dari debug console - ${new Date().toLocaleTimeString()}`,
+                    type: 'info',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    tokens: [fcmToken]
+                });
+                addLog('✅ Test push terkirim ke Firestore!', 'ok');
+                showNativeNotification('🧪 Test Push Debug', 'Cek notifikasi di HP/Desktop kamu');
+            } catch (e) {
+                addLog(`❌ Error test push: ${e.message}`, 'err');
+            }
+        }
+
+        async function testAllTypes() {
+            addLog('📨 Mengirim semua jenis test push...', 'info');
+            const types = [
+                { type: 'kas', title: '💰 Test Kas', body: 'Test notifikasi kas' },
+                { type: 'mading', title: '📰 Test Mading', body: 'Test notifikasi mading' },
+                { type: 'absensi', title: '📋 Test Absensi', body: 'Test notifikasi absensi' },
+                { type: 'info', title: '🔔 Test Info', body: 'Test notifikasi info' }
+            ];
+            
+            for (const t of types) {
+                await db.collection('push_notifications').add({
+                    title: t.title,
+                    body: t.body,
+                    type: t.type,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    tokens: fcmToken ? [fcmToken] : []
+                });
+                addLog(`✅ Sent: ${t.title}`, 'ok');
+                await new Promise(r => setTimeout(r, 1500));
+            }
+            addLog('✅ Semua test terkirim!', 'ok');
+            showNativeNotification('✅ Semua Test Terkirim', 'Cek notifikasi di HP kamu');
+        }
+
+        function showNativeNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: '/asset/Adhigana prapti.png'
+                });
+            }
+        }
+
+        async function clearTokens() {
+            if (!confirm('Hapus token FCM saat ini?')) return;
+            
+            try {
+                if (fcmToken) {
+                    await db.collection('fcm_tokens').doc(fcmToken).delete();
+                    fcmToken = null;
+                    document.getElementById('tokenDisplay').textContent = 'Dihapus';
+                    document.getElementById('tokenStatus').textContent = '🗑️ Dihapus';
+                    document.getElementById('tokenStatus').className = 'badge warn';
+                    addLog('🗑️ Token dihapus dari Firestore', 'warn');
+                    setStatus('🗑️ Token dihapus', 'warn');
+                }
+            } catch (e) {
+                addLog(`❌ Error clear: ${e.message}`, 'err');
+            }
+        }
+
+        async function requestPermission() {
+            addLog('🔔 Meminta izin notifikasi...', 'info');
+            try {
+                const result = await Notification.requestPermission();
+                addLog(`📌 Permission: ${result}`, result === 'granted' ? 'ok' : 'err');
+                if (result === 'granted') {
+                    setStatus('✅ Izin diberikan', 'ok');
+                    await checkAll();
+                } else {
+                    setStatus('❌ Izin ditolak', 'err');
+                }
+            } catch (e) {
+                addLog(`❌ Error: ${e.message}`, 'err');
+            }
+        }
+
+        // Auto check on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkAll, 500);
+        });
+
+        // Listen for messages from SW
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data?.type === 'PONG') {
+                    addLog(`🏓 PONG received at ${new Date(event.data.timestamp).toLocaleTimeString()}`, 'ok');
+                }
+                if (event.data?.type === 'SUBSCRIPTION_CHANGED') {
+                    addLog(`🔄 Subscription changed`, 'warn');
+                }
+                if (event.data?.type === 'PUSH_RECEIVED') {
+                    const { title, body, type } = event.data.payload || {};
+                    addLog(`📨 Push diterima: ${title} - ${body}`, 'info');
+                    showNativeNotification(title, body);
+                }
+            });
+        }
+
+        console.log('🔔 Push Debug Console siap!');
+        console.log('📌 Fungsi: checkAll(), testPush(), testAllTypes(), clearTokens(), requestPermission()');
+    </script>
+</body>
+</html>
