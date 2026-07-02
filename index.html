@@ -1391,7 +1391,7 @@
     }
 
     /* ============================================================
-       KOTAK ASPIRASI - PREMIUM
+       KOTAK ASPIRASI - PREMIUM (DENGAN BALASAN)
     ============================================================ */
     .aspirasi-section {
       padding: 80px 0;
@@ -1522,7 +1522,7 @@
       transform: none;
     }
 
-    /* ── DAFTAR ASPIRASI ── */
+    /* ── DAFTAR ASPIRASI DENGAN BALASAN ── */
     .aspirasi-list-wrap {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -1632,47 +1632,58 @@
       color: var(--muted);
     }
 
-    .aspirasi-item .hapus-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 14px;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: all .3s ease;
-      margin-left: auto;
-    }
-
-    .aspirasi-item .hapus-btn:hover {
-      color: var(--red);
-      background: rgba(255,95,95,.1);
-    }
-
-    .aspirasi-list-wrap .list-actions {
+    /* ── BALASAN ── */
+    .balasan-wrap {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.06);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 8px;
-      margin-bottom: 4px;
     }
 
-    .btn-hapus-semua {
-      background: none;
-      border: none;
-      color: var(--muted);
+    .balasan-item {
+      background: rgba(110,231,247,.04);
+      border-radius: 10px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--cyan);
+    }
+
+    .balasan-item .balasan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+
+    .balasan-item .balasan-nama {
+      font-weight: 700;
       font-size: 12px;
-      cursor: pointer;
-      padding: 4px 12px;
-      border-radius: 8px;
-      transition: .3s;
-      font-family: inherit;
+      color: var(--cyan);
     }
 
-    .btn-hapus-semua:hover {
-      color: var(--red);
-      background: rgba(255,95,95,.05);
+    .balasan-item .balasan-waktu {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .balasan-item .balasan-pesan {
+      font-size: 13px;
+      color: var(--dim);
+      line-height: 1.6;
+    }
+
+    .status-dibalas {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(74,222,128,.12);
+      color: var(--green);
+      margin-left: 8px;
     }
 
     /* ── LOADING ASPIRASI ── */
@@ -2169,6 +2180,7 @@
     </div>
   </div>
 </section>
+
 <!-- ══════════════════════════════════════════════════════
      STRUKTUR ORGANISASI PENGURUS - FILTERED TABS
 ══════════════════════════════════════════════════════ -->
@@ -2553,7 +2565,6 @@
 <!-- ══════════════════════════════════════════════════════
      EVENT
 ══════════════════════════════════════════════════════ -->
-<!-- LANJUTKAN DENGAN SECTION EVENT, SPONSOR, DLL -->
 <section id="event">
   <div class="container">
     <div class="section-head">
@@ -2999,7 +3010,7 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════
-     ASPIRASI, KRITIK & SARAN - FIREBASE
+     ASPIRASI, KRITIK & SARAN - FIREBASE (DENGAN BALASAN)
 ══════════════════════════════════════════════════════ -->
 <section id="aspirasi" class="aspirasi-section">
   <div class="container">
@@ -3050,13 +3061,11 @@
         </form>
       </div>
 
-      <!-- DAFTAR ASPIRASI -->
+      <!-- DAFTAR ASPIRASI DENGAN BALASAN -->
       <div class="aspirasi-list-wrap reveal fade-left" style="transition-delay:.1s;">
         <div class="list-actions">
           <h3>📋 Aspirasi Terkirim</h3>
-          <button id="hapusSemuaAspirasi" class="btn-hapus-semua">
-            <i class="fa-regular fa-trash-can"></i> Hapus Semua
-          </button>
+          <!-- TOMBOL HAPUS SEMUA DIHAPUS - HANYA DI DASHBOARD -->
         </div>
         <p class="sub" id="aspirasiCount">Memuat data...</p>
 
@@ -3199,8 +3208,41 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
+// ============================================================
+// DAFTAR ANGGOTA (dipakai untuk sinkronisasi absensi via UID)
+// ============================================================
+const ALL_ANGGOTA = [
+  {uid:'u001',nama:'M. Daffa Saeful Faiz'},{uid:'u002',nama:'Yasna Nur Azka Zakiyah'},
+  {uid:'u003',nama:'Putri Nur Apriani'},{uid:'u004',nama:'Rafi Keny Akhdan'},
+  {uid:'u005',nama:'Kaysa Hasnah Mumtaaza'},{uid:'u006',nama:'Naya Salsabila'},
+  {uid:'u007',nama:'Rayhan Nur Pajri'},{uid:'u008',nama:'M. Haikal Abil Fida'},
+  {uid:'u009',nama:'Ardiansyah Pramadani'},{uid:'u010',nama:'Fahmi Maulana'},
+  {uid:'u011',nama:'Daffa Yusuf Afandy'},{uid:'u012',nama:'M. Faiq Ahsan'},
+  {uid:'u013',nama:'M. Zidan Ziyadul Haq'},{uid:'u014',nama:'Arfan Najmi'},
+  {uid:'u015',nama:'M. Badrul Zaman'},{uid:'u016',nama:'Mutia Zahran'},
+  {uid:'u017',nama:'Raifa Putri Ramadhani'},{uid:'u018',nama:'Panji Jatmika'},
+  {uid:'u019',nama:'Fachri Akbar'},{uid:'u020',nama:'Muhamad Darul Tahqiq'},
+  {uid:'u021',nama:'Rhicelle Apriliana'},{uid:'u022',nama:'Riska Maulida Fitri'},
+  {uid:'u023',nama:'Agisna Maulida Noer'},{uid:'u024',nama:'Anggita Nurfadillah'},
+  {uid:'u025',nama:'M. Alfin Saputra'},{uid:'u026',nama:'M. Huda Kasya Islami'},
+  {uid:'u027',nama:'M. Irham Ghifarul Khilmi'},{uid:'u028',nama:'Almas Dara Saputri Wiwaha'},
+  {uid:'u029',nama:'Zulfa Hamidah'},{uid:'u030',nama:'Windi Meliana'},
+  {uid:'u031',nama:'Arum Rohimah'},{uid:'u032',nama:'Alvyra Mutiara Andira'},
+  {uid:'u033',nama:'Zahran Saputra Wiwaha'},{uid:'u034',nama:'Gema Darma Wijana'},
+  {uid:'u035',nama:'Raihan Muzhafar Yusuf'},{uid:'u036',nama:'Ari Pratama Putra'},
+  {uid:'u037',nama:'Aurel Pricila Ananta'},{uid:'u038',nama:'Vina Siti Aminah'},
+  {uid:'u039',nama:'April Amelia Putri'},{uid:'u040',nama:'Dinda Aulia'},
+  {uid:'u041',nama:'Agnia Ilma Triana Putri Hidayat'},{uid:'u042',nama:'M. Abdul Azis'},
+  {uid:'u043',nama:'Romi Zayyinul Aripin'},{uid:'u044',nama:'Rojab Mulyana'},
+  {uid:'u045',nama:'Irfan Naufal Amrulloh'},{uid:'u046',nama:'Fadlan Nurullah'},
+  {uid:'u047',nama:'Arya Maulana'},{uid:'u048',nama:'Danil Mauluda'},
+  {uid:'u049',nama:'Fabin Alfarizi Rizal Riyansah'},{uid:'u050',nama:'Rai Nepal Ibrahim'},
+  {uid:'u051',nama:'Robby Muharram'},{uid:'u052',nama:'Rama Pratama Adila'},
+  {uid:'u053',nama:'Arfik Ramdhani'},{uid:'u054',nama:'M. Fariz Saeful Ammar'},
+];
+
 // ═══════════════════════════════════════════════════════════
-// NAVBAR - TAMBAHAN ANIMASI MUNCUL
+// NAVBAR - ANIMASI MUNCUL & REVEAL/STAGGER OBSERVER
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
   const nav = document.getElementById('mainNav');
@@ -3215,20 +3257,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isInView(el)) el.classList.add('visible');
   });
   
-  // ============================================================
-  // MARQUEE SEAMLESS - AUTO DUPLICATE KONTEN
-  // ============================================================
+  // MARQUEE SEAMLESS - AUTO DUPLICATE KONTEN (kalau ada)
   document.querySelectorAll('.marquee-track').forEach(function(track) {
-    // Ambil semua child asli
     const originalChildren = Array.from(track.children);
-    
-    // Clone SETIAP child dan tambahkan ke track
     originalChildren.forEach(function(child) {
       const clone = child.cloneNode(true);
       track.appendChild(clone);
     });
-    
-    // Pastikan total item genap agar seamless
     const totalItems = track.children.length;
     if (totalItems % 2 !== 0) {
       const firstChild = track.children[0].cloneNode(true);
@@ -3296,7 +3331,7 @@ window.addEventListener('scroll', function() {
 }, {passive: true});
 
 // ═══════════════════════════════════════════════════════════
-// INTERSECTION OBSERVER - REVEAL
+// INTERSECTION OBSERVER - REVEAL (INI YANG BIKIN KONTEN MUNCUL!)
 // ═══════════════════════════════════════════════════════════
 var revealObserver = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
@@ -3372,7 +3407,6 @@ document.querySelectorAll('.btn-primary, .btn-gold, .btn-outline, .nav-portal-bt
   });
 });
 
-// Tambahkan keyframe ripple premium
 if (!document.getElementById('ripplePremiumStyle')) {
   var style = document.createElement('style');
   style.id = 'ripplePremiumStyle';
@@ -3448,46 +3482,6 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 // ═══════════════════════════════════════════════════════════
-// REAL-TIME STATS (Hadir, Mading, Kas)
-// ═══════════════════════════════════════════════════════════
-const today = new Date().toISOString().split('T')[0];
-
-db.collection('absensi').where('tanggal','==',today).orderBy('timestamp','desc').limit(1)
-  .onSnapshot(function(snap) {
-    var hadir = 0;
-    snap.forEach(function(doc) {
-      var data = doc.data();
-      if (data.records) {
-        hadir = Object.values(data.records).filter(function(v) { return v === 'hadir'; }).length;
-      }
-    });
-    var el = document.getElementById('statHadir');
-    if (el) { el.dataset.count = hadir; animateCounter(el, hadir); }
-  });
-
-db.collection('mading').onSnapshot(function(snap) {
-  var el = document.getElementById('statMading');
-  if (el) { el.dataset.count = snap.size; animateCounter(el, snap.size); }
-});
-
-db.collection('kas').onSnapshot(function(snap) {
-  var saldo = 0;
-  snap.forEach(function(doc) {
-    var data = doc.data();
-    var n = Number(data.nominal) || 0;
-    saldo += data.jenis === 'masuk' ? n : -n;
-  });
-  var el = document.getElementById('statKas');
-  if (el) el.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
-});
-
-// Animate initial stat counter
-setTimeout(function() {
-  var statTotal = document.getElementById('statTotal');
-  if (statTotal && !statTotal.dataset.animated) animateCounter(statTotal, 54);
-}, 500);
-
-// ═══════════════════════════════════════════════════════════
 // TOAST
 // ═══════════════════════════════════════════════════════════
 function showToast(msg, type) {
@@ -3504,16 +3498,117 @@ function showToast(msg, type) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ASPIRASI, KRITIK & SARAN - FIRESTORE
+// STATS REAL-TIME: KAS & MADING (jumlah)
+// ═══════════════════════════════════════════════════════════
+db.collection('mading').onSnapshot(function(snap) {
+  var el = document.getElementById('statMading');
+  if (el) { el.dataset.count = snap.size; animateCounter(el, snap.size); }
+});
+
+db.collection('kas').onSnapshot(function(snap) {
+  var saldo = 0;
+  snap.forEach(function(doc) {
+    var data = doc.data();
+    var n = Number(data.nominal) || 0;
+    saldo += data.jenis === 'masuk' ? n : -n;
+  });
+  var el = document.getElementById('statKas');
+  if (el) el.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
+});
+
+// Animate initial stat counter (Total Anggota)
+setTimeout(function() {
+  var statTotal = document.getElementById('statTotal');
+  if (statTotal && !statTotal.dataset.animated) animateCounter(statTotal, ALL_ANGGOTA.length);
+}, 500);
+
+// ═══════════════════════════════════════════════════════════
+// ABSENSI HARI INI — REALTIME, 1 DOKUMEN PER HARI (absensi_YYYY-MM-DD)
+// ═══════════════════════════════════════════════════════════
+(function() {
+  const today = new Date().toISOString().split('T')[0];
+  db.collection('absensi').doc('absensi_' + today)
+    .onSnapshot(function(doc) {
+      var hadir = 0;
+      if (doc.exists) {
+        var data = doc.data();
+        if (data.records) {
+          hadir = Object.values(data.records).filter(function(v) { return v === 'hadir'; }).length;
+        }
+      }
+      var el = document.getElementById('statHadir');
+      if (el) { el.dataset.count = hadir; animateCounter(el, hadir); }
+    }, function(error) {
+      console.warn('⚠️ Error absensi listener:', error);
+    });
+})();
+
+// ═══════════════════════════════════════════════════════════
+// MADING — BADGE NOTIFIKASI REAL-TIME
+// ═══════════════════════════════════════════════════════════
+(function() {
+  function addMaddingBadge() {
+    const navLinks = document.getElementById('navLinks');
+    if (!navLinks) return;
+    if (document.getElementById('madingBadge')) return;
+    const madingLink = navLinks.querySelector('a[href="#berita"]');
+    if (!madingLink) return;
+    const badge = document.createElement('span');
+    badge.id = 'madingBadge';
+    badge.style.cssText = 'display:none;background:#ff5f5f;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:4px;min-width:18px;text-align:center;';
+    badge.textContent = '0';
+    madingLink.appendChild(badge);
+  }
+
+  let previousMaddingCount = 0;
+  let firstLoad = true;
+
+  db.collection('mading').orderBy('tanggal', 'desc').onSnapshot(function(snap) {
+    const count = snap.size;
+    const badge = document.getElementById('madingBadge');
+    if (badge) {
+      if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
+      else { badge.style.display = 'none'; }
+    }
+
+    if (!firstLoad && count > previousMaddingCount) {
+      snap.docChanges().forEach(function(change) {
+        if (change.type === 'added') {
+          const data = change.doc.data();
+          const title = data.judul || 'Mading Baru';
+          showToast('📢 Mading Baru: ' + title, 'info');
+          if (Notification.permission === 'granted') {
+            new Notification('📢 Mading Baru!', {
+              body: title,
+              icon: '/asset/Adhigana prapti.png'
+            });
+          }
+        }
+      });
+    }
+    previousMaddingCount = count;
+    firstLoad = false;
+  }, function(error) {
+    console.warn('⚠️ Error mading listener:', error);
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    addMaddingBadge();
+    if (Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════
+// ASPIRASI, KRITIK & SARAN - FIRESTORE (DENGAN BALASAN - TANPA HAPUS)
 // ═══════════════════════════════════════════════════════════
 (function() {
   const COLLECTION = 'aspirasi';
   const LIST = document.getElementById('aspirasiList');
   const COUNT = document.getElementById('aspirasiCount');
   const FORM = document.getElementById('aspirasiForm');
-  const HAPUS_SEMUA = document.getElementById('hapusSemuaAspirasi');
 
-  // Fungsi render data dari Firestore
   function renderAspirasi(data) {
     if (!data || data.length === 0) {
       LIST.innerHTML = `
@@ -3528,7 +3623,6 @@ function showToast(msg, type) {
     }
 
     let html = '';
-    // Urutkan dari yang terbaru
     data.slice().reverse().forEach(function(item) {
       const waktu = item.timestamp ? new Date(item.timestamp.seconds * 1000).toLocaleString('id-ID', {
         day: 'numeric', month: 'short', year: 'numeric',
@@ -3542,42 +3636,51 @@ function showToast(msg, type) {
         pertanyaan: '❓ Pertanyaan'
       }[item.kategori] || item.kategori;
 
+      const balasan = item.balasan || [];
+      const sudahDibalas = balasan.length > 0;
+
       html += `
         <div class="aspirasi-item" data-id="${item.id}">
           <div class="meta">
             <span class="nama">${item.nama ? esc(item.nama) : 'Anonim'}</span>
             <span class="kategori ${item.kategori}">${kategoriLabel}</span>
-            <button class="hapus-btn" data-id="${item.id}" title="Hapus">
-              <i class="fa-regular fa-trash-can"></i>
-            </button>
+            ${sudahDibalas ? '<span class="status-dibalas"><i class="fa-solid fa-check-circle"></i> Dibalas</span>' : ''}
           </div>
           <div class="pesan">${esc(item.pesan)}</div>
           <div class="waktu"><i class="fa-regular fa-clock"></i> ${waktu}</div>
-        </div>
       `;
+
+      // TAMPILKAN BALASAN
+      if (balasan.length > 0) {
+        html += `
+          <div class="balasan-wrap">
+            ${balasan.map(b => `
+              <div class="balasan-item">
+                <div class="balasan-header">
+                  <span class="balasan-nama">📝 ${esc(b.dari || 'Pengurus')}</span>
+                  <span class="balasan-waktu">${fmtDT(b.timestamp)}</span>
+                </div>
+                <div class="balasan-pesan">${esc(b.pesan)}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      html += `</div>`;
     });
 
     LIST.innerHTML = html;
     COUNT.textContent = data.length + ' pesan terkirim';
-
-    // Event listener hapus per item
-    LIST.querySelectorAll('.hapus-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const id = this.dataset.id;
-        if (confirm('Hapus aspirasi ini?')) {
-          db.collection(COLLECTION).doc(id).delete()
-            .then(function() {
-              showToast('🗑️ Aspirasi dihapus', 'info');
-            })
-            .catch(function(err) {
-              showToast('❌ Gagal hapus: ' + err.message, 'error');
-            });
-        }
-      });
-    });
   }
 
-  // Listen real-time dari Firestore
+  // Fungsi format waktu untuk balasan
+  function fmtDT(ts) {
+    if (!ts) return '-';
+    const d = ts?.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
   db.collection(COLLECTION)
     .orderBy('timestamp', 'desc')
     .onSnapshot(function(snapshot) {
@@ -3598,7 +3701,6 @@ function showToast(msg, type) {
       COUNT.textContent = '❌ Error';
     });
 
-  // Kirim aspirasi ke Firestore
   if (FORM) {
     FORM.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -3618,19 +3720,17 @@ function showToast(msg, type) {
         return;
       }
 
-      // Disable tombol
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
 
-      // Simpan ke Firestore
       db.collection(COLLECTION).add({
         nama: nama || 'Anonim',
         kategori: kategori,
         pesan: pesan,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        balasan: [] // Inisialisasi array balasan kosong
       })
       .then(function() {
-        // Reset form
         document.getElementById('aspirasiNama').value = '';
         document.getElementById('aspirasiKategori').value = '';
         document.getElementById('aspirasiPesan').value = '';
@@ -3647,32 +3747,10 @@ function showToast(msg, type) {
     });
   }
 
-  // Hapus semua aspirasi
-  if (HAPUS_SEMUA) {
-    HAPUS_SEMUA.addEventListener('click', function() {
-      if (!confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) return;
-      
-      db.collection(COLLECTION).get()
-        .then(function(snapshot) {
-          const batch = db.batch();
-          snapshot.forEach(function(doc) {
-            batch.delete(doc.ref);
-          });
-          return batch.commit();
-        })
-        .then(function() {
-          showToast('🗑️ Semua aspirasi dihapus', 'info');
-        })
-        .catch(function(err) {
-          showToast('❌ Gagal hapus semua: ' + err.message, 'error');
-        });
-    });
-  }
-
 })();
 
 // ═══════════════════════════════════════════════════════════
-// PWA INSTALL - UNIVERSAL (SUDAH ADA)
+// PWA INSTALL - UNIVERSAL
 // ═══════════════════════════════════════════════════════════
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
@@ -3730,7 +3808,6 @@ function setProgress(p, txt) {
 function doReset() {
   var ov = document.getElementById('resetOverlay');
   ov.classList.add('open');
-  var KEEP = { ap_absensi_v2: 1, ap_mading_v2: 1, ap_kas_v2: 1 };
   setProgress(10, 'Menghapus cache...');
   caches.keys()
     .then(function(keys) { return Promise.all(keys.map(function(k){ return caches.delete(k); })); })
@@ -3739,15 +3816,6 @@ function doReset() {
       if (!('serviceWorker' in navigator)) return;
       return navigator.serviceWorker.getRegistrations()
         .then(function(regs) { return Promise.all(regs.map(function(r){ return r.unregister(); })); });
-    })
-    .then(function() {
-      setProgress(60, 'Membersihkan localStorage...');
-      var saved = {};
-      try {
-        Object.keys(localStorage).forEach(function(k){ if(KEEP[k]) saved[k] = localStorage.getItem(k); });
-        localStorage.clear();
-        Object.keys(saved).forEach(function(k){ localStorage.setItem(k, saved[k]); });
-      } catch(e) {}
     })
     .then(function() {
       setProgress(85, 'Siap reload...');
@@ -3774,67 +3842,14 @@ function doReset() {
 })();
 
 // ═══════════════════════════════════════════════════════════
-// TOAST UNTUK STATS UPDATE
-// ═══════════════════════════════════════════════════════════
-var prevStats = { hadir: null, mading: null, saldo: null };
-
-function loadStats() {
-  var abs = {};
-  try { abs = JSON.parse(localStorage.getItem('ap_absensi_v2') || '{"records":{}}'); } catch(e) {}
-  var mading = [];
-  try { mading = JSON.parse(localStorage.getItem('ap_mading_v2') || '[]'); } catch(e) {}
-  var kas = [];
-  try { kas = JSON.parse(localStorage.getItem('ap_kas_v2') || '[]'); } catch(e) {}
-  var hadir = Object.values(abs.records || {}).filter(function(v){ return v === 'hadir'; }).length;
-  var saldo = kas.reduce(function(acc, it) {
-    var n = Number(it.nominal) || 0;
-    return it.jenis === 'masuk' ? acc + n : acc - n;
-  }, 0);
-  return { hadir: hadir, mading: (mading||[]).length, saldo: saldo };
-}
-
-function applyStats(s) {
-  var eH = document.getElementById('statHadir');
-  var eM = document.getElementById('statMading');
-  var eK = document.getElementById('statKas');
-  if (eH && s.hadir !== prevStats.hadir) {
-    if (prevStats.hadir !== null) showToast('🔄 Kehadiran: ' + prevStats.hadir + ' → ' + s.hadir, 'success');
-    eH.textContent = s.hadir; prevStats.hadir = s.hadir;
-  }
-  if (eM && s.mading !== prevStats.mading) {
-    if (prevStats.mading !== null) showToast('🔄 Mading: ' + prevStats.mading + ' → ' + s.mading, 'success');
-    eM.textContent = s.mading; prevStats.mading = s.mading;
-  }
-  if (eK && s.saldo !== prevStats.saldo) {
-    if (prevStats.saldo !== null) {
-      var diff = s.saldo - prevStats.saldo;
-      showToast('🔄 Kas ' + (diff > 0 ? 'masuk' : 'keluar') + ': Rp ' + Math.abs(diff).toLocaleString('id-ID'), 'success');
-    }
-    eK.textContent = 'Rp ' + s.saldo.toLocaleString('id-ID'); prevStats.saldo = s.saldo;
-  }
-}
-
-applyStats(loadStats());
-setInterval(function() { applyStats(loadStats()); }, 5000);
-window.addEventListener('storage', function(e) {
-  if (['ap_absensi_v2','ap_mading_v2','ap_kas_v2'].includes(e.key)) applyStats(loadStats());
-});
-
-// ============================================================
 // SCRIPT FILTERED TABS - STRUKTUR ORGANISASI
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Ambil semua tombol tab dan semua konten
     const tabs = document.querySelectorAll('.tab-btn-organisasi');
     const contents = document.querySelectorAll('.tab-content-organisasi');
 
-    /**
-     * Fungsi untuk mengaktifkan tab berdasarkan ID
-     * @param {string} tabId - ID tab yang akan diaktifkan (contoh: 'lapangan')
-     */
     function activateTab(tabId) {
-        // 1. Update class 'active' pada tombol tab
         tabs.forEach(function(btn) {
             btn.classList.remove('active');
             if (btn.dataset.tab === tabId) {
@@ -3842,24 +3857,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // 2. Update class 'active' pada konten dengan animasi fade-in
         contents.forEach(function(content) {
             content.classList.remove('active');
-            
-            // Reset animasi agar selalu berjalan
             content.style.animation = 'none';
-            // Trigger reflow (memaksa browser untuk mereset animasi)
             content.offsetHeight;
             content.style.animation = 'fadeIn 0.4s ease forwards';
-            
-            // Tampilkan konten yang sesuai
             if (content.id === 'tab-' + tabId) {
                 content.classList.add('active');
             }
         });
     }
 
-    // Event listener untuk setiap tombol tab (klik)
     tabs.forEach(function(btn) {
         btn.addEventListener('click', function() {
             const tabId = this.dataset.tab;
@@ -3867,64 +3875,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Aktifkan tab pertama secara default (yang memiliki class 'active')
     const firstActive = document.querySelector('.tab-btn-organisasi.active');
     if (firstActive) {
         activateTab(firstActive.dataset.tab);
     } else {
-        // Jika tidak ada yang active, aktifkan tab pertama
         const firstTab = document.querySelector('.tab-btn-organisasi');
         if (firstTab) {
             activateTab(firstTab.dataset.tab);
         }
     }
 
-    // ============================================================
-    // NAVIGASI KEYBOARD (PANAH KIRI/KANAN) - FITUR PREMIUM
-    // ============================================================
     const tabArray = Array.from(tabs);
     let currentIndex = tabArray.findIndex(function(btn) {
         return btn.classList.contains('active');
     });
-
-    // Jika tidak ada tab yang active, set ke 0
-    if (currentIndex === -1) {
-        currentIndex = 0;
-    }
+    if (currentIndex === -1) currentIndex = 0;
 
     document.addEventListener('keydown', function(e) {
-        // Hanya jika tombol panah kiri atau kanan ditekan
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            e.preventDefault(); // Mencegah scroll halaman
-            
-            // Hapus active dari tab saat ini
+            e.preventDefault();
             if (currentIndex !== -1 && tabArray[currentIndex]) {
                 tabArray[currentIndex].classList.remove('active');
             }
-            
-            // Hitung index baru
             if (e.key === 'ArrowRight') {
                 currentIndex = (currentIndex + 1) % tabArray.length;
             } else if (e.key === 'ArrowLeft') {
                 currentIndex = (currentIndex - 1 + tabArray.length) % tabArray.length;
             }
-            
-            // Aktifkan tab baru
             const newTab = tabArray[currentIndex];
             if (newTab) {
                 newTab.classList.add('active');
                 const tabId = newTab.dataset.tab;
                 activateTab(tabId);
-                
-                // Scroll tab ke viewport agar terlihat
                 newTab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
     });
 
-    // ============================================================
-    // FITUR TAMBAHAN: SWIPE UNTUK HP (Opsional)
-    // ============================================================
     let touchStartX = 0;
     let touchEndX = 0;
     const wrapper = document.querySelector('.content-wrapper-organisasi');
@@ -3941,43 +3928,60 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleSwipe() {
-        const swipeThreshold = 50; // minimal jarak swipe
+        const swipeThreshold = 50;
         const diff = touchStartX - touchEndX;
-
         if (Math.abs(diff) < swipeThreshold) return;
-
-        // Cari tab aktif saat ini
         const activeTab = document.querySelector('.tab-btn-organisasi.active');
         if (!activeTab) return;
-
         const currentTabId = activeTab.dataset.tab;
         const tabIds = ['lapangan', 'acara', 'pubdok', 'humas', 'konsumsi', 'dekorasi', 'kebersihan'];
-        const currentIndex = tabIds.indexOf(currentTabId);
-
+        const currentIdx = tabIds.indexOf(currentTabId);
         let newIndex;
         if (diff > 0) {
-            // Swipe kiri -> next tab
-            newIndex = (currentIndex + 1) % tabIds.length;
+            newIndex = (currentIdx + 1) % tabIds.length;
         } else {
-            // Swipe kanan -> prev tab
-            newIndex = (currentIndex - 1 + tabIds.length) % tabIds.length;
+            newIndex = (currentIdx - 1 + tabIds.length) % tabIds.length;
         }
-
         const newTabId = tabIds[newIndex];
-        // Cari tombol dengan data-tab yang sesuai
         const newTabBtn = document.querySelector('.tab-btn-organisasi[data-tab="' + newTabId + '"]');
         if (newTabBtn) {
             newTabBtn.click();
         }
     }
 
-    // ============================================================
-    // LOG UNTUK DEBUG (Bisa dihapus jika tidak perlu)
-    // ============================================================
     console.log('✅ Filtered Tabs Organisasi siap digunakan!');
-    console.log('💡 Gunakan tombol panah kiri/kanan untuk navigasi tab.');
-    console.log('📱 Swipe kiri/kanan di HP untuk ganti tab.');
 });
+
+// ═══════════════════════════════════════════════════════════
+// REFRESH SAAT TAB AKTIF KEMBALI
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    db.collection('mading').get().then(function(snap) {
+      const el = document.getElementById('statMading');
+      if (el) { el.textContent = snap.size; el.dataset.count = snap.size; }
+      const badge = document.getElementById('madingBadge');
+      if (badge) {
+        if (snap.size > 0) { badge.textContent = snap.size; badge.style.display = 'inline-flex'; }
+        else { badge.style.display = 'none'; }
+      }
+    });
+    db.collection('kas').get().then(function(snap) {
+      let saldo = 0;
+      snap.forEach(function(doc) {
+        const data = doc.data();
+        const n = Number(data.nominal) || 0;
+        saldo += data.jenis === 'masuk' ? n : -n;
+      });
+      const elKas = document.getElementById('statKas');
+      if (elKas) elKas.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
+    });
+  }
+}, { passive: true });
+
+console.log('🚀 Semua sistem realtime aktif dan berjalan!');
+console.log('✅ Fitur Balasan Aspirasi aktif di halaman publik!');
+console.log('✅ Tombol Hapus Aspirasi TIDAK tersedia di halaman publik (hanya di dashboard).');
 </script>
 </body>
 </html>
