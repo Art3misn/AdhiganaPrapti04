@@ -1,5 +1,5 @@
 // ============================================================
-// SERVICE WORKER - ADHIGANA PRAPTI v3 (FCM + Push)
+// SERVICE WORKER - ADHIGANA PRAPTI v4 (FCM + Push + Cloud Function)
 // ============================================================
 
 // ═══════════════════════════════════════════════════════════════
@@ -8,7 +8,7 @@
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 
-const CACHE_NAME = 'adhigana-v3';
+const CACHE_NAME = 'adhigana-v4';
 const ASSETS = [
   '/',
   '/index.html',
