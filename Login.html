@@ -14,6 +14,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
+    /* ============================================================
+       SEMUA STYLE SAMA DENGAN SEBELUMNYA
+       (tidak diubah agar konsisten)
+    ============================================================ */
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{
       --c-bg:#070a10;--c-surface:#0d1018;--c-panel:#111520;
@@ -163,6 +167,8 @@
     .btn-sm{padding:8px 16px;font-size:13px;border-radius:11px}
     .btn-danger{background:rgba(255,95,95,.1);border:1px solid rgba(255,95,95,.15);color:var(--c-red)}
     .btn-danger:hover{background:rgba(255,95,95,.18)}
+    .btn-success{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.2);color:var(--c-green)}
+    .btn-success:hover{background:rgba(74,222,128,.2)}
 
     /* CARD */
     .card{background:var(--c-panel);border:1px solid var(--c-border);border-radius:var(--r-card);padding:24px;transition:border-color .2s}
@@ -325,9 +331,9 @@
     }
 
     /* ============================================================
-       ASPIRASI - KHUSUS
+       ASPIRASI - KHUSUS (dengan balasan)
     ============================================================ */
-    .aspirasi-item{padding:14px 16px;border:1px solid var(--c-border);border-radius:14px;background:rgba(255,255,255,.02);margin-bottom:10px;transition:all .2s}
+    .aspirasi-item{padding:14px 16px;border:1px solid var(--c-border);border-radius:14px;background:rgba(255,255,255,.02);margin-bottom:12px;transition:all .2s}
     .aspirasi-item:hover{background:rgba(255,255,255,.04);border-color:rgba(110,231,247,.1)}
     .aspirasi-item .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
     .aspirasi-item .nama{font-weight:700;font-size:14px;color:var(--c-text)}
@@ -345,6 +351,81 @@
     .aspirasi-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
     .empty-state{padding:40px 20px;text-align:center;color:var(--c-muted);font-size:14px}
     .empty-state i{font-size:32px;display:block;margin-bottom:10px}
+
+    /* ============================================================
+       BALASAN ASPIRASI
+    ============================================================ */
+    .balasan-wrap {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .balasan-item {
+      background: rgba(110,231,247,.04);
+      border-radius: 10px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--c-cyan);
+    }
+    .balasan-item .balasan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+    .balasan-item .balasan-nama {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--c-cyan);
+    }
+    .balasan-item .balasan-waktu {
+      font-size: 10px;
+      color: var(--c-muted);
+    }
+    .balasan-item .balasan-pesan {
+      font-size: 13px;
+      color: var(--c-dim);
+      line-height: 1.6;
+    }
+    .balasan-input-wrap {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .balasan-input-wrap input {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--c-border);
+      background: rgba(255,255,255,.04);
+      color: var(--c-text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .balasan-input-wrap input:focus {
+      border-color: rgba(110,231,247,.3);
+    }
+    .balasan-input-wrap .btn-balas {
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: none;
+      background: var(--c-cyan);
+      color: #05151a;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity .2s;
+      white-space: nowrap;
+    }
+    .balasan-input-wrap .btn-balas:hover { opacity: .8; }
+    .balasan-input-wrap .btn-balas:disabled { opacity: .5; cursor: default; }
 
     /* ============================================================
        KAS SPONSORSHIP - KHUSUS
@@ -419,6 +500,20 @@
     #togglePasswordBtn:hover{background:rgba(110,231,247,.1) !important;border-color:rgba(110,231,247,.3) !important;color:var(--c-cyan) !important}
     #togglePasswordBtn.active{background:rgba(110,231,247,.12) !important;border-color:rgba(110,231,247,.4) !important;color:var(--c-cyan) !important}
     #togglePasswordBtn i{font-size:16px !important;pointer-events:none;line-height:1}
+
+    /* ========================================
+       STATUS BALASAN
+    ======================================== */
+    .status-dibalas {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(74,222,128,.12);
+      color: var(--c-green);
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
@@ -599,7 +694,7 @@
       </div>
     </div>
 
-    <!-- Tabs - DITAMBAHKAN ASPIRASI & KAS SPONSOR -->
+    <!-- Tabs -->
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="ringkas"><i class="fa-solid fa-gauge-high"></i> Ringkas</button>
       <button class="tab-btn" data-tab="absensi"><i class="fa-solid fa-clipboard-check"></i> Absensi</button>
@@ -610,7 +705,7 @@
       <button class="tab-btn admin-only" data-tab="kelola"><i class="fa-solid fa-gear"></i> Kelola</button>
     </div>
 
-    <!-- TAB RINGKAS - DITAMBAHKAN STATS ASPIRASI & KAS SPONSOR -->
+    <!-- TAB RINGKAS -->
     <div id="paneRingkas" class="tab-pane active">
       <div class="stats-grid">
         <div class="card stat-card">
@@ -744,13 +839,13 @@
       </div>
     </div>
 
-    <!-- TAB ASPIRASI - BARU DITAMBAHKAN -->
+    <!-- TAB ASPIRASI (dengan fitur balasan) -->
     <div id="paneAspirasi" class="tab-pane">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
           <div>
             <h3 style="margin-bottom:4px"><i class="fa-regular fa-comment" style="color:var(--c-purple);margin-right:8px"></i>Kelola Aspirasi</h3>
-            <p style="color:var(--c-muted);font-size:13px">Semua aspirasi dari publik & dashboard. Bisa dihapus dari sini.</p>
+            <p style="color:var(--c-muted);font-size:13px">Semua aspirasi dari publik & dashboard. Bisa dibalas dan dihapus.</p>
           </div>
           <button class="btn btn-danger btn-sm" id="hapusSemuaAspirasi"><i class="fa-solid fa-trash"></i> Hapus Semua</button>
         </div>
@@ -760,20 +855,18 @@
       </div>
     </div>
 
-    <!-- TAB KAS SPONSORSHIP - BARU DITAMBAHKAN -->
+    <!-- TAB KAS SPONSORSHIP -->
     <div id="paneKassponsor" class="tab-pane">
       <div class="card">
         <h3 style="margin-bottom:4px"><i class="fa-solid fa-hand-holding-dollar" style="color:var(--c-gold);margin-right:8px"></i>Kas Sponsorship</h3>
         <p style="color:var(--c-muted);font-size:13px;margin-bottom:20px">Catat pemasukan & pengeluaran dana sponsorship secara khusus</p>
 
-        <!-- Ringkasan -->
         <div class="ringkas-sponsor" id="ringkasSponsor">
           <div class="box"><div class="val" id="totalSponsorMasuk">Rp0</div><div class="label">Total Masuk</div></div>
           <div class="box"><div class="val" id="totalSponsorKeluar">Rp0</div><div class="label">Total Keluar</div></div>
           <div class="box"><div class="val" id="saldoSponsor">Rp0</div><div class="label">Saldo Akhir</div></div>
         </div>
 
-        <!-- Form -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
           <div><label style="display:block;color:var(--c-muted);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px">Jenis</label>
             <select id="sponsorJenis" class="field-input">
@@ -792,7 +885,6 @@
           <button class="btn btn-primary" id="btnTambahSponsor" style="background:linear-gradient(135deg,var(--c-gold),#e0a520);color:#1a0f00"><i class="fa-solid fa-plus"></i> Tambah Kas Sponsor</button>
         </div>
 
-        <!-- Riwayat -->
         <div style="margin-top:28px">
           <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">Riwayat Kas Sponsor</h4>
           <div id="sponsorRiwayat" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -866,11 +958,10 @@ let currentRole  = 'anggota';
 let unreadCount  = 0;
 let knownIds     = new Set();
 let isFirstLoad  = true;
-let absDraft     = {};
 let unsubFns     = [];
 
 // ═══════════════════════════════════════════════════════════
-// DATA ANGGOTA
+// DATA ANGGOTA (SESUAI DENGAN INDEX.HTML)
 // ═══════════════════════════════════════════════════════════
 const ALL_ANGGOTA = [
   {uid:'u001',nama:'M. Daffa Saeful Faiz',jabatan:'Ketua Umum'},
@@ -1212,7 +1303,7 @@ function renderKasList(items) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ASPIRASI - BARU
+// ASPIRASI (dengan balasan)
 // ═══════════════════════════════════════════════════════════
 function renderAspirasiList(items) {
   const c = document.getElementById('aspirasiList');
@@ -1227,26 +1318,83 @@ function renderAspirasiList(items) {
   items.slice().reverse().forEach(it => {
     const d = document.createElement('div');
     d.className = 'aspirasi-item';
+    const balasan = it.balasan || [];
+    const sudahDibalas = balasan.length > 0;
+    
     d.innerHTML = `
       <div class="meta">
         <span class="nama">${esc(it.nama || 'Anonim')}</span>
         <span class="kategori ${it.kategori || 'aspirasi'}">${kategoriMap[it.kategori] || it.kategori}</span>
+        ${sudahDibalas ? '<span class="status-dibalas"><i class="fa-solid fa-check-circle"></i> Dibalas</span>' : ''}
         <button class="hapus-btn" data-id="${it.id}" title="Hapus"><i class="fa-regular fa-trash-can"></i></button>
       </div>
       <div class="pesan">${esc(it.pesan || '')}</div>
       <div class="waktu"><i class="fa-regular fa-clock"></i> ${fmtDT(it.timestamp)}</div>
+      <div class="balasan-wrap" id="balasanWrap_${it.id}">
+        ${balasan.map(b => `
+          <div class="balasan-item">
+            <div class="balasan-header">
+              <span class="balasan-nama">📝 ${esc(b.dari || 'Pengurus')}</span>
+              <span class="balasan-waktu">${fmtDT(b.timestamp)}</span>
+            </div>
+            <div class="balasan-pesan">${esc(b.pesan)}</div>
+          </div>
+        `).join('')}
+        <div class="balasan-input-wrap">
+          <input type="text" class="balasan-input" data-id="${it.id}" placeholder="Tulis balasan..." />
+          <button class="btn-balas" data-id="${it.id}"><i class="fa-regular fa-paper-plane"></i> Balas</button>
+        </div>
+      </div>
     `;
+    
+    // Event listener untuk tombol balas
+    const btnBalas = d.querySelector('.btn-balas');
+    const inputBalas = d.querySelector('.balasan-input');
+    if (btnBalas && inputBalas) {
+      const balasHandler = async () => {
+        const pesan = inputBalas.value.trim();
+        if (!pesan) return;
+        const id = btnBalas.dataset.id;
+        btnBalas.disabled = true;
+        btnBalas.innerHTML = '<span class="spinner"></span>';
+        try {
+          const docRef = db.collection('aspirasi').doc(id);
+          await docRef.update({
+            balasan: firebase.firestore.FieldValue.arrayUnion({
+              dari: currentUser?.email?.split('@')[0] || 'Pengurus',
+              pesan: pesan,
+              timestamp: new Date().toISOString()
+            })
+          });
+          inputBalas.value = '';
+          showToast({ type: 'aspirasi', title: '✅ Balasan terkirim', desc: 'Balasan telah ditambahkan.' });
+          playSound('info');
+        } catch (err) {
+          showToast({ type: 'error', title: '❌ Gagal', desc: err.message });
+        } finally {
+          btnBalas.disabled = false;
+          btnBalas.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Balas';
+        }
+      };
+      btnBalas.addEventListener('click', balasHandler);
+      inputBalas.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') balasHandler();
+      });
+    }
+    
+    // Event listener hapus
     d.querySelector('.hapus-btn')?.addEventListener('click', async () => {
       if (!confirm('Hapus aspirasi ini?')) return;
       await db.collection('aspirasi').doc(it.id).delete();
       showToast({ type: 'info', title: '🗑️ Aspirasi dihapus' });
     });
+    
     c.appendChild(d);
   });
 }
 
 // ═══════════════════════════════════════════════════════════
-// KAS SPONSORSHIP - BARU
+// KAS SPONSORSHIP
 // ═══════════════════════════════════════════════════════════
 function renderSponsorList(items) {
   const c = document.getElementById('sponsorRiwayat');
@@ -1288,87 +1436,225 @@ function renderSponsorList(items) {
   });
 }
 
-// ABSENSI
-function renderAbsensiRiwayat(items) {
-  const c=document.getElementById('absensiRiwayat'); if(!c) return;
-  if(!items?.length){ c.innerHTML='<p style="font-size:13px;color:var(--c-muted)">Belum ada riwayat absensi.</p>'; return; }
-  c.innerHTML='';
-  items.forEach(it=>{
-    const vals=Object.values(it.records||{});
-    const h=vals.filter(v=>v==='hadir').length, i=vals.filter(v=>v==='izin').length, a=vals.filter(v=>v==='alfa').length;
-    const d=document.createElement('div');
-    d.style.cssText='padding:14px 16px;border:1px solid var(--c-border);border-radius:14px;background:rgba(255,255,255,.015)';
-    d.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <div>
-          <div style="font-weight:700;font-size:13px;margin-bottom:3px"><i class="fa-regular fa-calendar" style="color:var(--c-amber);margin-right:6px"></i>${it.tanggal||'-'}</div>
-          <div style="font-size:11px;color:var(--c-muted)">${fmtDT(it.timestamp)}</div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <span style="padding:4px 10px;border-radius:999px;background:rgba(110,231,247,.1);color:var(--c-cyan);font-size:12px;font-weight:700">Hadir: ${h}</span>
-          <span style="padding:4px 10px;border-radius:999px;background:rgba(255,179,64,.1);color:var(--c-amber);font-size:12px;font-weight:700">Izin: ${i}</span>
-          <span style="padding:4px 10px;border-radius:999px;background:rgba(255,95,95,.1);color:var(--c-red);font-size:12px;font-weight:700">Alfa: ${a}</span>
-        </div>
-      </div>`;
-    c.appendChild(d);
-  });
+// ═══════════════════════════════════════════════════════════
+// ABSENSI - 1 DOKUMEN PER HARI (UID-BASED)
+// ═══════════════════════════════════════════════════════════
+let absensiData = {};
+let absensiUnsub = null;
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
 }
 
-// ABSENSI FORM
-function initAbsensi() {
-  ALL_ANGGOTA.forEach(a=>{ if(!absDraft[a.uid]) absDraft[a.uid]='alfa'; });
-  renderAbsensiForm('');
+function getDocId() {
+  return 'absensi_' + getToday();
 }
 
-function renderAbsensiForm(q) {
-  const c=document.getElementById('absensiList'); if(!c) return;
-  const fil=q.toLowerCase();
-  const list=fil?ALL_ANGGOTA.filter(a=>a.nama.toLowerCase().includes(fil)||a.jabatan.toLowerCase().includes(fil)):ALL_ANGGOTA;
-  if(!list.length){ c.innerHTML='<div style="color:var(--c-muted);font-size:13px;padding:10px">Tidak ditemukan.</div>'; return; }
-  c.innerHTML='';
-  list.forEach(a=>{
-    const st=absDraft[a.uid]||'alfa';
-    const row=document.createElement('div'); row.className='abs-row';
-    row.innerHTML=`
+function startAbsensiListener() {
+  if (absensiUnsub) {
+    absensiUnsub();
+    absensiUnsub = null;
+  }
+
+  const docId = getDocId();
+  
+  absensiUnsub = db.collection('absensi').doc(docId)
+    .onSnapshot(function(doc) {
+      if (doc.exists) {
+        const data = doc.data();
+        absensiData = data.records || {};
+      } else {
+        // Dokumen belum ada → semua alfa
+        absensiData = {};
+        ALL_ANGGOTA.forEach(a => { absensiData[a.uid] = 'alfa'; });
+      }
+      
+      // Update UI
+      renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+      renderRingkasAbsensi();
+      updateDashboardStats();
+      
+      console.log('📊 Absensi updated:', Object.keys(absensiData).length, 'total');
+    }, function(error) {
+      console.warn('⚠️ Error absensi listener:', error);
+    });
+}
+
+function simpanAbsensiKeFirestore() {
+  const docId = getDocId();
+  return db.collection('absensi').doc(docId).set({
+    records: absensiData,
+    tanggal: getToday(),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
+function renderAbsensiUI(q) {
+  const container = document.getElementById('absensiList');
+  if (!container) return;
+
+  const search = (q || '').toLowerCase();
+  const filtered = search 
+    ? ALL_ANGGOTA.filter(a => a.nama.toLowerCase().includes(search) || a.jabatan.toLowerCase().includes(search))
+    : ALL_ANGGOTA;
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="color:var(--c-muted);font-size:13px;padding:10px">Tidak ditemukan.</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  filtered.forEach(function(a) {
+    const status = absensiData[a.uid] || 'alfa';
+    const row = document.createElement('div');
+    row.className = 'abs-row';
+    row.innerHTML = `
       <div class="abs-name"><strong>${esc(a.nama)}</strong><small>${esc(a.jabatan)}</small></div>
       <div class="abs-btns">
-        <button class="abs-btn ${st==='hadir'?'sel-hadir':''}" data-uid="${a.uid}" data-s="hadir">Hadir</button>
-        <button class="abs-btn ${st==='izin'?'sel-izin':''}"  data-uid="${a.uid}" data-s="izin">Izin</button>
-        <button class="abs-btn ${st==='alfa'?'sel-alfa':''}"   data-uid="${a.uid}" data-s="alfa">Alfa</button>
+        <button class="abs-btn ${status==='hadir'?'sel-hadir':''}" data-uid="${a.uid}" data-s="hadir">Hadir</button>
+        <button class="abs-btn ${status==='izin'?'sel-izin':''}"  data-uid="${a.uid}" data-s="izin">Izin</button>
+        <button class="abs-btn ${status==='alfa'?'sel-alfa':''}"   data-uid="${a.uid}" data-s="alfa">Alfa</button>
       </div>`;
-    row.querySelectorAll('.abs-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{ absDraft[btn.dataset.uid]=btn.dataset.s; renderAbsensiForm(document.getElementById('absSearch')?.value||''); });
+    
+    row.querySelectorAll('.abs-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const uid = this.dataset.uid;
+        const status = this.dataset.s;
+        absensiData[uid] = status;
+        renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+        renderRingkasAbsensi();
+        updateDashboardStats();
+        simpanAbsensiKeFirestore().catch(err => console.warn('Auto save error:', err));
+      });
     });
-    c.appendChild(row);
+    container.appendChild(row);
   });
 }
 
-document.getElementById('absSearch')?.addEventListener('input',e=>renderAbsensiForm(e.target.value));
-document.getElementById('btnHadirSemua')?.addEventListener('click',()=>{ ALL_ANGGOTA.forEach(a=>absDraft[a.uid]='hadir'); renderAbsensiForm(''); });
-document.getElementById('btnResetAbsensi')?.addEventListener('click',()=>{ ALL_ANGGOTA.forEach(a=>absDraft[a.uid]='alfa'); renderAbsensiForm(''); });
+function renderRingkasAbsensi() {
+  const container = document.getElementById('ringkasAbsensi');
+  const detailContainer = document.getElementById('ringkasDetailAbsensi');
+  if (!container) return;
 
-document.getElementById('btnSimpanAbsensi')?.addEventListener('click', async()=>{
-  const btn=document.getElementById('btnSimpanAbsensi');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Menyimpan...';
-  try {
-    const today=new Date().toISOString().split('T')[0];
-    await db.collection('absensi').add({
-      records: absDraft, tanggal: today,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      dicatat_oleh: currentUser?.email||'unknown'
-    });
-    const vals=Object.values(absDraft);
-    const h=vals.filter(v=>v==='hadir').length, i=vals.filter(v=>v==='izin').length, a=vals.filter(v=>v==='alfa').length;
-    playSound('absensi');
-    showToast({type:'absensi',title:'📋 Absensi Tersimpan!',desc:`Hadir: ${h} · Izin: ${i} · Alfa: ${a}`});
-    await sendPushToAll(`📋 Absensi ${today}`,`Hadir: ${h} · Izin: ${i} · Alfa: ${a} dari 54 anggota`,'absensi');
-  } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
-  finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Simpan & Notif'; }
+  const vals = Object.values(absensiData);
+  const h = vals.filter(v => v === 'hadir').length;
+  const i = vals.filter(v => v === 'izin').length;
+  const a = vals.filter(v => v === 'alfa').length;
+
+  container.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div style="padding:12px;border-radius:12px;background:rgba(110,231,247,.06);text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--c-cyan)">${h}</div>
+        <div style="font-size:11px;color:var(--c-muted)">Hadir</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;background:rgba(255,179,64,.06);text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--c-amber)">${i}</div>
+        <div style="font-size:11px;color:var(--c-muted)">Izin</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;background:rgba(255,95,95,.06);text-align:center">
+        <div style="font-size:22px;font-weight:800;color:var(--c-red)">${a}</div>
+        <div style="font-size:11px;color:var(--c-muted)">Alfa</div>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--c-muted);margin-top:8px">Data hari ini (${getToday()})</p>`;
+
+  if (detailContainer) {
+    const hadirList = ALL_ANGGOTA.filter(a => absensiData[a.uid] === 'hadir');
+    const izinList = ALL_ANGGOTA.filter(a => absensiData[a.uid] === 'izin');
+    const alfaList = ALL_ANGGOTA.filter(a => absensiData[a.uid] === 'alfa');
+    
+    detailContainer.style.display = 'grid';
+    detailContainer.innerHTML = `
+      <div class="detail-box">
+        <div class="detail-title hadir"><i class="fa-solid fa-check-circle"></i> Hadir (${hadirList.length})</div>
+        ${hadirList.length ? hadirList.map(a => `<div class="detail-name"><span class="dot hadir"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
+      </div>
+      <div class="detail-box">
+        <div class="detail-title izin"><i class="fa-solid fa-clock"></i> Izin (${izinList.length})</div>
+        ${izinList.length ? izinList.map(a => `<div class="detail-name"><span class="dot izin"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
+      </div>
+      <div class="detail-box">
+        <div class="detail-title alfa"><i class="fa-solid fa-times-circle"></i> Alfa (${alfaList.length})</div>
+        ${alfaList.length ? alfaList.map(a => `<div class="detail-name"><span class="dot alfa"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
+      </div>
+    `;
+  }
+}
+
+function updateDashboardStats() {
+  const vals = Object.values(absensiData);
+  document.getElementById('rHadir').textContent = vals.filter(v => v === 'hadir').length;
+  document.getElementById('rTotal').textContent = ALL_ANGGOTA.length;
+}
+
+// ============================================================
+// BUTTON: HADIR SEMUA
+// ============================================================
+document.getElementById('btnHadirSemua')?.addEventListener('click', function() {
+  ALL_ANGGOTA.forEach(a => { absensiData[a.uid] = 'hadir'; });
+  renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+  renderRingkasAbsensi();
+  updateDashboardStats();
+  simpanAbsensiKeFirestore()
+    .then(() => showToast({type:'absensi', title:'✅ Semua anggota hadir'}))
+    .catch(err => showToast({type:'error', title:'❌ Gagal', desc:err.message}));
 });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// BUTTON: RESET ABSENSI
+// ============================================================
+document.getElementById('btnResetAbsensi')?.addEventListener('click', function() {
+  if (!confirm('Reset semua absensi hari ini?')) return;
+  ALL_ANGGOTA.forEach(a => { absensiData[a.uid] = 'alfa'; });
+  renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+  renderRingkasAbsensi();
+  updateDashboardStats();
+  simpanAbsensiKeFirestore()
+    .then(() => showToast({type:'absensi', title:'🔄 Absensi direset'}))
+    .catch(err => showToast({type:'error', title:'❌ Gagal', desc:err.message}));
+});
+
+// ============================================================
+// BUTTON: SIMPAN ABSENSI
+// ============================================================
+document.getElementById('btnSimpanAbsensi')?.addEventListener('click', function() {
+  const btn = this;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+  
+  simpanAbsensiKeFirestore()
+    .then(function() {
+      const vals = Object.values(absensiData);
+      const h = vals.filter(v => v === 'hadir').length;
+      const i = vals.filter(v => v === 'izin').length;
+      const a = vals.filter(v => v === 'alfa').length;
+      showToast({
+        type:'absensi',
+        title:'📋 Absensi Tersimpan!',
+        desc:`Hadir: ${h} · Izin: ${i} · Alfa: ${a}`
+      });
+      playSound('absensi');
+      sendPushToAll(`📋 Absensi ${getToday()}`, `Hadir: ${h} · Izin: ${i} · Alfa: ${a} dari ${ALL_ANGGOTA.length} anggota`, 'absensi');
+    })
+    .catch(function(err) {
+      showToast({type:'error', title:'❌ Gagal', desc:err.message});
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Notif';
+    });
+});
+
+// ============================================================
+// SEARCH ABSENSI
+// ============================================================
+document.getElementById('absSearch')?.addEventListener('input', function(e) {
+  renderAbsensiUI(e.target.value);
+});
+
+// ============================================================
 // PUBLISH MADING
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 document.getElementById('btnPublishMading')?.addEventListener('click', async()=>{
   const judul=document.getElementById('madingJudul')?.value?.trim();
   const isi=document.getElementById('madingIsi')?.value?.trim();
@@ -1385,13 +1671,13 @@ document.getElementById('btnPublishMading')?.addEventListener('click', async()=>
     document.getElementById('madingIsi').value='';
     showToast({type:'mading',title:'✅ Dipublish!',desc:'Push notification dikirim ke semua subscriber'});
     await sendPushToAll(`📰 ${judul}`, isi.slice(0,100)+(isi.length>100?'...':''), 'mading');
-  } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
+  } catch(err){ showToast({type:'error',title:'❌ Gagal',desc:err.message}); }
   finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Publish & Push ke Semua'; }
 });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // TAMBAH KAS UMUM
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 document.getElementById('btnTambahKas')?.addEventListener('click', async()=>{
   const jenis=document.getElementById('kasJenis')?.value;
   const nominal=Number(document.getElementById('kasNominal')?.value);
@@ -1409,15 +1695,15 @@ document.getElementById('btnTambahKas')?.addEventListener('click', async()=>{
     document.getElementById('kasKeterangan').value='';
     const masuk=jenis==='masuk';
     const title=masuk?'💰 Kas Masuk!':'💸 Kas Keluar';
-    showToast({type:'kas',title:'✅ Kas Dicatat!',desc:'Push notification dikirim ke semua subscriber'});
+    showToast({type:'kas',title:'✅ Kas Dicatat!',desc:`${ket} — ${(masuk?'+':'-')+fmtRp(nominal)}`});
     await sendPushToAll(title, `${ket} — ${(masuk?'+':'-')+fmtRp(nominal)}`, 'kas');
-  } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
+  } catch(err){ showToast({type:'error',title:'❌ Gagal',desc:err.message}); }
   finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-plus"></i> Tambah & Push ke Semua'; }
 });
 
-// ═══════════════════════════════════════════════════════════
-// TAMBAH KAS SPONSOR - BARU
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// TAMBAH KAS SPONSOR
+// ============================================================
 document.getElementById('btnTambahSponsor')?.addEventListener('click', async()=>{
   const jenis=document.getElementById('sponsorJenis')?.value;
   const nominal=Number(document.getElementById('sponsorNominal')?.value);
@@ -1438,7 +1724,7 @@ document.getElementById('btnTambahSponsor')?.addEventListener('click', async()=>
     document.getElementById('sponsorKeterangan').value='';
     showToast({type:'kas',title:'✅ Kas Sponsor Dicatat!',desc:`${jenis==='masuk'?'Pemasukan Sponsor':'Pengeluaran Sponsor'} ${fmtRp(nominal)}`});
   } catch(err){ 
-    showToast({type:'info',title:'❌ Gagal',desc:err.message}); 
+    showToast({type:'error',title:'❌ Gagal',desc:err.message}); 
   }
   finally{ 
     btn.disabled=false; 
@@ -1446,9 +1732,9 @@ document.getElementById('btnTambahSponsor')?.addEventListener('click', async()=>
   }
 });
 
-// ═══════════════════════════════════════════════════════════
-// HAPUS SEMUA ASPIRASI - BARU
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// HAPUS SEMUA ASPIRASI
+// ============================================================
 document.getElementById('hapusSemuaAspirasi')?.addEventListener('click', async()=>{
   if(!confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) return;
   try {
@@ -1457,12 +1743,12 @@ document.getElementById('hapusSemuaAspirasi')?.addEventListener('click', async()
     snap.forEach(d=>batch.delete(d.ref));
     await batch.commit();
     showToast({type:'info',title:'🗑️ Semua aspirasi dihapus'});
-  } catch(err){ showToast({type:'info',title:'❌ Gagal',desc:err.message}); }
+  } catch(err){ showToast({type:'error',title:'❌ Gagal',desc:err.message}); }
 });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // REALTIME LISTENERS
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 function startListeners() {
   setSyncStatus('loading');
 
@@ -1510,122 +1796,66 @@ function startListeners() {
       });
     });
 
-  // ASPIRASI - BARU
+  // ASPIRASI (dengan balasan)
   const u3 = db.collection('aspirasi').orderBy('timestamp','desc').limit(50)
     .onSnapshot(snap => {
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderAspirasiList(items);
-      // Deteksi aspirasi baru untuk notifikasi
       snap.docChanges().forEach(ch => {
-        if(ch.type==='added' && !isFirstLoad && !knownIds.has('asp_'+ch.doc.id)){
-          knownIds.add('asp_'+ch.doc.id);
+        if (ch.type === 'added' && !isFirstLoad && !knownIds.has('asp_' + ch.doc.id)) {
+          knownIds.add('asp_' + ch.doc.id);
           const d = ch.doc.data();
           const kategoriMap = { aspirasi: '💡 Aspirasi', kritik: '🔴 Kritik', saran: '💛 Saran', pertanyaan: '❓ Pertanyaan' };
           playSound('aspirasi');
           showToast({
             type: 'aspirasi',
             title: `📩 ${kategoriMap[d.kategori] || 'Aspirasi'} Baru`,
-            desc: `Dari ${d.nama || 'Anonim'}: ${(d.pesan||'').slice(0,60)}${(d.pesan||'').length>60?'...':''}`
+            desc: `Dari ${d.nama || 'Anonim'}: ${(d.pesan || '').slice(0, 60)}${(d.pesan || '').length > 60 ? '...' : ''}`
           });
           addToDropdown({
-            id: 'asp_'+ch.doc.id,
+            id: 'asp_' + ch.doc.id,
             type: 'aspirasi',
             title: `📩 ${kategoriMap[d.kategori] || 'Aspirasi'} Baru`,
-            body: `Dari ${d.nama || 'Anonim'}: ${(d.pesan||'').slice(0,100)}`,
+            body: `Dari ${d.nama || 'Anonim'}: ${(d.pesan || '').slice(0, 100)}`,
             timestamp: new Date().toISOString()
           });
           updateBadge();
         }
+        // Cek jika ada balasan baru di aspirasi yang sudah ada
+        if (ch.type === 'modified') {
+          const d = ch.doc.data();
+          const oldData = ch.doc.data();
+          // Kita tidak bisa langsung bandingkan balasan, tapi kita bisa trigger re-render
+          // renderAspirasiList sudah dipanggil di atas, jadi aman
+        }
       });
     });
 
-  // KAS SPONSOR - BARU
+  // KAS SPONSOR
   const u4 = db.collection('kas_sponsor').orderBy('tanggal','desc').limit(50)
     .onSnapshot(snap => {
       const items = snap.docs.map(d=>({id:d.id,...d.data()}));
       renderSponsorList(items);
     });
 
-  // ABSENSI
-  const today = new Date().toISOString().split('T')[0];
-  const u5 = db.collection('absensi').orderBy('timestamp','desc').limit(10)
-    .onSnapshot(snap => {
-      const all = snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderAbsensiRiwayat(all);
-      const todayDoc = all.find(r=>r.tanggal===today);
-      if(todayDoc?.records){
-        const vals=Object.values(todayDoc.records);
-        const h=vals.filter(v=>v==='hadir').length;
-        const i=vals.filter(v=>v==='izin').length;
-        const a=vals.filter(v=>v==='alfa').length;
-        document.getElementById('rHadir').textContent=h;
-        document.getElementById('ringkasAbsensi').innerHTML=`
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-            <div style="padding:12px;border-radius:12px;background:rgba(110,231,247,.06);text-align:center">
-              <div style="font-size:22px;font-weight:800;color:var(--c-cyan)">${h}</div>
-              <div style="font-size:11px;color:var(--c-muted)">Hadir</div>
-            </div>
-            <div style="padding:12px;border-radius:12px;background:rgba(255,179,64,.06);text-align:center">
-              <div style="font-size:22px;font-weight:800;color:var(--c-amber)">${i}</div>
-              <div style="font-size:11px;color:var(--c-muted)">Izin</div>
-            </div>
-            <div style="padding:12px;border-radius:12px;background:rgba(255,95,95,.06);text-align:center">
-              <div style="font-size:22px;font-weight:800;color:var(--c-red)">${a}</div>
-              <div style="font-size:11px;color:var(--c-muted)">Alfa</div>
-            </div>
-          </div>
-          <p style="font-size:11px;color:var(--c-muted);margin-top:8px">Data hari ini (${today})</p>`;
+  // ABSENSI - 1 DOKUMEN PER HARI
+  startAbsensiListener();
 
-        const detailContainer = document.getElementById('ringkasDetailAbsensi');
-        detailContainer.style.display = 'grid';
-        const hadirList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'hadir');
-        const izinList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'izin');
-        const alfaList = ALL_ANGGOTA.filter(a => todayDoc.records[a.uid] === 'alfa');
-        detailContainer.innerHTML = `
-          <div class="detail-box">
-            <div class="detail-title hadir"><i class="fa-solid fa-check-circle"></i> Hadir (${hadirList.length})</div>
-            ${hadirList.length ? hadirList.map(a => `<div class="detail-name"><span class="dot hadir"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-          <div class="detail-box">
-            <div class="detail-title izin"><i class="fa-solid fa-clock"></i> Izin (${izinList.length})</div>
-            ${izinList.length ? izinList.map(a => `<div class="detail-name"><span class="dot izin"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-          <div class="detail-box">
-            <div class="detail-title alfa"><i class="fa-solid fa-times-circle"></i> Alfa (${alfaList.length})</div>
-            ${alfaList.length ? alfaList.map(a => `<div class="detail-name"><span class="dot alfa"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
-          </div>
-        `;
-      } else {
-        document.getElementById('rHadir').textContent='—';
-        document.getElementById('ringkasAbsensi').innerHTML='<p style="font-size:13px;color:var(--c-muted)">Belum ada absensi hari ini.</p>';
-        const detailContainer = document.getElementById('ringkasDetailAbsensi');
-        detailContainer.style.display = 'none';
-      }
-      snap.docChanges().forEach(ch=>{
-        if(ch.type==='added'&&!isFirstLoad&&!knownIds.has(ch.doc.id)){
-          knownIds.add(ch.doc.id);
-          const d=ch.doc.data(), vals=Object.values(d.records||{});
-          const h=vals.filter(v=>v==='hadir').length;
-          const title=`📋 Absensi ${d.tanggal||''}`, body=`Hadir: ${h} dari ${ALL_ANGGOTA.length} anggota`;
-          playSound('absensi');
-          showToast({type:'absensi',title,desc:body});
-          addToDropdown({id:ch.doc.id,type:'absensi',title,body,timestamp:new Date().toISOString()});
-          updateBadge();
-        }
-      });
-    });
-
-  unsubFns = [u1,u2,u3,u4,u5];
+  unsubFns = [u1,u2,u3,u4];
 }
 
 function stopListeners() {
   unsubFns.forEach(u=>u&&u());
   unsubFns=[];
+  if (absensiUnsub) {
+    absensiUnsub();
+    absensiUnsub = null;
+  }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // FIREBASE AUTH
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 auth.onAuthStateChanged(async user=>{
   if(user){
     currentUser=user;
@@ -1645,9 +1875,9 @@ auth.onAuthStateChanged(async user=>{
   }
 });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // LOGIN
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 const overlay=document.getElementById('loginOverlay');
 const loginErrEl=document.getElementById('loginError');
 const loginErrTxt=document.getElementById('loginErrorText');
@@ -1688,9 +1918,9 @@ document.getElementById('forgotLink')?.addEventListener('click',()=>{
   auth.sendPasswordResetEmail(email).then(()=>alert('Link reset dikirim ke '+email)).catch(e=>alert('Gagal: '+e.message));
 });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // DASHBOARD SHOW/HIDE
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 function showDashboard(){
   document.getElementById('hero').style.display='none';
   document.getElementById('madingPublik').style.display='none';
@@ -1711,7 +1941,6 @@ function showDashboard(){
   badge.className='role-badge'+(currentRole==='admin'?' admin':currentRole==='pengurus'?' pengurus':'');
   document.querySelectorAll('.tab-btn.admin-only').forEach(el=>el.classList.toggle('show',currentRole==='admin'));
   isFirstLoad=true; knownIds.clear();
-  initAbsensi();
   updateFCMSubscriberCount();
 
   if(Notification.permission==='granted'){
@@ -1738,9 +1967,9 @@ async function handleLogout(){ await auth.signOut(); document.getElementById('ha
 document.getElementById('btnNavLogout')?.addEventListener('click',handleLogout);
 document.getElementById('mobileBtnLogout')?.addEventListener('click',handleLogout);
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // AKTIFKAN NOTIFIKASI (FCM)
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 document.getElementById('btnEnablePush')?.addEventListener('click', async()=>{
   const perm=await Notification.requestPermission();
   if(perm==='granted'){
@@ -1757,18 +1986,18 @@ document.getElementById('btnTestNotif')?.addEventListener('click',()=>{
   showToast({type:'info',title:'🔔 Tes Notifikasi',desc:'Sistem notifikasi Adhigana Prapti aktif!'});
 });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // NOTIF BELL
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 const notifDropdown=document.getElementById('notifDropdown');
 document.getElementById('notifBell')?.addEventListener('click',e=>{ e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
 document.getElementById('mobNotifBell')?.addEventListener('click',e=>{ e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
 document.addEventListener('click',()=>notifDropdown?.classList.remove('open'));
 document.getElementById('clearNotifBtn')?.addEventListener('click',()=>{ localStorage.removeItem('ap_notifs_v4'); updateBadge(); renderDropdown(); notifDropdown?.classList.remove('open'); });
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // HAMBURGER & SCROLL
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 const hamburger=document.getElementById('hamburger'), mobileMenu=document.getElementById('mobileMenu');
 hamburger.addEventListener('click',()=>{ hamburger.classList.toggle('active'); mobileMenu.classList.toggle('open'); });
 document.querySelectorAll('.mobile-menu a,.mobile-menu button').forEach(el=>el.addEventListener('click',()=>{ hamburger.classList.remove('active'); mobileMenu.classList.remove('open'); }));
@@ -1793,11 +2022,13 @@ document.getElementById('pwaBtnDismiss')?.addEventListener('click',()=>{ localSt
 // INIT
 renderDropdown();
 updateBadge();
-console.log('🔥 Portal Adhigana Prapti v4 — Aspirasi + Kas Sponsor siap!');
+console.log('🔥 Portal Adhigana Prapti v5 — Fitur Balasan Aspirasi siap!');
+console.log('✅ Aspirasi: Setiap aspirasi bisa dibalas dengan input balasan di bawahnya.');
+console.log('✅ Balasan tersimpan di Firestore sebagai array di field "balasan".');
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // TOGGLE PASSWORD
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   const toggleBtn = document.getElementById('togglePasswordBtn');
   const passwordInput = document.getElementById('loginPassword');
