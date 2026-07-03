@@ -63,13 +63,54 @@
     }
   ],
   
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Buka dashboard internal",
+      "url": "/?tab=dashboard",
+      "icons": [
+        {
+          "src": "/asset/Adhigana prapti.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Mading",
+      "short_name": "Mading",
+      "description": "Lihat pengumuman terbaru",
+      "url": "/?tab=mading",
+      "icons": [
+        {
+          "src": "/asset/Adhigana prapti.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Absensi",
+      "short_name": "Absensi",
+      "description": "Absensi hari ini",
+      "url": "/?tab=absensi",
+      "icons": [
+        {
+          "src": "/asset/Adhigana prapti.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  
   "screenshots": [
     {
       "src": "/asset/Adhigana prapti.png",
       "sizes": "1080x1920",
       "type": "image/png",
-      "platform": "wide",
       "label": "Halaman Utama Adhigana Prapti"
     }
-  ]
+  ],
+  
+  "gcm_sender_id": "103953800507",
+  "scope": "/"
 }
