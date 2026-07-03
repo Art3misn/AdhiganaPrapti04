@@ -13,10 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  
   <style>
     /* ============================================================
        SEMUA STYLE SAMA DENGAN SEBELUMNYA
-       (tidak diubah agar konsisten)
     ============================================================ */
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{
@@ -932,37 +932,39 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// FIREBASE CONFIG
+// ============================================================
 const firebaseConfig = {
-  apiKey:            "AIzaSyATh7MiV8xr4vHgF3AjqMhXc87LhCRF7N0",
-  authDomain:        "adhiganaprapti-e8f13.firebaseapp.com",
-  projectId:         "adhiganaprapti-e8f13",
-  storageBucket:     "adhiganaprapti-e8f13.firebasestorage.app",
+  apiKey: "AIzaSyATh7MiV8xr4vHgF3AjqMhXc87LhCRF7N0",
+  authDomain: "adhiganaprapti-e8f13.firebaseapp.com",
+  projectId: "adhiganaprapti-e8f13",
+  storageBucket: "adhiganaprapti-e8f13.firebasestorage.app",
   messagingSenderId: "1011133018564",
-  appId:             "1:1011133018564:web:57e9537b39c85a44593491"
+  appId: "1:1011133018564:web:57e9537b39c85a44593491"
 };
 const VAPID_KEY = "BFs1kccEgDcaL9RHZwrVH2ltSgNLZusqQmep5NfX-29PKt_0EiQ5_WDHnCv4Er6ZCmSLagAH9QdPFmpSHqEYHbg";
 
 firebase.initializeApp(firebaseConfig);
-const auth      = firebase.auth();
-const db        = firebase.firestore();
+const auth = firebase.auth();
+const db = firebase.firestore();
 const messaging = firebase.messaging();
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // STATE
-// ═══════════════════════════════════════════════════════════
-let currentUser  = null;
-let currentRole  = 'anggota';
-let unreadCount  = 0;
-let knownIds     = new Set();
-let isFirstLoad  = true;
-let unsubFns     = [];
+// ============================================================
+let currentUser = null;
+let currentRole = 'anggota';
+let unreadCount = 0;
+let knownIds = new Set();
+let isFirstLoad = true;
+let unsubFns = [];
+let absensiData = {};
+let absensiUnsub = null;
 
-// ═══════════════════════════════════════════════════════════
-// DATA ANGGOTA (SESUAI DENGAN INDEX.HTML)
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// DATA ANGGOTA
+// ============================================================
 const ALL_ANGGOTA = [
   {uid:'u001',nama:'M. Daffa Saeful Faiz',jabatan:'Ketua Umum'},
   {uid:'u002',nama:'Yasna Nur Azka Zakiyah',jabatan:'Sekretaris Umum'},
@@ -1017,246 +1019,228 @@ const ALL_ANGGOTA = [
   {uid:'u051',nama:'Robby Muharram',jabatan:'Div. Dekorasi & Logistik'},
   {uid:'u052',nama:'Rama Pratama Adila',jabatan:'Koord. Div. Kebersihan'},
   {uid:'u053',nama:'Arfik Ramdhani',jabatan:'Div. Kebersihan'},
-  {uid:'u054',nama:'M. Fariz Saeful Ammar',jabatan:'Div. Kebersihan'},
+  {uid:'u054',nama:'M. Fariz Saeful Ammar',jabatan:'Div. Kebersihan'}
 ];
 
-// ═══════════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════════
-const esc   = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const fmtRp = n => 'Rp '+(Number(n)||0).toLocaleString('id-ID');
-const fmtDate = ts => {
-  if(!ts) return '-';
-  const d = ts?.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-};
-const fmtDT = ts => {
-  if(!ts) return '-';
-  const d = ts?.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-};
-const fmtTime = () => new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtRp(n) { return 'Rp ' + (Number(n)||0).toLocaleString('id-ID'); }
+function fmtDate(ts) { if(!ts) return '-'; const d = ts?.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}); }
+function fmtDT(ts) { if(!ts) return '-'; const d = ts?.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmtTime() { return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
+function getToday() { return new Date().toISOString().split('T')[0]; }
 
-// ═══════════════════════════════════════════════════════════
-// SUARA
-// ═══════════════════════════════════════════════════════════
-function playSound(type='default') {
+// ============================================================
+// PLAY SOUND
+// ============================================================
+function playSound(type) {
   try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const pats = {
-      kas:    [{f:880,d:.08,t:0},{f:1100,d:.08,t:.1},{f:1320,d:.15,t:.2}],
-      mading: [{f:660,d:.1,t:0},{f:880,d:.1,t:.12},{f:1100,d:.15,t:.24}],
-      absensi:[{f:760,d:.1,t:0},{f:960,d:.1,t:.13},{f:760,d:.1,t:.26}],
-      default:[{f:760,d:.1,t:0},{f:960,d:.12,t:.13}]
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const patterns = {
+      kas: [{f:880,d:0.08,t:0},{f:1100,d:0.08,t:0.1},{f:1320,d:0.15,t:0.2}],
+      mading: [{f:660,d:0.1,t:0},{f:880,d:0.1,t:0.12},{f:1100,d:0.15,t:0.24}],
+      absensi: [{f:760,d:0.1,t:0},{f:960,d:0.1,t:0.13},{f:760,d:0.1,t:0.26}],
+      default: [{f:760,d:0.1,t:0},{f:960,d:0.12,t:0.13}]
     };
-    const notes = pats[type]||pats.default;
-    const mg = ctx.createGain(); mg.gain.value=0.38; mg.connect(ctx.destination);
-    notes.forEach(({f,d,t})=>{
-      const osc=ctx.createOscillator(), g=ctx.createGain();
-      osc.connect(g); g.connect(mg);
-      osc.frequency.value=f;
-      osc.type=(type==='kas'||type==='mading')?'square':'sine';
-      const st=ctx.currentTime+t;
-      g.gain.setValueAtTime(0,st);
-      g.gain.linearRampToValueAtTime(0.3,st+.01);
-      g.gain.exponentialRampToValueAtTime(0.001,st+d);
-      osc.start(st); osc.stop(st+d+.05);
+    const notes = patterns[type] || patterns.default;
+    const gainNode = ctx.createGain();
+    gainNode.gain.value = 0.3;
+    gainNode.connect(ctx.destination);
+    notes.forEach(({f,d,t}) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.connect(g);
+      g.connect(gainNode);
+      osc.frequency.value = f;
+      osc.type = (type === 'kas' || type === 'mading') ? 'square' : 'sine';
+      const start = ctx.currentTime + t;
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.3, start + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, start + d);
+      osc.start(start);
+      osc.stop(start + d + 0.05);
     });
-  } catch{ if(navigator.vibrate) navigator.vibrate([150,50,150]); }
+  } catch(e) {
+    if(navigator.vibrate) navigator.vibrate([150,50,150]);
+  }
 }
 
-// ═══════════════════════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════════════════════
-function showToast({type='info',title='',desc='',amount='',amountColor=''}) {
+// ============================================================
+// TOAST NOTIFICATION
+// ============================================================
+function showToast({type='info', title='', desc='', amount='', amountColor=''}) {
   const map = {kas:{icon:'fa-coins',cls:'kas'},mading:{icon:'fa-newspaper',cls:'mading'},absensi:{icon:'fa-clipboard-check',cls:'absensi'},info:{icon:'fa-circle-info',cls:'info'},aspirasi:{icon:'fa-regular fa-comment',cls:'aspirasi'}};
-  const t = map[type]||map.info;
-  const id = 'toast_'+Date.now();
+  const t = map[type] || map.info;
   const el = document.createElement('div');
-  el.className='toast'; el.id=id;
-  el.innerHTML=`
+  el.className = 'toast';
+  el.innerHTML = `
     <div class="toast-accent ${t.cls}"></div>
-    <button class="toast-close" onclick="this.closest('.toast').remove()"><i class="fa-solid fa-xmark"></i></button>
     <div class="toast-body">
       <div class="toast-icon ${t.cls}"><i class="fa-solid ${t.icon}"></i></div>
       <div class="toast-text">
         <div class="toast-label">${type.toUpperCase()}</div>
         <div class="toast-title">${title}</div>
-        ${desc?`<div class="toast-desc">${desc}</div>`:''}
-        ${amount?`<div class="toast-val ${amountColor}">${amount}</div>`:''}
+        ${desc ? `<div class="toast-desc">${desc}</div>` : ''}
+        ${amount ? `<div class="toast-val ${amountColor}">${amount}</div>` : ''}
         <div class="toast-time">${fmtTime()}</div>
       </div>
+      <button class="toast-close" onclick="this.closest('.toast').remove()"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div class="toast-progress"><div class="toast-progress-bar ${t.cls}" style="width:100%;transition:width 5s linear" id="bar_${id}"></div></div>`;
+    <div class="toast-progress"><div class="toast-progress-bar ${t.cls}" style="width:100%;transition:width 5s linear"></div></div>
+  `;
   document.getElementById('toastContainer').appendChild(el);
-  requestAnimationFrame(()=>{ const b=document.getElementById('bar_'+id); if(b) b.style.width='0%'; });
-  setTimeout(()=>document.getElementById(id)?.remove(), 5200);
+  setTimeout(() => el.remove(), 5200);
 }
 
-// ═══════════════════════════════════════════════════════════
-// NOTIF DROPDOWN
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// NOTIFICATION DROPDOWN
+// ============================================================
 function addToDropdown(notif) {
-  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-  if(!saved.some(n=>n.id===notif.id)){
+  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4') || '[]');
+  if(!saved.some(n => n.id === notif.id)) {
     saved.unshift(notif);
-    if(saved.length>100) saved.pop();
-    localStorage.setItem('ap_notifs_v4',JSON.stringify(saved));
+    if(saved.length > 100) saved.pop();
+    localStorage.setItem('ap_notifs_v4', JSON.stringify(saved));
   }
   renderDropdown();
+  updateBadge();
 }
 
 function renderDropdown() {
   const el = document.getElementById('notifList');
   if(!el) return;
-  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-  if(!saved.length){ 
-    el.innerHTML='<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>'; 
-    return; 
+  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4') || '[]');
+  if(!saved.length) {
+    el.innerHTML = '<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>Belum ada notifikasi</div>';
+    return;
   }
-  const ICON={kas:'fa-coins',mading:'fa-newspaper',absensi:'fa-clipboard-check',info:'fa-circle-info'};
-  const LBL={kas:'Kas',mading:'Mading',absensi:'Absensi',info:'Info'};
-  el.innerHTML=saved.slice(0,50).map(n=>`
+  const ICON = {kas:'fa-coins',mading:'fa-newspaper',absensi:'fa-clipboard-check',info:'fa-circle-info',aspirasi:'fa-regular fa-comment'};
+  const LBL = {kas:'Kas',mading:'Mading',absensi:'Absensi',info:'Info',aspirasi:'Aspirasi'};
+  el.innerHTML = saved.slice(0,50).map(n => `
     <div class="notif-item unread-${n.type}" data-id="${n.id}">
-      <div class="notif-icon-wrap ${n.type}"><i class="fa-solid ${ICON[n.type]||'fa-bell'}"></i></div>
+      <div class="notif-icon-wrap ${n.type}"><i class="fa-solid ${ICON[n.type] || 'fa-bell'}"></i></div>
       <div class="notif-content">
-        <div><span class="notif-type-tag ${n.type}">${LBL[n.type]||'Info'}</span></div>
+        <div><span class="notif-type-tag ${n.type}">${LBL[n.type] || 'Info'}</span></div>
         <div class="notif-title-text">${esc(n.title)}</div>
         <div class="notif-body-text">${esc(n.body)}</div>
-        <div class="notif-time">${n.timestamp?new Date(n.timestamp).toLocaleString('id-ID',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'}):''}</div>
+        <div class="notif-time">${n.timestamp ? new Date(n.timestamp).toLocaleString('id-ID',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'}) : ''}</div>
       </div>
-    </div>`).join('');
-
-  el.querySelectorAll('.notif-item').forEach(item=>{
-    item.addEventListener('click', function(){
-      const id = this.dataset.id;
-      const saved2 = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
-      const found = saved2.find(n=>n.id===id);
-      if(found){
-        const idx = saved2.indexOf(found);
-        saved2.splice(idx,1);
-        localStorage.setItem('ap_notifs_v4',JSON.stringify(saved2));
-        renderDropdown();
-        updateBadge();
-      }
+    </div>
+  `).join('');
+  
+  el.querySelectorAll('.notif-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const saved2 = JSON.parse(localStorage.getItem('ap_notifs_v4') || '[]');
+      const idx = saved2.findIndex(n => n.id === this.dataset.id);
+      if(idx !== -1) { saved2.splice(idx,1); localStorage.setItem('ap_notifs_v4', JSON.stringify(saved2)); renderDropdown(); updateBadge(); }
     });
   });
 }
 
 function updateBadge() {
-  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4')||'[]');
+  const saved = JSON.parse(localStorage.getItem('ap_notifs_v4') || '[]');
   unreadCount = saved.length;
-  const c = unreadCount>99?'99+':String(unreadCount);
-  ['notifBadge','mobNotifBadge'].forEach(id=>{
-    const el=document.getElementById(id); if(!el) return;
-    el.textContent=c;
-    el.classList.toggle('show',unreadCount>0);
-    if(unreadCount>0){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');}
+  const c = unreadCount > 99 ? '99+' : String(unreadCount);
+  ['notifBadge','mobNotifBadge'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = c;
+    el.classList.toggle('show', unreadCount > 0);
   });
 }
 
-// ═══════════════════════════════════════════════════════════
-// FCM
-// ═══════════════════════════════════════════════════════════
+// ============================================================
+// SYNC STATUS
+// ============================================================
+function setSyncStatus(s) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  if(!dot || !txt) return;
+  if(s === 'ok') { dot.className='sync-dot'; txt.textContent='Terhubung real-time'; txt.style.color='var(--c-green)'; }
+  else if(s === 'loading') { dot.className='sync-dot loading'; txt.textContent='Menghubungkan...'; txt.style.color='var(--c-amber)'; }
+  else { dot.className='sync-dot offline'; txt.textContent='Offline'; txt.style.color='var(--c-red)'; }
+}
+
+// ============================================================
+// FCM FUNCTIONS
+// ============================================================
 async function subscribeFCM() {
   try {
-    await navigator.serviceWorker.register('/service-worker.js');
-    const swReg = await navigator.serviceWorker.ready;
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-    if(!token){ console.warn('FCM token kosong'); return null; }
+    if(!('serviceWorker' in navigator)) return null;
+    if(Notification.permission !== 'granted') return null;
+    
+    let swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+    if(!messaging) return null;
+    
+    const token = await messaging.getToken({
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: swReg
+    });
+    
+    if(!token) return null;
+    
     await db.collection('fcm_tokens').doc(token).set({
-      token,
-      createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
-      userAgent:  navigator.userAgent.slice(0,100),
-      uid:        currentUser?.uid || 'anonymous'
+      token: token,
+      uid: currentUser?.uid || 'anonymous',
+      userAgent: navigator.userAgent.slice(0,100),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
-    console.log('✅ FCM token tersimpan:', token.slice(0,20)+'...');
+    
     const statusEl = document.getElementById('notifStatus');
-    if(statusEl){
-      statusEl.innerHTML = '✅ Push aktif — notifikasi masuk ke HP kamu meski tab tertutup!';
-      statusEl.style.color = 'var(--c-green)';
-    }
-    updateFCMSubscriberCount();
+    if(statusEl) { statusEl.innerHTML = '✅ Push aktif — notifikasi masuk ke HP kamu meski tab tertutup!'; statusEl.style.color = 'var(--c-green)'; }
+    
     return token;
   } catch(err) {
-    console.error('FCM subscribe error:', err);
-    const statusEl = document.getElementById('notifStatus');
-    if(statusEl){ statusEl.innerHTML = '⚠️ Gagal aktifkan push: '+err.message; statusEl.style.color='var(--c-amber)'; }
+    console.error('FCM error:', err);
     return null;
   }
 }
 
-async function sendPushToAll(title, body, type='info') {
+async function sendPushToAll(title, body, type) {
   try {
     const snap = await db.collection('fcm_tokens').get();
     const tokens = [];
     snap.forEach(d => tokens.push(d.data().token));
-    if(!tokens.length){ console.log('Tidak ada subscriber'); return; }
+    if(!tokens.length) return;
     await db.collection('push_notifications').add({
-      title, body, type,
+      title, body, type: type || 'info',
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       tokens: tokens.slice(0,500)
     });
-    console.log(`✅ Push notification queued ke ${tokens.length} devices`);
-  } catch(err) {
-    console.error('Send push error:', err);
-  }
+  } catch(err) { console.error('Send push error:', err); }
 }
 
 messaging.onMessage((payload) => {
-  console.log('📨 FCM foreground:', payload);
-  const {title,body,type} = payload.data || payload.notification || {};
-  const t = type||'info';
-  playSound(t);
-  showToast({type:t, title:title||'Notifikasi', desc:body||''});
-  addToDropdown({id:'fcm_'+Date.now(), type:t, title:title||'Notifikasi', body:body||'', timestamp:new Date().toISOString()});
-  updateBadge();
+  const {title, body, type} = payload.data || payload.notification || {};
+  playSound(type || 'info');
+  showToast({type: type || 'info', title: title || 'Notifikasi', desc: body || ''});
+  addToDropdown({id:'fcm_'+Date.now(), type: type || 'info', title: title || 'Notifikasi', body: body || '', timestamp: new Date().toISOString()});
 });
 
-async function updateFCMSubscriberCount() {
-  try {
-    const snap = await db.collection('fcm_tokens').get();
-    const el = document.getElementById('fcmSubscriberCount');
-    if(el) el.innerHTML = `<span style="color:var(--c-cyan);font-weight:700;font-size:18px">${snap.size}</span> device terdaftar untuk menerima push notification`;
-  } catch{}
-}
-
-// ═══════════════════════════════════════════════════════════
-// SYNC STATUS
-// ═══════════════════════════════════════════════════════════
-function setSyncStatus(s) {
-  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncText');
-  if(!dot||!txt) return;
-  if(s==='ok')      { dot.className='sync-dot'; txt.textContent='Terhubung real-time'; txt.style.color='var(--c-green)'; }
-  else if(s==='loading'){ dot.className='sync-dot loading'; txt.textContent='Menghubungkan...'; txt.style.color='var(--c-amber)'; }
-  else               { dot.className='sync-dot offline'; txt.textContent='Offline'; txt.style.color='var(--c-red)'; }
-}
-
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 // RENDER FUNCTIONS
-// ═══════════════════════════════════════════════════════════
-
-// MADING PUBLIK
+// ============================================================
 function renderMadingPub(items) {
-  const c=document.getElementById('madingPubGrid'); if(!c) return;
-  if(!items?.length){ c.innerHTML='<div class="empty-state"><i class="fa-solid fa-newspaper"></i>Belum ada pengumuman.</div>'; return; }
-  c.innerHTML='';
-  items.forEach(it=>{
-    const card=document.createElement('div'); card.className='mading-card';
-    card.innerHTML=`<h3>${esc(it.judul||'')}</h3><div class="mdate"><i class="fa-regular fa-calendar"></i> ${fmtDate(it.tanggal)}</div><p>${esc(it.isi||'')}</p>`;
-    c.appendChild(card);
-  });
+  const c = document.getElementById('madingPubGrid');
+  if(!c) return;
+  if(!items?.length) { c.innerHTML = '<div class="empty-state"><i class="fa-solid fa-newspaper"></i>Belum ada pengumuman.</div>'; return; }
+  c.innerHTML = items.map(it => `
+    <div class="mading-card">
+      <h3>${esc(it.judul||'')}</h3>
+      <div class="mdate"><i class="fa-regular fa-calendar"></i> ${fmtDate(it.tanggal)}</div>
+      <p>${esc(it.isi||'')}</p>
+    </div>
+  `).join('');
 }
 
-// MADING LIST (Dashboard)
 function renderMadingList(items) {
-  const c=document.getElementById('madingList'); if(!c) return;
-  if(!items?.length){ c.innerHTML='<div style="color:var(--c-muted);font-size:13px">Belum ada pengumuman.</div>'; return; }
-  c.innerHTML='';
-  items.forEach(it=>{
-    const d=document.createElement('div');
-    d.style.cssText='padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02)';
-    d.innerHTML=`
+  const c = document.getElementById('madingList');
+  if(!c) return;
+  if(!items?.length) { c.innerHTML = '<div style="color:var(--c-muted);font-size:13px">Belum ada pengumuman.</div>'; return; }
+  c.innerHTML = items.map(it => `
+    <div style="padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:0">
           <div style="color:var(--c-cyan);font-weight:700;font-size:14px;margin-bottom:4px">${esc(it.judul||'')}</div>
@@ -1264,284 +1248,218 @@ function renderMadingList(items) {
           <div style="color:rgba(238,242,255,.82);font-size:13px;white-space:pre-wrap;line-height:1.7">${esc(it.isi||'')}</div>
         </div>
         <button data-id="${it.id}" class="btn btn-danger btn-sm mdel"><i class="fa-solid fa-trash"></i> Hapus</button>
-      </div>`;
-    d.querySelector('.mdel')?.addEventListener('click',async()=>{ if(!confirm('Hapus?')) return; await db.collection('mading').doc(it.id).delete(); });
-    c.appendChild(d);
-  });
-}
-
-// KAS UMUM
-function renderKasList(items) {
-  const c=document.getElementById('kasRiwayat'); if(!c) return;
-  const saldo=items.reduce((a,it)=>{ const n=Number(it.nominal)||0; return it.jenis==='masuk'?a+n:a-n; },0);
-  const info=document.getElementById('kasSaldoInfo');
-  if(info) info.innerHTML=`Saldo: <strong style="color:${saldo>=0?'var(--c-cyan)':'var(--c-red)'}">${fmtRp(saldo)}</strong>`;
-  document.getElementById('rSaldo').textContent=fmtRp(saldo);
-  if(!items?.length){ c.innerHTML='<div style="color:var(--c-muted);font-size:13px">Belum ada transaksi.</div>'; return; }
-  c.innerHTML='';
-  items.forEach(it=>{
-    const masuk=it.jenis==='masuk';
-    const d=document.createElement('div');
-    d.style.cssText='padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02)';
-    d.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:${masuk?'var(--c-green)':'var(--c-red)'}">
-            ${masuk?'<i class="fa-solid fa-arrow-up"></i> Pemasukan':'<i class="fa-solid fa-arrow-down"></i> Pengeluaran'}
-          </div>
-          <div style="color:var(--c-muted);font-size:11px;margin-bottom:6px">${fmtDT(it.tanggal)}</div>
-          <div style="color:rgba(238,242,255,.82);font-size:13px">${esc(it.keterangan||'')}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div style="font-weight:800;font-size:16px;color:${masuk?'var(--c-green)':'var(--c-red)'}">${fmtRp(it.nominal)}</div>
-          <button data-id="${it.id}" class="btn btn-danger btn-sm kdel" style="margin-top:8px"><i class="fa-solid fa-trash"></i> Hapus</button>
-        </div>
-      </div>`;
-    d.querySelector('.kdel')?.addEventListener('click',async()=>{ if(!confirm('Hapus?')) return; await db.collection('kas').doc(it.id).delete(); });
-    c.appendChild(d);
-  });
-}
-
-// ═══════════════════════════════════════════════════════════
-// ASPIRASI (dengan balasan)
-// ═══════════════════════════════════════════════════════════
-function renderAspirasiList(items) {
-  const c = document.getElementById('aspirasiList');
-  if (!c) return;
-  document.getElementById('rAspirasi').textContent = items?.length || 0;
-  if (!items?.length) {
-    c.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comment"></i>Belum ada aspirasi.</div>';
-    return;
-  }
-  const kategoriMap = { aspirasi: '💡 Aspirasi', kritik: '🔴 Kritik', saran: '💛 Saran', pertanyaan: '❓ Pertanyaan' };
-  c.innerHTML = '';
-  items.slice().reverse().forEach(it => {
-    const d = document.createElement('div');
-    d.className = 'aspirasi-item';
-    const balasan = it.balasan || [];
-    const sudahDibalas = balasan.length > 0;
-    
-    d.innerHTML = `
-      <div class="meta">
-        <span class="nama">${esc(it.nama || 'Anonim')}</span>
-        <span class="kategori ${it.kategori || 'aspirasi'}">${kategoriMap[it.kategori] || it.kategori}</span>
-        ${sudahDibalas ? '<span class="status-dibalas"><i class="fa-solid fa-check-circle"></i> Dibalas</span>' : ''}
-        <button class="hapus-btn" data-id="${it.id}" title="Hapus"><i class="fa-regular fa-trash-can"></i></button>
       </div>
-      <div class="pesan">${esc(it.pesan || '')}</div>
-      <div class="waktu"><i class="fa-regular fa-clock"></i> ${fmtDT(it.timestamp)}</div>
-      <div class="balasan-wrap" id="balasanWrap_${it.id}">
-        ${balasan.map(b => `
-          <div class="balasan-item">
-            <div class="balasan-header">
-              <span class="balasan-nama">📝 ${esc(b.dari || 'Pengurus')}</span>
-              <span class="balasan-waktu">${fmtDT(b.timestamp)}</span>
+    </div>
+  `).join('');
+  
+  c.querySelectorAll('.mdel').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      if(!confirm('Hapus pengumuman ini?')) return;
+      await db.collection('mading').doc(this.dataset.id).delete();
+    });
+  });
+}
+
+function renderKasList(items) {
+  const c = document.getElementById('kasRiwayat');
+  if(!c) return;
+  const saldo = items.reduce((a,it) => { const n = Number(it.nominal)||0; return it.jenis === 'masuk' ? a+n : a-n; }, 0);
+  document.getElementById('rSaldo').textContent = fmtRp(saldo);
+  if(!items?.length) { c.innerHTML = '<div style="color:var(--c-muted);font-size:13px">Belum ada transaksi.</div>'; return; }
+  c.innerHTML = items.map(it => {
+    const masuk = it.jenis === 'masuk';
+    return `
+      <div style="padding:14px 16px;border:1px solid var(--c-border);border-radius:16px;background:rgba(255,255,255,.02)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:${masuk ? 'var(--c-green)' : 'var(--c-red)'}">
+              ${masuk ? '<i class="fa-solid fa-arrow-up"></i> Pemasukan' : '<i class="fa-solid fa-arrow-down"></i> Pengeluaran'}
             </div>
-            <div class="balasan-pesan">${esc(b.pesan)}</div>
+            <div style="color:var(--c-muted);font-size:11px;margin-bottom:6px">${fmtDT(it.tanggal)}</div>
+            <div style="color:rgba(238,242,255,.82);font-size:13px">${esc(it.keterangan||'')}</div>
           </div>
-        `).join('')}
-        <div class="balasan-input-wrap">
-          <input type="text" class="balasan-input" data-id="${it.id}" placeholder="Tulis balasan..." />
-          <button class="btn-balas" data-id="${it.id}"><i class="fa-regular fa-paper-plane"></i> Balas</button>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-weight:800;font-size:16px;color:${masuk ? 'var(--c-green)' : 'var(--c-red)'}">${fmtRp(it.nominal)}</div>
+            <button data-id="${it.id}" class="btn btn-danger btn-sm kdel" style="margin-top:8px"><i class="fa-solid fa-trash"></i> Hapus</button>
+          </div>
         </div>
       </div>
     `;
-    
-    // Event listener untuk tombol balas
-    const btnBalas = d.querySelector('.btn-balas');
-    const inputBalas = d.querySelector('.balasan-input');
-    if (btnBalas && inputBalas) {
-      const balasHandler = async () => {
-        const pesan = inputBalas.value.trim();
-        if (!pesan) return;
-        const id = btnBalas.dataset.id;
-        btnBalas.disabled = true;
-        btnBalas.innerHTML = '<span class="spinner"></span>';
-        try {
-          const docRef = db.collection('aspirasi').doc(id);
-          await docRef.update({
-            balasan: firebase.firestore.FieldValue.arrayUnion({
-              dari: currentUser?.email?.split('@')[0] || 'Pengurus',
-              pesan: pesan,
-              timestamp: new Date().toISOString()
-            })
-          });
-          inputBalas.value = '';
-          showToast({ type: 'aspirasi', title: '✅ Balasan terkirim', desc: 'Balasan telah ditambahkan.' });
-          playSound('info');
-        } catch (err) {
-          showToast({ type: 'error', title: '❌ Gagal', desc: err.message });
-        } finally {
-          btnBalas.disabled = false;
-          btnBalas.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Balas';
-        }
-      };
-      btnBalas.addEventListener('click', balasHandler);
-      inputBalas.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') balasHandler();
-      });
-    }
-    
-    // Event listener hapus
-    d.querySelector('.hapus-btn')?.addEventListener('click', async () => {
-      if (!confirm('Hapus aspirasi ini?')) return;
-      await db.collection('aspirasi').doc(it.id).delete();
-      showToast({ type: 'info', title: '🗑️ Aspirasi dihapus' });
+  }).join('');
+  
+  c.querySelectorAll('.kdel').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      if(!confirm('Hapus transaksi ini?')) return;
+      await db.collection('kas').doc(this.dataset.id).delete();
     });
-    
-    c.appendChild(d);
   });
 }
 
-// ═══════════════════════════════════════════════════════════
-// KAS SPONSORSHIP
-// ═══════════════════════════════════════════════════════════
 function renderSponsorList(items) {
   const c = document.getElementById('sponsorRiwayat');
-  if (!c) return;
-  const masuk = items.filter(i => i.jenis === 'masuk').reduce((a, i) => a + (Number(i.nominal) || 0), 0);
-  const keluar = items.filter(i => i.jenis === 'keluar').reduce((a, i) => a + (Number(i.nominal) || 0), 0);
+  if(!c) return;
+  const masuk = items.filter(i => i.jenis === 'masuk').reduce((a,i) => a + (Number(i.nominal)||0), 0);
+  const keluar = items.filter(i => i.jenis === 'keluar').reduce((a,i) => a + (Number(i.nominal)||0), 0);
   const saldo = masuk - keluar;
   document.getElementById('totalSponsorMasuk').textContent = fmtRp(masuk);
   document.getElementById('totalSponsorKeluar').textContent = fmtRp(keluar);
   document.getElementById('saldoSponsor').textContent = fmtRp(saldo);
   document.getElementById('rKasSponsor').textContent = fmtRp(saldo);
-  if (!items?.length) {
-    c.innerHTML = '<div style="color:var(--c-muted);font-size:13px">Belum ada transaksi kas sponsor.</div>';
-    return;
-  }
-  c.innerHTML = '';
-  items.slice().reverse().forEach(it => {
+  if(!items?.length) { c.innerHTML = '<div style="color:var(--c-muted);font-size:13px">Belum ada transaksi kas sponsor.</div>'; return; }
+  c.innerHTML = items.slice().reverse().map(it => {
     const masuk2 = it.jenis === 'masuk';
-    const d = document.createElement('div');
-    d.className = 'kas-sponsor-item';
-    d.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:0">
-          <div class="jenis ${it.jenis}">${masuk2 ? '📥 Pemasukan Sponsor' : '📤 Pengeluaran Sponsor'}</div>
-          <div class="keterangan">${esc(it.keterangan || '')}</div>
-          <div class="waktu">${fmtDT(it.tanggal)}</div>
+    return `
+      <div class="kas-sponsor-item">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <div class="jenis ${it.jenis}">${masuk2 ? '📥 Pemasukan Sponsor' : '📤 Pengeluaran Sponsor'}</div>
+            <div class="keterangan">${esc(it.keterangan||'')}</div>
+            <div class="waktu">${fmtDT(it.tanggal)}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="nominal" style="color:${masuk2 ? 'var(--c-green)' : 'var(--c-red)'}">${fmtRp(it.nominal)}</div>
+            <button data-id="${it.id}" class="btn btn-danger btn-sm spdel" style="margin-top:8px"><i class="fa-solid fa-trash"></i> Hapus</button>
+          </div>
         </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div class="nominal" style="color:${masuk2 ? 'var(--c-green)' : 'var(--c-red)'}">${fmtRp(it.nominal)}</div>
-          <button data-id="${it.id}" class="btn btn-danger btn-sm spdel" style="margin-top:8px"><i class="fa-solid fa-trash"></i> Hapus</button>
-        </div>
-      </div>`;
-    d.querySelector('.spdel')?.addEventListener('click', async () => {
-      if (!confirm('Hapus transaksi sponsor ini?')) return;
-      await db.collection('kas_sponsor').doc(it.id).delete();
-      showToast({ type: 'info', title: '🗑️ Transaksi sponsor dihapus' });
+      </div>
+    `;
+  }).join('');
+  
+  c.querySelectorAll('.spdel').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      if(!confirm('Hapus transaksi sponsor ini?')) return;
+      await db.collection('kas_sponsor').doc(this.dataset.id).delete();
     });
-    c.appendChild(d);
   });
 }
 
-// ═══════════════════════════════════════════════════════════
-// ABSENSI - 1 DOKUMEN PER HARI (UID-BASED)
-// ═══════════════════════════════════════════════════════════
-let absensiData = {};
-let absensiUnsub = null;
-
-function getToday() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function getDocId() {
-  return 'absensi_' + getToday();
-}
-
-function startAbsensiListener() {
-  if (absensiUnsub) {
-    absensiUnsub();
-    absensiUnsub = null;
-  }
-
-  const docId = getDocId();
+function renderAspirasiList(items) {
+  const c = document.getElementById('aspirasiList');
+  if(!c) return;
+  document.getElementById('rAspirasi').textContent = items?.length || 0;
+  if(!items?.length) { c.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comment"></i>Belum ada aspirasi.</div>'; return; }
+  const kategoriMap = { aspirasi:'💡 Aspirasi', kritik:'🔴 Kritik', saran:'💛 Saran', pertanyaan:'❓ Pertanyaan' };
+  c.innerHTML = items.slice().reverse().map(it => {
+    const balasan = it.balasan || [];
+    const sudahDibalas = balasan.length > 0;
+    return `
+      <div class="aspirasi-item" data-id="${it.id}">
+        <div class="meta">
+          <span class="nama">${esc(it.nama||'Anonim')}</span>
+          <span class="kategori ${it.kategori||'aspirasi'}">${kategoriMap[it.kategori]||it.kategori}</span>
+          ${sudahDibalas ? '<span class="status-dibalas"><i class="fa-solid fa-check-circle"></i> Dibalas</span>' : ''}
+          <button class="hapus-btn" data-id="${it.id}" title="Hapus"><i class="fa-regular fa-trash-can"></i></button>
+        </div>
+        <div class="pesan">${esc(it.pesan||'')}</div>
+        <div class="waktu"><i class="fa-regular fa-clock"></i> ${fmtDT(it.timestamp)}</div>
+        <div class="balasan-wrap">
+          ${balasan.map(b => `
+            <div class="balasan-item">
+              <div class="balasan-header">
+                <span class="balasan-nama">📝 ${esc(b.dari||'Pengurus')}</span>
+                <span class="balasan-waktu">${fmtDT(b.timestamp)}</span>
+              </div>
+              <div class="balasan-pesan">${esc(b.pesan)}</div>
+            </div>
+          `).join('')}
+          <div class="balasan-input-wrap">
+            <input type="text" class="balasan-input" data-id="${it.id}" placeholder="Tulis balasan..." />
+            <button class="btn-balas" data-id="${it.id}"><i class="fa-regular fa-paper-plane"></i> Balas</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
   
-  absensiUnsub = db.collection('absensi').doc(docId)
-    .onSnapshot(function(doc) {
-      if (doc.exists) {
-        const data = doc.data();
-        absensiData = data.records || {};
-      } else {
-        // Dokumen belum ada → semua alfa
-        absensiData = {};
-        ALL_ANGGOTA.forEach(a => { absensiData[a.uid] = 'alfa'; });
-      }
-      
-      // Update UI
-      renderAbsensiUI(document.getElementById('absSearch')?.value || '');
-      renderRingkasAbsensi();
-      updateDashboardStats();
-      
-      console.log('📊 Absensi updated:', Object.keys(absensiData).length, 'total');
-    }, function(error) {
-      console.warn('⚠️ Error absensi listener:', error);
+  // Balas handler
+  c.querySelectorAll('.btn-balas').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const id = this.dataset.id;
+      const input = document.querySelector(`.balasan-input[data-id="${id}"]`);
+      if(!input) return;
+      const pesan = input.value.trim();
+      if(!pesan) return;
+      this.disabled = true;
+      this.innerHTML = '<span class="spinner"></span>';
+      try {
+        await db.collection('aspirasi').doc(id).update({
+          balasan: firebase.firestore.FieldValue.arrayUnion({
+            dari: currentUser?.email?.split('@')[0] || 'Pengurus',
+            pesan: pesan,
+            timestamp: new Date().toISOString()
+          })
+        });
+        input.value = '';
+        showToast({type:'aspirasi', title:'✅ Balasan terkirim', desc:'Balasan telah ditambahkan.'});
+      } catch(err) { showToast({type:'error', title:'❌ Gagal', desc:err.message}); }
+      finally { this.disabled = false; this.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Balas'; }
     });
+  });
+  
+  c.querySelectorAll('.hapus-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      if(!confirm('Hapus aspirasi ini?')) return;
+      await db.collection('aspirasi').doc(this.dataset.id).delete();
+      showToast({type:'info', title:'🗑️ Aspirasi dihapus'});
+    });
+  });
 }
 
-function simpanAbsensiKeFirestore() {
-  const docId = getDocId();
-  return db.collection('absensi').doc(docId).set({
-    records: absensiData,
-    tanggal: getToday(),
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
+// ============================================================
+// ABSENSI FUNCTIONS
+// ============================================================
+function startAbsensiListener() {
+  if(absensiUnsub) { absensiUnsub(); absensiUnsub = null; }
+  const docId = 'absensi_' + getToday();
+  absensiUnsub = db.collection('absensi').doc(docId).onSnapshot(doc => {
+    absensiData = doc.exists ? (doc.data().records || {}) : {};
+    renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+    renderRingkasAbsensi();
+    updateDashboardStats();
+  });
 }
 
 function renderAbsensiUI(q) {
-  const container = document.getElementById('absensiList');
-  if (!container) return;
-
-  const search = (q || '').toLowerCase();
-  const filtered = search 
-    ? ALL_ANGGOTA.filter(a => a.nama.toLowerCase().includes(search) || a.jabatan.toLowerCase().includes(search))
-    : ALL_ANGGOTA;
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div style="color:var(--c-muted);font-size:13px;padding:10px">Tidak ditemukan.</div>';
-    return;
-  }
-
-  container.innerHTML = '';
-  filtered.forEach(function(a) {
+  const c = document.getElementById('absensiList');
+  if(!c) return;
+  const search = (q||'').toLowerCase();
+  const filtered = search ? ALL_ANGGOTA.filter(a => a.nama.toLowerCase().includes(search) || a.jabatan.toLowerCase().includes(search)) : ALL_ANGGOTA;
+  if(!filtered.length) { c.innerHTML = '<div style="color:var(--c-muted);font-size:13px;padding:10px">Tidak ditemukan.</div>'; return; }
+  c.innerHTML = filtered.map(a => {
     const status = absensiData[a.uid] || 'alfa';
-    const row = document.createElement('div');
-    row.className = 'abs-row';
-    row.innerHTML = `
-      <div class="abs-name"><strong>${esc(a.nama)}</strong><small>${esc(a.jabatan)}</small></div>
-      <div class="abs-btns">
-        <button class="abs-btn ${status==='hadir'?'sel-hadir':''}" data-uid="${a.uid}" data-s="hadir">Hadir</button>
-        <button class="abs-btn ${status==='izin'?'sel-izin':''}"  data-uid="${a.uid}" data-s="izin">Izin</button>
-        <button class="abs-btn ${status==='alfa'?'sel-alfa':''}"   data-uid="${a.uid}" data-s="alfa">Alfa</button>
-      </div>`;
-    
-    row.querySelectorAll('.abs-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const uid = this.dataset.uid;
-        const status = this.dataset.s;
-        absensiData[uid] = status;
-        renderAbsensiUI(document.getElementById('absSearch')?.value || '');
-        renderRingkasAbsensi();
-        updateDashboardStats();
-        simpanAbsensiKeFirestore().catch(err => console.warn('Auto save error:', err));
-      });
+    return `
+      <div class="abs-row">
+        <div class="abs-name"><strong>${esc(a.nama)}</strong><small>${esc(a.jabatan)}</small></div>
+        <div class="abs-btns">
+          <button class="abs-btn ${status === 'hadir' ? 'sel-hadir' : ''}" data-uid="${a.uid}" data-s="hadir">Hadir</button>
+          <button class="abs-btn ${status === 'izin' ? 'sel-izin' : ''}" data-uid="${a.uid}" data-s="izin">Izin</button>
+          <button class="abs-btn ${status === 'alfa' ? 'sel-alfa' : ''}" data-uid="${a.uid}" data-s="alfa">Alfa</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  c.querySelectorAll('.abs-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      absensiData[this.dataset.uid] = this.dataset.s;
+      renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+      renderRingkasAbsensi();
+      updateDashboardStats();
+      const docId = 'absensi_' + getToday();
+      db.collection('absensi').doc(docId).set({ records: absensiData }, { merge: true });
     });
-    container.appendChild(row);
   });
 }
 
 function renderRingkasAbsensi() {
-  const container = document.getElementById('ringkasAbsensi');
-  const detailContainer = document.getElementById('ringkasDetailAbsensi');
-  if (!container) return;
-
+  const c = document.getElementById('ringkasAbsensi');
+  const d = document.getElementById('ringkasDetailAbsensi');
+  if(!c) return;
   const vals = Object.values(absensiData);
   const h = vals.filter(v => v === 'hadir').length;
   const i = vals.filter(v => v === 'izin').length;
   const a = vals.filter(v => v === 'alfa').length;
-
-  container.innerHTML = `
+  c.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
       <div style="padding:12px;border-radius:12px;background:rgba(110,231,247,.06);text-align:center">
         <div style="font-size:22px;font-weight:800;color:var(--c-cyan)">${h}</div>
@@ -1556,15 +1474,13 @@ function renderRingkasAbsensi() {
         <div style="font-size:11px;color:var(--c-muted)">Alfa</div>
       </div>
     </div>
-    <p style="font-size:11px;color:var(--c-muted);margin-top:8px">Data hari ini (${getToday()})</p>`;
-
-  if (detailContainer) {
+  `;
+  if(d) {
+    d.style.display = 'grid';
     const hadirList = ALL_ANGGOTA.filter(a => absensiData[a.uid] === 'hadir');
     const izinList = ALL_ANGGOTA.filter(a => absensiData[a.uid] === 'izin');
     const alfaList = ALL_ANGGOTA.filter(a => absensiData[a.uid] === 'alfa');
-    
-    detailContainer.style.display = 'grid';
-    detailContainer.innerHTML = `
+    d.innerHTML = `
       <div class="detail-box">
         <div class="detail-title hadir"><i class="fa-solid fa-check-circle"></i> Hadir (${hadirList.length})</div>
         ${hadirList.length ? hadirList.map(a => `<div class="detail-name"><span class="dot hadir"></span>${esc(a.nama)}</div>`).join('') : '<div class="empty-detail">Tidak ada</div>'}
@@ -1588,443 +1504,353 @@ function updateDashboardStats() {
 }
 
 // ============================================================
-// BUTTON: HADIR SEMUA
-// ============================================================
-document.getElementById('btnHadirSemua')?.addEventListener('click', function() {
-  ALL_ANGGOTA.forEach(a => { absensiData[a.uid] = 'hadir'; });
-  renderAbsensiUI(document.getElementById('absSearch')?.value || '');
-  renderRingkasAbsensi();
-  updateDashboardStats();
-  simpanAbsensiKeFirestore()
-    .then(() => showToast({type:'absensi', title:'✅ Semua anggota hadir'}))
-    .catch(err => showToast({type:'error', title:'❌ Gagal', desc:err.message}));
-});
-
-// ============================================================
-// BUTTON: RESET ABSENSI
-// ============================================================
-document.getElementById('btnResetAbsensi')?.addEventListener('click', function() {
-  if (!confirm('Reset semua absensi hari ini?')) return;
-  ALL_ANGGOTA.forEach(a => { absensiData[a.uid] = 'alfa'; });
-  renderAbsensiUI(document.getElementById('absSearch')?.value || '');
-  renderRingkasAbsensi();
-  updateDashboardStats();
-  simpanAbsensiKeFirestore()
-    .then(() => showToast({type:'absensi', title:'🔄 Absensi direset'}))
-    .catch(err => showToast({type:'error', title:'❌ Gagal', desc:err.message}));
-});
-
-// ============================================================
-// BUTTON: SIMPAN ABSENSI
-// ============================================================
-document.getElementById('btnSimpanAbsensi')?.addEventListener('click', function() {
-  const btn = this;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
-  
-  simpanAbsensiKeFirestore()
-    .then(function() {
-      const vals = Object.values(absensiData);
-      const h = vals.filter(v => v === 'hadir').length;
-      const i = vals.filter(v => v === 'izin').length;
-      const a = vals.filter(v => v === 'alfa').length;
-      showToast({
-        type:'absensi',
-        title:'📋 Absensi Tersimpan!',
-        desc:`Hadir: ${h} · Izin: ${i} · Alfa: ${a}`
-      });
-      playSound('absensi');
-      sendPushToAll(`📋 Absensi ${getToday()}`, `Hadir: ${h} · Izin: ${i} · Alfa: ${a} dari ${ALL_ANGGOTA.length} anggota`, 'absensi');
-    })
-    .catch(function(err) {
-      showToast({type:'error', title:'❌ Gagal', desc:err.message});
-    })
-    .finally(function() {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Notif';
-    });
-});
-
-// ============================================================
-// SEARCH ABSENSI
-// ============================================================
-document.getElementById('absSearch')?.addEventListener('input', function(e) {
-  renderAbsensiUI(e.target.value);
-});
-
-// ============================================================
-// PUBLISH MADING
-// ============================================================
-document.getElementById('btnPublishMading')?.addEventListener('click', async()=>{
-  const judul=document.getElementById('madingJudul')?.value?.trim();
-  const isi=document.getElementById('madingIsi')?.value?.trim();
-  if(!judul||!isi){ showToast({type:'info',title:'⚠️ Lengkapi Data',desc:'Judul dan isi wajib diisi!'}); return; }
-  const btn=document.getElementById('btnPublishMading');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Mempublish...';
-  try {
-    await db.collection('mading').add({
-      judul, isi,
-      tanggal: firebase.firestore.FieldValue.serverTimestamp(),
-      publish_by: currentUser?.email||'unknown'
-    });
-    document.getElementById('madingJudul').value='';
-    document.getElementById('madingIsi').value='';
-    showToast({type:'mading',title:'✅ Dipublish!',desc:'Push notification dikirim ke semua subscriber'});
-    await sendPushToAll(`📰 ${judul}`, isi.slice(0,100)+(isi.length>100?'...':''), 'mading');
-  } catch(err){ showToast({type:'error',title:'❌ Gagal',desc:err.message}); }
-  finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Publish & Push ke Semua'; }
-});
-
-// ============================================================
-// TAMBAH KAS UMUM
-// ============================================================
-document.getElementById('btnTambahKas')?.addEventListener('click', async()=>{
-  const jenis=document.getElementById('kasJenis')?.value;
-  const nominal=Number(document.getElementById('kasNominal')?.value);
-  const ket=document.getElementById('kasKeterangan')?.value?.trim();
-  if(!jenis||!nominal||nominal<=0||!ket){ showToast({type:'info',title:'⚠️ Lengkapi Data',desc:'Isi semua field!'}); return; }
-  const btn=document.getElementById('btnTambahKas');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Menyimpan...';
-  try {
-    await db.collection('kas').add({
-      jenis, nominal, keterangan: ket,
-      tanggal: firebase.firestore.FieldValue.serverTimestamp(),
-      dicatat_oleh: currentUser?.email||'unknown'
-    });
-    document.getElementById('kasNominal').value='';
-    document.getElementById('kasKeterangan').value='';
-    const masuk=jenis==='masuk';
-    const title=masuk?'💰 Kas Masuk!':'💸 Kas Keluar';
-    showToast({type:'kas',title:'✅ Kas Dicatat!',desc:`${ket} — ${(masuk?'+':'-')+fmtRp(nominal)}`});
-    await sendPushToAll(title, `${ket} — ${(masuk?'+':'-')+fmtRp(nominal)}`, 'kas');
-  } catch(err){ showToast({type:'error',title:'❌ Gagal',desc:err.message}); }
-  finally{ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-plus"></i> Tambah & Push ke Semua'; }
-});
-
-// ============================================================
-// TAMBAH KAS SPONSOR
-// ============================================================
-document.getElementById('btnTambahSponsor')?.addEventListener('click', async()=>{
-  const jenis=document.getElementById('sponsorJenis')?.value;
-  const nominal=Number(document.getElementById('sponsorNominal')?.value);
-  const ket=document.getElementById('sponsorKeterangan')?.value?.trim();
-  if(!jenis||!nominal||nominal<=0||!ket){ 
-    showToast({type:'info',title:'⚠️ Lengkapi Data',desc:'Isi semua field kas sponsor!'}); 
-    return; 
-  }
-  const btn=document.getElementById('btnTambahSponsor');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Menyimpan...';
-  try {
-    await db.collection('kas_sponsor').add({
-      jenis, nominal, keterangan: ket,
-      tanggal: firebase.firestore.FieldValue.serverTimestamp(),
-      dicatat_oleh: currentUser?.email||'unknown'
-    });
-    document.getElementById('sponsorNominal').value='';
-    document.getElementById('sponsorKeterangan').value='';
-    showToast({type:'kas',title:'✅ Kas Sponsor Dicatat!',desc:`${jenis==='masuk'?'Pemasukan Sponsor':'Pengeluaran Sponsor'} ${fmtRp(nominal)}`});
-  } catch(err){ 
-    showToast({type:'error',title:'❌ Gagal',desc:err.message}); 
-  }
-  finally{ 
-    btn.disabled=false; 
-    btn.innerHTML='<i class="fa-solid fa-plus"></i> Tambah Kas Sponsor'; 
-  }
-});
-
-// ============================================================
-// HAPUS SEMUA ASPIRASI
-// ============================================================
-document.getElementById('hapusSemuaAspirasi')?.addEventListener('click', async()=>{
-  if(!confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) return;
-  try {
-    const snap = await db.collection('aspirasi').get();
-    const batch = db.batch();
-    snap.forEach(d=>batch.delete(d.ref));
-    await batch.commit();
-    showToast({type:'info',title:'🗑️ Semua aspirasi dihapus'});
-  } catch(err){ showToast({type:'error',title:'❌ Gagal',desc:err.message}); }
-});
-
-// ============================================================
-// REALTIME LISTENERS
+// START LISTENERS
 // ============================================================
 function startListeners() {
   setSyncStatus('loading');
-
-  // MADING
+  
+  // Mading
   const u1 = db.collection('mading').orderBy('tanggal','desc').limit(30)
     .onSnapshot(snap => {
       setSyncStatus('ok');
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      const items = snap.docs.map(d => ({id:d.id,...d.data()}));
       renderMadingList(items);
       renderMadingPub(items);
       document.getElementById('rPengumuman').textContent = items.length;
-
       snap.docChanges().forEach(ch => {
-        if(ch.type==='added'){
-          if(isFirstLoad){ knownIds.add(ch.doc.id); return; }
-          if(knownIds.has(ch.doc.id)) return;
+        if(ch.type === 'added' && !isFirstLoad && !knownIds.has(ch.doc.id)) {
           knownIds.add(ch.doc.id);
-          const d=ch.doc.data(), judul=d.judul||'Pengumuman Baru', isi=d.isi||'';
-          playSound('mading');
-          showToast({type:'mading',title:`📰 ${judul}`,desc:isi.slice(0,80)+(isi.length>80?'...':'')});
-          addToDropdown({id:ch.doc.id,type:'mading',title:`📰 ${judul}`,body:isi.slice(0,100),timestamp:new Date().toISOString()});
-          updateBadge();
+          const d = ch.doc.data();
+          showToast({type:'mading', title:`📰 ${d.judul||'Pengumuman Baru'}`, desc:(d.isi||'').slice(0,80)+(d.isi?.length>80?'...':'')});
+          addToDropdown({id:ch.doc.id, type:'mading', title:`📰 ${d.judul||'Pengumuman Baru'}`, body:(d.isi||'').slice(0,100), timestamp:new Date().toISOString()});
         }
       });
       isFirstLoad = false;
-    }, ()=>setSyncStatus('offline'));
-
-  // KAS UMUM
+    }, () => setSyncStatus('offline'));
+  
+  // Kas
   const u2 = db.collection('kas').orderBy('tanggal','desc').limit(50)
     .onSnapshot(snap => {
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      const items = snap.docs.map(d => ({id:d.id,...d.data()}));
       renderKasList(items);
       snap.docChanges().forEach(ch => {
-        if(ch.type==='added'){
-          if(knownIds.has(ch.doc.id)||isFirstLoad){ knownIds.add(ch.doc.id); return; }
+        if(ch.type === 'added' && !isFirstLoad && !knownIds.has(ch.doc.id)) {
           knownIds.add(ch.doc.id);
-          const d=ch.doc.data(), masuk=d.jenis==='masuk';
-          const title=masuk?'💰 Kas Masuk!':'💸 Kas Keluar';
-          const amount=(masuk?'+':'-')+fmtRp(d.nominal);
-          playSound('kas');
-          showToast({type:'kas',title,desc:d.keterangan||'',amount,amountColor:masuk?'green':'red'});
-          addToDropdown({id:ch.doc.id,type:'kas',title,body:`${d.keterangan} — ${amount}`,timestamp:new Date().toISOString()});
-          updateBadge();
+          const d = ch.doc.data();
+          const masuk = d.jenis === 'masuk';
+          const amount = (masuk ? '+' : '-') + fmtRp(d.nominal);
+          showToast({type:'kas', title:masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar', desc:d.keterangan||'', amount, amountColor:masuk ? 'green' : 'red'});
+          addToDropdown({id:ch.doc.id, type:'kas', title:masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar', body:`${d.keterangan} — ${amount}`, timestamp:new Date().toISOString()});
         }
       });
     });
-
-  // ASPIRASI (dengan balasan)
+  
+  // Aspirasi
   const u3 = db.collection('aspirasi').orderBy('timestamp','desc').limit(50)
     .onSnapshot(snap => {
-      const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const items = snap.docs.map(d => ({id:d.id,...d.data()}));
       renderAspirasiList(items);
-      snap.docChanges().forEach(ch => {
-        if (ch.type === 'added' && !isFirstLoad && !knownIds.has('asp_' + ch.doc.id)) {
-          knownIds.add('asp_' + ch.doc.id);
-          const d = ch.doc.data();
-          const kategoriMap = { aspirasi: '💡 Aspirasi', kritik: '🔴 Kritik', saran: '💛 Saran', pertanyaan: '❓ Pertanyaan' };
-          playSound('aspirasi');
-          showToast({
-            type: 'aspirasi',
-            title: `📩 ${kategoriMap[d.kategori] || 'Aspirasi'} Baru`,
-            desc: `Dari ${d.nama || 'Anonim'}: ${(d.pesan || '').slice(0, 60)}${(d.pesan || '').length > 60 ? '...' : ''}`
-          });
-          addToDropdown({
-            id: 'asp_' + ch.doc.id,
-            type: 'aspirasi',
-            title: `📩 ${kategoriMap[d.kategori] || 'Aspirasi'} Baru`,
-            body: `Dari ${d.nama || 'Anonim'}: ${(d.pesan || '').slice(0, 100)}`,
-            timestamp: new Date().toISOString()
-          });
-          updateBadge();
-        }
-        // Cek jika ada balasan baru di aspirasi yang sudah ada
-        if (ch.type === 'modified') {
-          const d = ch.doc.data();
-          const oldData = ch.doc.data();
-          // Kita tidak bisa langsung bandingkan balasan, tapi kita bisa trigger re-render
-          // renderAspirasiList sudah dipanggil di atas, jadi aman
-        }
-      });
     });
-
-  // KAS SPONSOR
+  
+  // Kas Sponsor
   const u4 = db.collection('kas_sponsor').orderBy('tanggal','desc').limit(50)
     .onSnapshot(snap => {
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderSponsorList(items);
+      renderSponsorList(snap.docs.map(d => ({id:d.id,...d.data()})));
     });
-
-  // ABSENSI - 1 DOKUMEN PER HARI
+  
+  // Absensi
   startAbsensiListener();
-
+  
   unsubFns = [u1,u2,u3,u4];
 }
 
 function stopListeners() {
-  unsubFns.forEach(u=>u&&u());
-  unsubFns=[];
-  if (absensiUnsub) {
-    absensiUnsub();
-    absensiUnsub = null;
-  }
+  unsubFns.forEach(u => u());
+  unsubFns = [];
+  if(absensiUnsub) { absensiUnsub(); absensiUnsub = null; }
 }
 
 // ============================================================
-// FIREBASE AUTH
+// AUTH & DASHBOARD
 // ============================================================
-auth.onAuthStateChanged(async user=>{
-  if(user){
-    currentUser=user;
-    try{
-      const uDoc=await db.collection('users').doc(user.uid).get();
-      currentRole=uDoc.exists?(uDoc.data().role||'pengurus'):'pengurus';
-    }catch{ currentRole='pengurus'; }
+auth.onAuthStateChanged(async user => {
+  if(user) {
+    currentUser = user;
+    try {
+      const uDoc = await db.collection('users').doc(user.uid).get();
+      currentRole = uDoc.exists ? (uDoc.data().role || 'pengurus') : 'pengurus';
+    } catch { currentRole = 'pengurus'; }
     showDashboard();
     startListeners();
   } else {
-    currentUser=null; currentRole='anggota';
+    currentUser = null;
+    currentRole = 'anggota';
     stopListeners();
     hideDashboard();
-    db.collection('mading').orderBy('tanggal','desc').limit(20).onSnapshot(snap=>{
-      renderMadingPub(snap.docs.map(d=>({id:d.id,...d.data()})));
+    db.collection('mading').orderBy('tanggal','desc').limit(20).onSnapshot(snap => {
+      renderMadingPub(snap.docs.map(d => ({id:d.id,...d.data()})));
     });
   }
 });
 
-// ============================================================
-// LOGIN
-// ============================================================
-const overlay=document.getElementById('loginOverlay');
-const loginErrEl=document.getElementById('loginError');
-const loginErrTxt=document.getElementById('loginErrorText');
-
-function openModal(){ overlay.classList.add('open'); loginErrEl.classList.remove('show'); document.getElementById('loginEmail').value=''; document.getElementById('loginPassword').value=''; setTimeout(()=>document.getElementById('loginEmail').focus(),50); }
-function closeModal(){ overlay.classList.remove('open'); }
-
-['btnNavLogin','heroBtnLogin','mobileBtnLogin'].forEach(id=>document.getElementById(id)?.addEventListener('click',openModal));
-document.getElementById('btnModalClose')?.addEventListener('click',closeModal);
-overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
-
-document.getElementById('loginSubmit')?.addEventListener('click', async()=>{
-  const email=document.getElementById('loginEmail').value.trim();
-  const pw=document.getElementById('loginPassword').value.trim();
-  if(!email||!pw){ loginErrTxt.textContent='Harap isi email dan password.'; loginErrEl.classList.add('show'); return; }
-  const btn=document.getElementById('loginSubmit');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Memproses...';
-  loginErrEl.classList.remove('show');
-  try{
-    await auth.signInWithEmailAndPassword(email,pw);
-    closeModal();
-  }catch(err){
-    const msgs={'auth/user-not-found':'Email tidak terdaftar.','auth/wrong-password':'Password salah.','auth/invalid-email':'Format email tidak valid.','auth/too-many-requests':'Terlalu banyak percobaan. Coba lagi nanti.','auth/invalid-credential':'Email atau password salah.'};
-    loginErrTxt.textContent=msgs[err.code]||'Gagal masuk: '+err.message;
-    loginErrEl.classList.add('show');
-  }finally{
-    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Portal';
-  }
-});
-
-['loginEmail','loginPassword'].forEach(id=>{
-  document.getElementById(id)?.addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('loginSubmit').click(); });
-});
-
-document.getElementById('forgotLink')?.addEventListener('click',()=>{
-  const email=document.getElementById('loginEmail').value.trim();
-  if(!email){ alert('Masukkan email kamu dulu.'); return; }
-  auth.sendPasswordResetEmail(email).then(()=>alert('Link reset dikirim ke '+email)).catch(e=>alert('Gagal: '+e.message));
-});
-
-// ============================================================
-// DASHBOARD SHOW/HIDE
-// ============================================================
-function showDashboard(){
-  document.getElementById('hero').style.display='none';
-  document.getElementById('madingPublik').style.display='none';
+function showDashboard() {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('madingPublik').style.display = 'none';
   document.getElementById('portalDashboard').classList.add('open');
-  document.getElementById('btnNavLogin').style.display='none';
-  document.getElementById('btnNavLogout').style.display='inline-flex';
-  document.getElementById('mobileBtnLogin').style.display='none';
-  document.getElementById('mobileBtnLogout').style.display='flex';
+  document.getElementById('btnNavLogin').style.display = 'none';
+  document.getElementById('btnNavLogout').style.display = 'inline-flex';
+  document.getElementById('mobileBtnLogin').style.display = 'none';
+  document.getElementById('mobileBtnLogout').style.display = 'flex';
   document.getElementById('mobileBtnLogout').classList.add('show');
-  const email=currentUser?.email||'';
-  const nama=email.split('@')[0];
-  document.getElementById('dashUserInfo').innerHTML=`${esc(email)} &nbsp;<span class="sync-dot loading" id="syncDot"></span><span id="syncText" style="font-size:11px">Menghubungkan...</span>`;
-  document.getElementById('navUserInfo').style.display='inline-flex';
-  document.getElementById('navAvatar').textContent=nama.charAt(0).toUpperCase();
-  document.getElementById('navUserName').textContent=nama;
-  const badge=document.getElementById('dashRoleBadge');
-  badge.textContent=currentRole;
-  badge.className='role-badge'+(currentRole==='admin'?' admin':currentRole==='pengurus'?' pengurus':'');
-  document.querySelectorAll('.tab-btn.admin-only').forEach(el=>el.classList.toggle('show',currentRole==='admin'));
-  isFirstLoad=true; knownIds.clear();
-  updateFCMSubscriberCount();
-
-  if(Notification.permission==='granted'){
-    subscribeFCM();
-  } else {
-    const statusEl=document.getElementById('notifStatus');
-    if(statusEl){ statusEl.innerHTML='Klik "Aktifkan Notifikasi" agar push masuk ke HP meski app tertutup'; statusEl.style.color=''; }
-  }
+  const email = currentUser?.email || '';
+  const nama = email.split('@')[0];
+  document.getElementById('dashUserInfo').innerHTML = `${esc(email)} <span class="sync-dot loading" id="syncDot"></span><span id="syncText" style="font-size:11px">Menghubungkan...</span>`;
+  document.getElementById('navUserInfo').style.display = 'inline-flex';
+  document.getElementById('navAvatar').textContent = nama.charAt(0).toUpperCase();
+  document.getElementById('navUserName').textContent = nama;
+  const badge = document.getElementById('dashRoleBadge');
+  badge.textContent = currentRole;
+  badge.className = 'role-badge' + (currentRole === 'admin' ? ' admin' : currentRole === 'pengurus' ? ' pengurus' : '');
+  document.querySelectorAll('.tab-btn.admin-only').forEach(el => el.classList.toggle('show', currentRole === 'admin'));
+  isFirstLoad = true;
+  knownIds.clear();
+  if(Notification.permission === 'granted') { subscribeFCM(); }
 }
 
-function hideDashboard(){
-  document.getElementById('hero').style.display='';
-  document.getElementById('madingPublik').style.display='block';
+function hideDashboard() {
+  document.getElementById('hero').style.display = '';
+  document.getElementById('madingPublik').style.display = 'block';
   document.getElementById('portalDashboard').classList.remove('open');
-  document.getElementById('btnNavLogin').style.display='inline-flex';
-  document.getElementById('btnNavLogout').style.display='none';
-  document.getElementById('mobileBtnLogin').style.display='inline-flex';
-  document.getElementById('mobileBtnLogout').style.display='none';
+  document.getElementById('btnNavLogin').style.display = 'inline-flex';
+  document.getElementById('btnNavLogout').style.display = 'none';
+  document.getElementById('mobileBtnLogin').style.display = 'inline-flex';
+  document.getElementById('mobileBtnLogout').style.display = 'none';
   document.getElementById('mobileBtnLogout').classList.remove('show');
-  document.getElementById('navUserInfo').style.display='none';
+  document.getElementById('navUserInfo').style.display = 'none';
 }
 
-async function handleLogout(){ await auth.signOut(); document.getElementById('hamburger').classList.remove('active'); document.getElementById('mobileMenu').classList.remove('open'); }
-document.getElementById('btnNavLogout')?.addEventListener('click',handleLogout);
-document.getElementById('mobileBtnLogout')?.addEventListener('click',handleLogout);
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+const overlay = document.getElementById('loginOverlay');
+const loginErrEl = document.getElementById('loginError');
+const loginErrTxt = document.getElementById('loginErrorText');
 
-// ============================================================
-// AKTIFKAN NOTIFIKASI (FCM)
-// ============================================================
-document.getElementById('btnEnablePush')?.addEventListener('click', async()=>{
-  const perm=await Notification.requestPermission();
-  if(perm==='granted'){
-    await subscribeFCM();
-  } else {
-    const statusEl=document.getElementById('notifStatus');
-    if(statusEl){ statusEl.innerHTML='⚠️ Izin ditolak. Aktifkan notifikasi di pengaturan browser/HP kamu.'; statusEl.style.color='var(--c-amber)'; }
+function openModal() { overlay.classList.add('open'); loginErrEl.classList.remove('show'); document.getElementById('loginEmail').value = ''; document.getElementById('loginPassword').value = ''; setTimeout(() => document.getElementById('loginEmail').focus(), 50); }
+function closeModal() { overlay.classList.remove('open'); }
+
+['btnNavLogin','heroBtnLogin','mobileBtnLogin'].forEach(id => document.getElementById(id)?.addEventListener('click', openModal));
+document.getElementById('btnModalClose')?.addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
+
+document.getElementById('loginSubmit')?.addEventListener('click', async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPassword').value.trim();
+  if(!email || !pw) { loginErrTxt.textContent = 'Harap isi email dan password.'; loginErrEl.classList.add('show'); return; }
+  this.disabled = true;
+  this.innerHTML = '<span class="spinner"></span> Memproses...';
+  loginErrEl.classList.remove('show');
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+    closeModal();
+  } catch(err) {
+    const msgs = {
+      'auth/user-not-found': 'Email tidak terdaftar.',
+      'auth/wrong-password': 'Password salah.',
+      'auth/invalid-email': 'Format email tidak valid.',
+      'auth/too-many-requests': 'Terlalu banyak percobaan. Coba lagi nanti.',
+      'auth/invalid-credential': 'Email atau password salah.'
+    };
+    loginErrTxt.textContent = msgs[err.code] || 'Gagal masuk: ' + err.message;
+    loginErrEl.classList.add('show');
+  } finally {
+    this.disabled = false;
+    this.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Portal';
   }
 });
 
-document.getElementById('btnTestNotif')?.addEventListener('click',()=>{
+['loginEmail','loginPassword'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('loginSubmit').click(); });
+});
+
+document.getElementById('forgotLink')?.addEventListener('click', () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  if(!email) { alert('Masukkan email kamu dulu.'); return; }
+  auth.sendPasswordResetEmail(email).then(() => alert('Link reset dikirim ke ' + email)).catch(e => alert('Gagal: ' + e.message));
+});
+
+async function handleLogout() { await auth.signOut(); document.getElementById('hamburger').classList.remove('active'); document.getElementById('mobileMenu').classList.remove('open'); }
+document.getElementById('btnNavLogout')?.addEventListener('click', handleLogout);
+document.getElementById('mobileBtnLogout')?.addEventListener('click', handleLogout);
+
+// ============================================================
+// EVENT LISTENERS - BUTTONS
+// ============================================================
+document.getElementById('btnHadirSemua')?.addEventListener('click', function() {
+  ALL_ANGGOTA.forEach(a => absensiData[a.uid] = 'hadir');
+  renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+  renderRingkasAbsensi();
+  updateDashboardStats();
+  const docId = 'absensi_' + getToday();
+  db.collection('absensi').doc(docId).set({ records: absensiData }, { merge: true });
+  showToast({type:'absensi', title:'✅ Semua anggota hadir'});
+});
+
+document.getElementById('btnResetAbsensi')?.addEventListener('click', function() {
+  if(!confirm('Reset semua absensi hari ini?')) return;
+  ALL_ANGGOTA.forEach(a => absensiData[a.uid] = 'alfa');
+  renderAbsensiUI(document.getElementById('absSearch')?.value || '');
+  renderRingkasAbsensi();
+  updateDashboardStats();
+  const docId = 'absensi_' + getToday();
+  db.collection('absensi').doc(docId).set({ records: absensiData }, { merge: true });
+  showToast({type:'absensi', title:'🔄 Absensi direset'});
+});
+
+document.getElementById('btnSimpanAbsensi')?.addEventListener('click', async function() {
+  this.disabled = true;
+  this.innerHTML = '<span class="spinner"></span> Menyimpan...';
+  try {
+    const docId = 'absensi_' + getToday();
+    await db.collection('absensi').doc(docId).set({ records: absensiData }, { merge: true });
+    const vals = Object.values(absensiData);
+    const h = vals.filter(v => v === 'hadir').length;
+    const i = vals.filter(v => v === 'izin').length;
+    const a = vals.filter(v => v === 'alfa').length;
+    showToast({type:'absensi', title:'📋 Absensi Tersimpan!', desc:`Hadir: ${h} · Izin: ${i} · Alfa: ${a}`});
+    playSound('absensi');
+    await sendPushToAll(`📋 Absensi ${getToday()}`, `Hadir: ${h} · Izin: ${i} · Alfa: ${a} dari ${ALL_ANGGOTA.length} anggota`, 'absensi');
+  } catch(err) { showToast({type:'error', title:'❌ Gagal', desc:err.message}); }
+  finally { this.disabled = false; this.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Notif'; }
+});
+
+document.getElementById('absSearch')?.addEventListener('input', function(e) {
+  renderAbsensiUI(e.target.value);
+});
+
+document.getElementById('btnPublishMading')?.addEventListener('click', async function() {
+  const judul = document.getElementById('madingJudul')?.value?.trim();
+  const isi = document.getElementById('madingIsi')?.value?.trim();
+  if(!judul || !isi) { showToast({type:'info', title:'⚠️ Lengkapi Data', desc:'Judul dan isi wajib diisi!'}); return; }
+  this.disabled = true;
+  this.innerHTML = '<span class="spinner"></span> Mempublish...';
+  try {
+    await db.collection('mading').add({ judul, isi, tanggal: firebase.firestore.FieldValue.serverTimestamp(), publish_by: currentUser?.email || 'unknown' });
+    document.getElementById('madingJudul').value = '';
+    document.getElementById('madingIsi').value = '';
+    showToast({type:'mading', title:'✅ Dipublish!', desc:'Push notification dikirim ke semua subscriber'});
+    await sendPushToAll(`📰 ${judul}`, isi.slice(0,100) + (isi.length > 100 ? '...' : ''), 'mading');
+  } catch(err) { showToast({type:'error', title:'❌ Gagal', desc:err.message}); }
+  finally { this.disabled = false; this.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish & Push ke Semua'; }
+});
+
+document.getElementById('btnTambahKas')?.addEventListener('click', async function() {
+  const jenis = document.getElementById('kasJenis')?.value;
+  const nominal = Number(document.getElementById('kasNominal')?.value);
+  const ket = document.getElementById('kasKeterangan')?.value?.trim();
+  if(!jenis || !nominal || nominal <= 0 || !ket) { showToast({type:'info', title:'⚠️ Lengkapi Data', desc:'Isi semua field!'}); return; }
+  this.disabled = true;
+  this.innerHTML = '<span class="spinner"></span> Menyimpan...';
+  try {
+    await db.collection('kas').add({ jenis, nominal, keterangan: ket, tanggal: firebase.firestore.FieldValue.serverTimestamp(), dicatat_oleh: currentUser?.email || 'unknown' });
+    document.getElementById('kasNominal').value = '';
+    document.getElementById('kasKeterangan').value = '';
+    const masuk = jenis === 'masuk';
+    showToast({type:'kas', title: masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar', desc: `${ket} — ${(masuk ? '+' : '-') + fmtRp(nominal)}`});
+    await sendPushToAll(masuk ? '💰 Kas Masuk!' : '💸 Kas Keluar', `${ket} — ${(masuk ? '+' : '-') + fmtRp(nominal)}`, 'kas');
+  } catch(err) { showToast({type:'error', title:'❌ Gagal', desc:err.message}); }
+  finally { this.disabled = false; this.innerHTML = '<i class="fa-solid fa-plus"></i> Tambah & Push ke Semua'; }
+});
+
+document.getElementById('btnTambahSponsor')?.addEventListener('click', async function() {
+  const jenis = document.getElementById('sponsorJenis')?.value;
+  const nominal = Number(document.getElementById('sponsorNominal')?.value);
+  const ket = document.getElementById('sponsorKeterangan')?.value?.trim();
+  if(!jenis || !nominal || nominal <= 0 || !ket) { showToast({type:'info', title:'⚠️ Lengkapi Data', desc:'Isi semua field kas sponsor!'}); return; }
+  this.disabled = true;
+  this.innerHTML = '<span class="spinner"></span> Menyimpan...';
+  try {
+    await db.collection('kas_sponsor').add({ jenis, nominal, keterangan: ket, tanggal: firebase.firestore.FieldValue.serverTimestamp(), dicatat_oleh: currentUser?.email || 'unknown' });
+    document.getElementById('sponsorNominal').value = '';
+    document.getElementById('sponsorKeterangan').value = '';
+    showToast({type:'kas', title:'✅ Kas Sponsor Dicatat!', desc: `${jenis === 'masuk' ? 'Pemasukan Sponsor' : 'Pengeluaran Sponsor'} ${fmtRp(nominal)}`});
+  } catch(err) { showToast({type:'error', title:'❌ Gagal', desc:err.message}); }
+  finally { this.disabled = false; this.innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Kas Sponsor'; }
+});
+
+document.getElementById('hapusSemuaAspirasi')?.addEventListener('click', async function() {
+  if(!confirm('Hapus SEMUA aspirasi? Tindakan ini tidak bisa dibatalkan!')) return;
+  try {
+    const snap = await db.collection('aspirasi').get();
+    const batch = db.batch();
+    snap.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+    showToast({type:'info', title:'🗑️ Semua aspirasi dihapus'});
+  } catch(err) { showToast({type:'error', title:'❌ Gagal', desc:err.message}); }
+});
+
+document.getElementById('btnEnablePush')?.addEventListener('click', async function() {
+  const perm = await Notification.requestPermission();
+  if(perm === 'granted') {
+    await subscribeFCM();
+    showToast({type:'info', title:'✅ Notifikasi Aktif', desc:'Push notification berhasil diaktifkan!'});
+  } else {
+    showToast({type:'error', title:'❌ Izin Ditolak', desc:'Aktifkan notifikasi di pengaturan browser.'});
+  }
+});
+
+document.getElementById('btnTestNotif')?.addEventListener('click', function() {
   playSound('kas');
-  setTimeout(()=>playSound('mading'),800);
-  showToast({type:'info',title:'🔔 Tes Notifikasi',desc:'Sistem notifikasi Adhigana Prapti aktif!'});
+  setTimeout(() => playSound('mading'), 800);
+  showToast({type:'info', title:'🔔 Tes Notifikasi', desc:'Sistem notifikasi Adhigana Prapti aktif!'});
 });
 
 // ============================================================
 // NOTIF BELL
 // ============================================================
-const notifDropdown=document.getElementById('notifDropdown');
-document.getElementById('notifBell')?.addEventListener('click',e=>{ e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
-document.getElementById('mobNotifBell')?.addEventListener('click',e=>{ e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
-document.addEventListener('click',()=>notifDropdown?.classList.remove('open'));
-document.getElementById('clearNotifBtn')?.addEventListener('click',()=>{ localStorage.removeItem('ap_notifs_v4'); updateBadge(); renderDropdown(); notifDropdown?.classList.remove('open'); });
+const notifDropdown = document.getElementById('notifDropdown');
+document.getElementById('notifBell')?.addEventListener('click', e => { e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
+document.getElementById('mobNotifBell')?.addEventListener('click', e => { e.stopPropagation(); notifDropdown?.classList.toggle('open'); });
+document.addEventListener('click', () => notifDropdown?.classList.remove('open'));
+document.getElementById('clearNotifBtn')?.addEventListener('click', () => { localStorage.removeItem('ap_notifs_v4'); updateBadge(); renderDropdown(); notifDropdown?.classList.remove('open'); });
 
 // ============================================================
-// HAMBURGER & SCROLL
+// HAMBURGER & TABS
 // ============================================================
-const hamburger=document.getElementById('hamburger'), mobileMenu=document.getElementById('mobileMenu');
-hamburger.addEventListener('click',()=>{ hamburger.classList.toggle('active'); mobileMenu.classList.toggle('open'); });
-document.querySelectorAll('.mobile-menu a,.mobile-menu button').forEach(el=>el.addEventListener('click',()=>{ hamburger.classList.remove('active'); mobileMenu.classList.remove('open'); }));
-document.querySelectorAll('[data-scroll]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); document.getElementById(a.dataset.scroll)?.scrollIntoView({behavior:'smooth'}); }));
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger?.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-menu a, .mobile-menu button').forEach(el => {
+  el.addEventListener('click', () => { hamburger.classList.remove('active'); mobileMenu.classList.remove('open'); });
+});
+document.querySelectorAll('[data-scroll]').forEach(a => {
+  a.addEventListener('click', e => { e.preventDefault(); document.getElementById(a.dataset.scroll)?.scrollIntoView({behavior:'smooth'}); });
+});
 
-// TABS
-document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  const key=btn.dataset.tab;
-  document.getElementById('pane'+key[0].toUpperCase()+key.slice(1))?.classList.add('active');
-}));
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    const key = this.dataset.tab;
+    document.getElementById('pane' + key[0].toUpperCase() + key.slice(1))?.classList.add('active');
+  });
+});
 
-// PWA
-let deferredPrompt=null;
-const pwaBanner=document.getElementById('pwaBanner');
-window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; if(!localStorage.getItem('pwa_dismissed')) setTimeout(()=>pwaBanner?.classList.add('show'),2500); });
-document.getElementById('pwaBtnInstall')?.addEventListener('click',async()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); const{outcome}=await deferredPrompt.userChoice; if(outcome==='accepted') pwaBanner?.classList.remove('show'); deferredPrompt=null; });
-document.getElementById('pwaBtnDismiss')?.addEventListener('click',()=>{ localStorage.setItem('pwa_dismissed','1'); pwaBanner?.classList.remove('show'); });
-
-// INIT
-renderDropdown();
-updateBadge();
-console.log('🔥 Portal Adhigana Prapti v5 — Fitur Balasan Aspirasi siap!');
-console.log('✅ Aspirasi: Setiap aspirasi bisa dibalas dengan input balasan di bawahnya.');
-console.log('✅ Balasan tersimpan di Firestore sebagai array di field "balasan".');
+// ============================================================
+// PWA INSTALL
+// ============================================================
+let deferredPrompt = null;
+const pwaBanner = document.getElementById('pwaBanner');
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if(!localStorage.getItem('pwa_dismissed')) setTimeout(() => pwaBanner?.classList.add('show'), 2500); });
+document.getElementById('pwaBtnInstall')?.addEventListener('click', async function() {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if(outcome === 'accepted') pwaBanner?.classList.remove('show');
+  deferredPrompt = null;
+});
+document.getElementById('pwaBtnDismiss')?.addEventListener('click', () => { localStorage.setItem('pwa_dismissed','1'); pwaBanner?.classList.remove('show'); });
 
 // ============================================================
 // TOGGLE PASSWORD
@@ -2034,15 +1860,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const passwordInput = document.getElementById('loginPassword');
   const eyeIcon = document.getElementById('eyeIcon');
   let timeoutId = null;
-
-  if (!toggleBtn || !passwordInput || !eyeIcon) return;
-
+  if(!toggleBtn || !passwordInput || !eyeIcon) return;
   function togglePasswordVisibility(show) {
-    if (show) {
+    if(show) {
       passwordInput.type = 'text';
       eyeIcon.className = 'fa-regular fa-eye-slash';
       toggleBtn.classList.add('active');
-      if (timeoutId) { clearTimeout(timeoutId); }
+      if(timeoutId) { clearTimeout(timeoutId); }
       timeoutId = setTimeout(function() {
         passwordInput.type = 'password';
         eyeIcon.className = 'fa-regular fa-eye';
@@ -2053,26 +1877,23 @@ document.addEventListener('DOMContentLoaded', function() {
       passwordInput.type = 'password';
       eyeIcon.className = 'fa-regular fa-eye';
       toggleBtn.classList.remove('active');
-      if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+      if(timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
     }
   }
-
   toggleBtn.addEventListener('mousedown', function(e) { e.preventDefault(); togglePasswordVisibility(true); });
   toggleBtn.addEventListener('mouseup', function(e) { e.preventDefault(); });
-  toggleBtn.addEventListener('mouseleave', function() { if (passwordInput.type === 'text') togglePasswordVisibility(false); });
+  toggleBtn.addEventListener('mouseleave', function() { if(passwordInput.type === 'text') togglePasswordVisibility(false); });
   toggleBtn.addEventListener('touchstart', function(e) { e.preventDefault(); togglePasswordVisibility(true); });
   toggleBtn.addEventListener('touchend', function(e) { e.preventDefault(); });
-
-  const loginOverlay = document.getElementById('loginOverlay');
-  if (loginOverlay) {
-    const observer = new MutationObserver(function() {
-      if (!loginOverlay.classList.contains('open')) {
-        if (passwordInput.type === 'text') togglePasswordVisibility(false);
-      }
-    });
-    observer.observe(loginOverlay, { attributes: true, attributeFilter: ['class'] });
-  }
 });
+
+// ============================================================
+// INIT
+// ============================================================
+renderDropdown();
+updateBadge();
+console.log('🔥 Portal Adhigana Prapti v6 — All systems ready!');
+console.log('✅ Service worker, FCM, dan notifikasi suara aktif!');
 </script>
 </body>
 </html>
