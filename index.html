@@ -3188,8 +3188,10 @@
      SCRIPTS - FIREBASE + NOTIF + PWA
 ══════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<script type="module" src="/notif-sound.js"></script>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -3982,6 +3984,70 @@ document.addEventListener('visibilitychange', function() {
 console.log('🚀 Semua sistem realtime aktif dan berjalan!');
 console.log('✅ Fitur Balasan Aspirasi aktif di halaman publik!');
 console.log('✅ Tombol Hapus Aspirasi TIDAK tersedia di halaman publik (hanya di dashboard).');
+// ============================================
+// REGISTER SERVICE WORKERS
+// ============================================
+if ('serviceWorker' in navigator) {
+  // 1. PWA Service Worker
+  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+    .then(reg => console.log('✅ PWA SW registered'))
+    .catch(err => console.warn('⚠️ PWA SW failed:', err));
+  
+  // 2. FCM Service Worker
+  navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' })
+    .then(reg => console.log('✅ FCM SW registered'))
+    .catch(err => console.warn('⚠️ FCM SW failed:', err));
+}
+
+// ============================================
+// REQUEST NOTIFICATION PERMISSION
+// ============================================
+async function requestNotifPermission() {
+  if (Notification.permission === 'granted') {
+    console.log('✅ Notification permission already granted');
+    return true;
+  }
+  
+  if (Notification.permission === 'denied') {
+    console.warn('❌ Notification permission denied');
+    return false;
+  }
+  
+  const result = await Notification.requestPermission();
+  console.log('Notification permission:', result);
+  return result === 'granted';
+}
+
+// Panggil saat user klik tombol "Aktifkan Notifikasi"
+window.enableNotifications = async function() {
+  const granted = await requestNotifPermission();
+  if (granted) {
+    // Refresh FCM token
+    try {
+      const messaging = firebase.messaging();
+      const swReg = await navigator.serviceWorker.ready;
+      const token = await messaging.getToken({
+        vapidKey: 'BFs1kccEgDcaL9RHZwrVH2ltSgNLZusqQmep5NfX-29PKt_0EiQ5_WDHnCv4Er6ZCmSLagAH9QdPFmpSHqEYHbg',
+        serviceWorkerRegistration: swReg
+      });
+      console.log('✅ FCM Token:', token);
+      
+      // Simpan ke Firestore
+      await db.collection('fcm_tokens').doc(token).set({
+        token: token,
+        uid: currentUser?.uid || 'anonymous',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      
+      alert('✅ Notifikasi berhasil diaktifkan!');
+    } catch (err) {
+      console.error('FCM error:', err);
+      alert('⚠️ Gagal mengaktifkan notifikasi: ' + err.message);
+    }
+  } else {
+    alert('⚠️ Izin notifikasi ditolak. Aktifkan di pengaturan browser.');
+  }
+};
 </script>
 </body>
 </html>
